@@ -1,0 +1,4 @@
+- Texts.bb fully ported
+
+
+

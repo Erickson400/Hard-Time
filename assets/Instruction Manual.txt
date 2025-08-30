@@ -1,0 +1,70 @@
+HARDtime
+www.MDickie.com
+Mat@MDickie.com
+
+* This document concerns itself with the functionality of the game. For more information about the prison concept, please refer to the additional "Survival Guide.txt" document...
+
+In a bleak future where there are more criminals than citizens, one prison hopes to redress the balance with short doses of HARD time! Take your punishment like a man and try to endure the grueling regime of "Southtown Correctional Facility". Create your own inmate from scratch and rub shoulders with up to 100 fellow convicts throughout the sprawling prison complex. With each passing day, every action taken and every word spoken will sculpt your own unique identity - as you attempt to juggle the physical and mental demands of prison life. You'll soon find that "reputation" is the only currency that matters in this world! Having one keeps you alive, but avoiding one keeps you sane. Which side of the fence will you fall on?
+
+--------------------------------------- SYSTEM REQUIREMENTS ---------------------------------------
+
+This game requires an operating system compatible with DirectX 7.0 graphics. A strong processor of around 3.0gHz is recommended for smooth running. Consult the Options menu to configure the game for optimum performance...
+
+---------------------------------------- GAME CONTROLS ----------------------------------------
+
+The game can be controlled with either keys or gamepad. The precise layout for each method can be redefined in the Options menu, but by default they are as follows:
+
+KEYS
+CURSORS = Turn & Advance
+A = Attack / Shoot
+Z = Run / Defend
+S = Grab Victim / Throw Item
+X = Pick-Up Item / Drop Item    
+
+GAMEPAD
+DIRECTIONS = Turn & Advance
+Button 3 = Attack / Shoot
+Button 1 = Run / Block / Straight Shooting
+Button 4 = Grab Victim / Throw Item
+Button 2 = Pick-Up Item / Drop Item    
+
+COMBINATIONS
+By pressing 2 commands together, you can perform the following actions:
+ATTACK + DIRECTION = Upper attack (as opposed to lower attack when static)
+ATTACK + DEFEND = Powerful attack / Shoot straight
+ATTACK + GRAB  = Rear attack
+
+GRAPPLING
+In additions to impact attacks, you also have access to more crushing grappling moves. After successfully grabbing a victim, they're held in a headlock position and are temporarily at your mercy. Before they push you away, you have access to the following options:
+DIRECTIONS = Drag
+GRAB = Release
+ATTACK = Headlock Punch
+ATTACK + DIRECTON = Knee to face
+DEFEND = Bang head against ground
+DEFEND + DIRECTION = Bodyslam
+PICK-UP = Headlock Takedown
+PICK-UP + DIRECTION = Bulldog
+
+SHOOTING
+You will come across several long-range weapons which are used differently to inanimate objects. Attacking with these causes them to fire at the nearest opponent in the best way they see fit (the body will automatically turn and twist to face the target). If you would like to override this targeting, you can hold down the DEFEND command to shoot straight ahead (albeit with far less accuracy). Also note that firearms have an ammo limit and need to be reloaded regularly. When at close range, your character will attack with any weapon instead of using its firing function...
+
+MULTIPLE FUNCTIONS
+Several items in the game have yet another function beyond being used as a weapon, which is normally invoked after standing still for a short while. For instance, brooms will be used for sweeping, cigarettes will be smoked, bottles will be sipped from, and syringes will be injected. In the case of mirrors and combs, this using state will also allow you to change your appearance with UP or DOWN and LEFT or RIGHT. To resume normal play you can then drop the item or press any other action command...
+
+MOVEMENT
+The game uses a "turn & advance" control system - whereby LEFT and RIGHT change your direction, while UP and DOWN advance or backtrack respectively. A character walks by default, but they can be made to run by holding the DEFEND command. You can travel throughout the prison's 11 locations by simply moving repeatedly into a doorway (take care in doing so because the game may take a short while to unload one scene and reload the next). The same method can also be used to access other interactive areas such as chairs or beds...
+
+MENU NAVIGATION
+The menus of the game can be navigated with either keys or gamepad - simply pressing UP or DOWN to highlight an option and LEFT or RIGHT to change its value (where applicable), before proceeding with ENTER or any gamepad button. Meanwhile, the ESCAPE key will always allow you to exit from any screen or cancel any action. Where applicable, BACKSPACE or DELETE will allow you to reset a value or save slot...
+        
+GAME MANAGEMENT
+Once your game is in underway, you can exit at any suitable moment by simply pressing ESCAPE. Your progress and the exact circumstances of your surroundings will then be saved for you to return to at any time. If you'd like to take a temporary break, it may be more convenient to pause the current action by pressing the P key (and again to resume). During conversations and cut-scenes, you can always skip through the text by pressing any command. If you'd like to take a souvenir of any moment in your game, you can also save a screenshot to the "Photo Album" folder by pressing F12 at any time...
+
+CAMERS
+If you're unhappy with the camera angle at any time, you can take control of it manually by moving the mouse (click to zoom). Otherwise the game will select the appropriate angle at the appropriate time.
+
+-------------------------------------------------------------------------------------------------------------------
+
+For more information about this and other games, 
+please visit: http://www.MDickie.com 
+or contact: Mat@MDickie.com   

@@ -1,0 +1,6 @@
+HARDtime
+www.MDickie.com
+mat@mdickie.com
+
+PHOTO ALBUM
+Whenever you press F12 during the game a screenshot will be saved to this directory. The images are saved in BMP format, which can make the file sizes extremely large. You should visit the album regularly to delete unwanted images, and any images you do wish to keep should be saved again in a more efficient format such as JPG...

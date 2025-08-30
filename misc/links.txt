@@ -1,0 +1,9 @@
+MDickie source code archives:
+https://archive.org/details/mdickiesourcecodearchives
+
+Blitz documentation:
+https://kippykip.com/b3ddocs/commands/index.htm
+
+Blitz3D fork source code:
+https://github.com/ZiYueCommentary/Blitz3D?tab=readme-ov-file
+

@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "streambuf": "cpp",
+        "atomic": "cpp",
+        "string": "cpp",
+        "numbers": "cpp"
+    }
+}

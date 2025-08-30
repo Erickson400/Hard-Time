@@ -1,0 +1,31 @@
+-----------July 31, 2025-----------
+Purpose of this project:
+- I want to play the original 2007 Hardtime natively on any OS.
+- I want the source code to be open, easily accessible, and simple to build. Game assets should not change file format.
+- I want to preserve the game for decades to come. Preferably ported to a simple language with an accessible cross-platform graphical library.
+
+Tools:
+- The Odin programming language. Low-level, Modern, Simple, and a tight community. The drawbacks are that the library ecosystem is small, and the language is really new - which might lead to future breaking changes.
+- Raylib. Simple, tight community, and overwhelmingly similar to the Blitz3D API.
+- SDL3_GPU. If I hit a limit with Raylib, then SDL3 might be an option. Making an entire engine around this project will be time consuming, Hopefully it never gets to that point.
+- Python. For automation scripts, and making a build system if needed.
+
+Implementation:
+The project will have a package called blitz3D. This package is a API wrapper around raylib. I interact with it using Blitz3D like functions, just as if I was writing BlitzBasic but in Odin.
+Other than having Blitz3D functions, It also has distinct data-types, and private variables for storing the state of raylib and Blitz3D (Like knowing what textures are loaded on the GPU)
+The main.odin file and the translated game files will all be on the project's working directory. blitz3D will be a package inside it, able to be imported from any file. The main function should initialize the blitz package, and then call the entry point of the game from one of the other files.
+
+------------Aug 1, 2025-----------
+Before starting to translate the code, I'll do a demo package. This package will be called test3ds, It'll be a package that loads 3ds models and plays them on screen. Im not sure how far this could go but this is a good starting point for learning how 3D works on raylib. I'll just make a camera that orbits the center of the scene, and load a random player model in the middle. I could go even futher and just render a static prop model without animations.
+
+--------------Aug 6, 2025----------
+I'm currently working on translating the 3ds model loading to odin. I'm making it turn the file into a json so that I can study it and compare it to the Raylib's Model struct. I'm noticing that turning it into a json is not the way to go, its best to just turn it into a Model right away, just how the source code is doing. I'll check the parser functions and see what type of data they extract, then compare that to the raylib Model. I hope there are no missing properties between the two.
+
+------------Aug 8, 2025-------------
+This 3ds stuff is tougher than I thought. The blitz compiler is turning the 3ds directly into a parent child system like godot, where sub meshes multiply their parent's matrices. Raylib only has a mesh and model struct, I'd have to make a parent child system myself. At this point I might have to call this a Blitz3D port. Good progress today. I managed to somewhat render a mesh. The meshes are no indexed correctly, and its not rendering an entire model, just one tri-mesh. I just found out that scenes can have multiple objects, each body part of the character model is an object. 
+
+--------------Aug 9, 2025-----------
+Wonderful. I managed to render the plank model. I fixed the indices issue by testing if the vertices were in their correct position. I have to be very careful when debugging, the vertices were in the right position, but the way I was rendering them was incorrect. For some reason an entry in the Face list holds 4 u16's instead of just 3, the last value is never used. I forgot to read it so it moves the stream and that fixed my issue. Next-up I'll figure out why rendering a model crashes, and also handle multiple objects correctly. 
+
+
+
