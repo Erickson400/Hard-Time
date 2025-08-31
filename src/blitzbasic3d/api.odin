@@ -9,11 +9,11 @@ package blitzbasic3d
 import ray "vendor:raylib"
 
 
-SoundHandle :: int
-ImageHandle :: int
-TextureHandle :: int
-AnimTextureHandle :: int
-FontHandle :: int
+SoundHandle :: i32 // DeleteMe
+ImageHandle :: i32 // DeleteMe
+TextureHandle :: i32 // DeleteMe
+AnimTextureHandle :: i32 // DeleteMe
+FontHandle :: i32 // DeleteMe
 
 
 TextureFlag :: enum {
@@ -35,7 +35,7 @@ Load3DSound :: proc(filename: string) -> SoundHandle { return load_sound(filenam
 LoadImage :: proc(filename: string) -> ImageHandle { return load_image(filename) }
 MaskImage :: proc(image: ImageHandle, r: u8, g: u8, b: u8) { mask_image(image, r, g, b) }
 LoadTexture :: proc(filename: string, flags := TextureFlag.COLOR) -> TextureHandle { return load_texture(filename, flags) }
-LoadAnimTexture :: proc(filenames: string, flags: TextureFlag, frame_width, frame_height: i32, first_frame, frame_count: int) -> AnimTextureHandle { 
+LoadAnimTexture :: proc(filenames: string, flags: TextureFlag, frame_width, frame_height: i32, first_frame, frame_count: i32) -> AnimTextureHandle { 
 	return load_anim_texture(filenames, flags, frame_width, frame_height, first_frame, frame_count)
 }
 

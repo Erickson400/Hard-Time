@@ -13,90 +13,90 @@ import "core:os"
 //------------------ STRUCTURE -------------------------
 ////////////////////////////////////////////////////////
 version :: 4
-screen := 0
+screen: i32
 oldScreen :: 0 // Unused
-screenSource := 0
-screenAgenda := 0
-screenCall := 0
-callX := 0
-callY := 0
-go := 0
-gotim := 0
-foc := 0
-subfoc := 0 // Unused
-timer := 0
-keytim := 0
-file := 0
-saver := 0 // Unused
-loader := 0 // Unused
-tester := 0 // Unused
+screenSource: i32
+screenAgenda: i32
+screenCall: i32
+callX: i32
+callY: i32
+go: i32
+gotim: i32
+foc: i32
+subfoc: i32 // Unused
+timer: i32
+keytim: i32
+file: i32
+saver: i32 // Unused
+loader: i32 // Unused
+tester: i32 // Unused
 
 ////////////////////////////////////////////////////////
 //------------------- PROGRESS -------------------------
 ////////////////////////////////////////////////////////
 // Progress
-slot := 1
-oldLocation: int
-gamPoints: int
-gamPointLimit: int
-gamPause: int
-gamFile: int
-gamDoor: int
-gamEnded: int
+slot: i32 = 1
+oldLocation: i32
+gamPoints: i32
+gamPointLimit: i32
+gamPause: i32
+gamFile: i32
+gamDoor: i32
+gamEnded: i32
 gamName: [4]string
-gamPhoto: [4]bb.ImageHandle
-gamChar: [4]string
-gamPlayer: [4]string
-gamLocation: [4]string
-gamMoney: [4]int
-gamSpeed: [4]int
-gamSecs: [4]int
-gamMins: [4]int
-gamHours: [4]int
+gamPhoto: [4]i32
+gamChar: [4]i32
+gamPlayer: [4]i32
+gamLocation: [4]i32
+gamMoney: [4]i32
+gamSpeed: [4]i32
+gamSecs: [4]i32
+gamMins: [4]i32
+gamHours: [4]i32
 // handles
-gamWarrant: [4]int
-gamVictim: [4]int
-gamItem: [4]int
-gamArrival: [4]int
-gamFatality: [4]int
-gamRelease: [4]int
-gamEscape: [4]int
-gamGrowth: [4]int
-gamBlackout: [4]int
-gamBombThreat: [4]int
+gamWarrant: [4]i32
+gamVictim: [4]i32
+gamItem: [4]i32
+gamArrival: [4]i32
+gamFatality: [4]i32
+gamRelease: [4]i32
+gamEscape: [4]i32
+gamGrowth: [4]i32
+gamBlackout: [4]i32
+gamBombThreat: [4]i32
 // missions
-gamMission: [4]int
-gamClient: [4]int
-gamTarget: [4]int
-gamDeadline: [4]int
-gamReward: [4]int
+gamMission: [4]i32
+gamClient: [4]i32
+gamTarget: [4]i32
+gamDeadline: [4]i32
+gamReward: [4]i32
 // stat highlighters (1=strength, 2=agility, 3=intell, 4=rep, 5=time, 6=sentence, 7=money)
-statTim: [11]int
+statTim: [11]i32
 // promos
-gamPromo: int
+gamPromo: i32
 no_promos :: 300
-promoTim: int
-promoStage := 0 // 0=intro, 1=option, 2=positive response, 3=negative response
-promoEffect: int
-promoVariable: int
-promoAccuser: int
-promoVerdict: int
-promoCash: int
+promoTim: i32
+promoStage: i32 // 0=intro, 1=option, 2=positive response, 3=negative response
+promoEffect: i32
+promoVariable: i32
+promoAccuser: i32
+promoVerdict: i32
+promoCash: i32
 optionB: string
 optionA: string
-promoActor: [3]int
-promoReact: [11]int
-promoUsed: [no_promos + 1]int
+promoActor: [3]i32
+promoReact: [11]i32
+promoUsed: [no_promos + 1]i32
 // phones
-phoneRing: int
-phoneTim: int
-phonePromo: int
+phoneRing: i32
+phoneTim: i32
+phonePromo: i32
 phoneX: [5]f32
 phoneY: [5]f32
 phoneZ: [5]f32
 // outro
-endChar: [11]int
-endFate: [11]int
+endChar: [11]i32
+endFate: [11]i32
 
 ////////////////////////////////////////////////////////
 //------------------- OPTIONS --------------------------
@@ -105,109 +105,109 @@ endFate: [11]int
 optPlayLim :: 50
 optCharLim :: 200
 optWeapLim :: 100
-optPopulation := 60
+optPopulation: i32 = 60
 // preferences
-optRes := 2
-optFog := 1
-optFX := 1
-optShadows := 2
-optGore := 3 // 0=none, 1=scars, 2=pools, 3=limbs
+optRes: i32 = 2
+optFog: i32 = 1
+optFX: i32 = 1
+optShadows: i32 = 2
+optGore: i32 = 3 // 0=none, 1=scars, 2=pools, 3=limbs
 // keys & buttons
-keyAttack := 30
-keyDefend := 44
-keyThrow := 31
-keyPickUp := 45
-buttAttack := 1
-buttDefend := 3
-buttThrow := 2
-buttPickUp := 4
+keyAttack: i32 = 30
+keyDefend: i32 = 44
+keyThrow: i32 = 31
+keyPickUp: i32 = 45
+buttAttack: i32 = 1
+buttDefend: i32 = 3
+buttThrow: i32 = 2
+buttPickUp: i32 = 4
 
 /////////////////////////////////////////////////////////
 //----------------------- SOUND -------------------------
 /////////////////////////////////////////////////////////
 // music & atmosphere
-sTheme: int
-chTheme: int
+sTheme: i32
+chTheme: i32
 musicVol: f32
-chAtmos: int
-sAtmos: int
-chPhone: int
-chAlarm: int
+chAtmos: i32
+sAtmos: i32
+chPhone: i32
+chAlarm: i32
 // menu effects
-sMenuBrowse: bb.SoundHandle
-sMenuSelect: bb.SoundHandle
-sMenuGo: bb.SoundHandle
-sMenuBack: bb.SoundHandle
-sVoid: bb.SoundHandle
-sTrash: bb.SoundHandle
-sCamera: bb.SoundHandle
-sComputer: bb.SoundHandle
-sCash: bb.SoundHandle
-sPaper: bb.SoundHandle
+sMenuBrowse: i32
+sMenuSelect: i32
+sMenuGo: i32
+sMenuBack: i32
+sVoid: i32
+sTrash: i32
+sCamera: i32
+sComputer: i32
+sCash: i32
+sPaper: i32
 // court reactions
-sMurmur: bb.SoundHandle
-sJury: [3]bb.SoundHandle
+sMurmur: i32
+sJury: [3]i32
 // world
-sDoor: [4]bb.SoundHandle
-sBuzzer: bb.SoundHandle
-sBell: bb.SoundHandle
-sRing: bb.SoundHandle
-sAlarm: bb.SoundHandle
-sTanoy: bb.SoundHandle
-sBasket: bb.SoundHandle
+sDoor: [4]i32
+sBuzzer: i32
+sBell: i32
+sRing: i32
+sAlarm: i32
+sTanoy: i32
+sBasket: i32
 // movements
-sFall: bb.SoundHandle
-sThud: bb.SoundHandle
-sShuffle: [4]bb.SoundHandle
-sStep: [7]bb.SoundHandle
+sFall: i32
+sThud: i32
+sShuffle: [4]i32
+sStep: [7]i32
 // pain
-chDeath: int
-sDeath: bb.SoundHandle
-sChoke: bb.SoundHandle
-sSnore: bb.SoundHandle
-sBreakdown: bb.SoundHandle
-sPain: [11]bb.SoundHandle
-sAgony: [6]bb.SoundHandle
+chDeath: i32
+sDeath: i32
+sChoke: i32
+sSnore: i32
+sBreakdown: i32
+sPain: [11]i32
+sAgony: [6]i32
 // impacts
-sSwing: bb.SoundHandle
-sBleed: bb.SoundHandle
-sStab: bb.SoundHandle
-sEat: bb.SoundHandle
-sDrink: bb.SoundHandle
-sImpact: [7]bb.SoundHandle
+sSwing: i32
+sBleed: i32
+sStab: i32
+sEat: i32
+sDrink: i32
+sImpact: [7]i32
 // weapons
-sGeneric: bb.SoundHandle
-sBlade: bb.SoundHandle
-sMetal: bb.SoundHandle
-sWood: bb.SoundHandle
-sCane: bb.SoundHandle
-sString: bb.SoundHandle
-sRock: bb.SoundHandle
-sAxe: bb.SoundHandle
-sBall: bb.SoundHandle
-sPhone: bb.SoundHandle
-sCigar: bb.SoundHandle
-sSyringe: bb.SoundHandle
-sBottle: bb.SoundHandle
-sSplash: bb.SoundHandle
+sGeneric: i32
+sBlade: i32
+sMetal: i32
+sWood: i32
+sCane: i32
+sString: i32
+sRock: i32
+sAxe: i32
+sBall: i32
+sPhone: i32
+sCigar: i32
+sSyringe: i32
+sBottle: i32
+sSplash: i32
 // technology
-sShot: [6]bb.SoundHandle
-sRicochet: [6]bb.SoundHandle
-sReload: bb.SoundHandle
-sGun: bb.SoundHandle
-sMine: bb.SoundHandle
-sExplosion: bb.SoundHandle
-sBlaze: bb.SoundHandle
-sLaser: bb.SoundHandle
+sShot: [6]i32
+sRicochet: [6]i32
+sReload: i32
+sGun: i32
+sMine: i32
+sExplosion: i32
+sBlaze: i32
+sLaser: i32
 
 ////////////////////////////////////////////////////////
 //-------------------- PLAYERS -------------------------
 ////////////////////////////////////////////////////////
-no_plays: int
-p: [optPlayLim + 1]bb.EntityHandle
-pPivot: [optPlayLim + 1]bb.EntityHandle
-pMovePivot: [optPlayLim + 1]bb.EntityHandle
-pFoc: [optPlayLim + 1]bb.EntityHandle
+no_plays: i32
+p: [optPlayLim + 1]i32
+pPivot: [optPlayLim + 1]i32
+pMovePivot: [optPlayLim + 1]i32
+pFoc: [optPlayLim + 1]i32
 pX: [optPlayLim + 1]f32
 pY: [optPlayLim + 1]f32
 pZ: [optPlayLim + 1]f32
@@ -216,15 +216,15 @@ pOldY: [optPlayLim + 1]f32
 pOldZ: [optPlayLim + 1]f32
 pA: [optPlayLim + 1]f32
 pTA: [optPlayLim + 1]f32
-pGrappling: [optPlayLim + 1]bool
-pGrappler: [optPlayLim + 1]int
-pCollisions: [optPlayLim + 1]bool
+pGrappling: [optPlayLim + 1]i32
+pGrappler: [optPlayLim + 1]i32
+pCollisions: [optPlayLim + 1]i32
 pOldMoveX: [optPlayLim + 1]f32
 pOldMoveZ: [optPlayLim + 1]f32
 // scenery interaction
-pPhone: [optPlayLim + 1]bool
-pBed: [optPlayLim + 1]bool
-pSeat: [optPlayLim + 1]bool
+pPhone: [optPlayLim + 1]i32
+pBed: [optPlayLim + 1]i32
+pSeat: [optPlayLim + 1]i32
 pSeatX: [optPlayLim + 1]f32
 pSeatY: [optPlayLim + 1]f32
 pSeatZ: [optPlayLim + 1]f32
@@ -236,41 +236,41 @@ pLeaveA: [optPlayLim + 1]f32
 pSeatFriction: [optPlayLim + 1][51]f32
 pBedFriction: [optPlayLim + 1][21]f32
 pDoorFriction: [optPlayLim + 1][11]f32
-pFoodTim: [optPlayLim + 1]int
+pFoodTim: [optPlayLim + 1]i32
 // physics
 pGround: [optPlayLim + 1]f32
 pHurtA: [optPlayLim + 1]f32
-pStagger: [optPlayLim + 1]bool
+pStagger: [optPlayLim + 1]i32
 pSpeed: [optPlayLim + 1]f32
 pGravity: [optPlayLim + 1]f32
 pCharge: [optPlayLim + 1]f32
 // status
-pSting: [optPlayLim + 1]bool
-pMultiSting: [optPlayLim + 1][optPlayLim + 1]bool
+pSting: [optPlayLim + 1]i32
+pMultiSting: [optPlayLim + 1][optPlayLim + 1]i32
 pHealth: [optPlayLim + 1]f32
 pHealthLimit: [optPlayLim + 1]f32
 pOldHealth: [optPlayLim + 1]f32
-pInjured: [optPlayLim + 1]bool
-pDazed: [optPlayLim + 1]bool
-pHP: [optPlayLim + 1]int
-pDT: [optPlayLim + 1]int
-pWeapon: [optPlayLim + 1]int
-pWeaponTim: [optPlayLim + 1][optWeapLim + 1]int
+pInjured: [optPlayLim + 1]i32
+pDazed: [optPlayLim + 1]i32
+pHP: [optPlayLim + 1]i32
+pDT: [optPlayLim + 1]i32
+pWeapon: [optPlayLim + 1]i32
+pWeaponTim: [optPlayLim + 1][optWeapLim + 1]i32
 // input
-pControl: [optPlayLim + 1]bool
-cUp: [optPlayLim + 1]bool
-cDown: [optPlayLim + 1]bool
-cLeft: [optPlayLim + 1]bool
-cRight: [optPlayLim + 1]bool
-cAttack: [optPlayLim + 1]bool
-cDefend: [optPlayLim + 1]bool
-cThrow: [optPlayLim + 1]bool
-cPickUp: [optPlayLim + 1]bool
-pFireTim: [optPlayLim + 1]int
+pControl: [optPlayLim + 1]i32
+cUp: [optPlayLim + 1]i32
+cDown: [optPlayLim + 1]i32
+cLeft: [optPlayLim + 1]i32
+cRight: [optPlayLim + 1]i32
+cAttack: [optPlayLim + 1]i32
+cDefend: [optPlayLim + 1]i32
+cThrow: [optPlayLim + 1]i32
+cPickUp: [optPlayLim + 1]i32
+pFireTim: [optPlayLim + 1]i32
 // AI
-pAgenda: [optPlayLim + 1]int
-pOldAgenda: [optPlayLim + 1]int
-pTarget: [optPlayLim + 1]int
+pAgenda: [optPlayLim + 1]i32
+pOldAgenda: [optPlayLim + 1]i32
+pTarget: [optPlayLim + 1]i32
 pTX: [optPlayLim + 1]f32
 pTY: [optPlayLim + 1]f32
 pTZ: [optPlayLim + 1]f32
@@ -280,29 +280,29 @@ pExploreZ: [optPlayLim + 1]f32
 pSubX: [optPlayLim + 1]f32
 pSubZ: [optPlayLim + 1]f32
 pExploreRange: [optPlayLim + 1]f32
-pSatisfied: [optPlayLim + 1]bool
-pNowhere: [optPlayLim + 1]bool
-pRunTim: [optPlayLim + 1]int
-pFollowFoc: [optPlayLim + 1]bool
-pWeapFoc: [optPlayLim + 1]bool
-pInteract: [optPlayLim + 1][optPlayLim + 1]bool
+pSatisfied: [optPlayLim + 1]i32
+pNowhere: [optPlayLim + 1]i32
+pRunTim: [optPlayLim + 1]i32
+pFollowFoc: [optPlayLim + 1]i32
+pWeapFoc: [optPlayLim + 1]i32
+pInteract: [optPlayLim + 1][optPlayLim + 1]i32
 // animation
-pSeq: [optPlayLim + 1][621]int
-pState: [optPlayLim + 1]int
-pPromoState: [optPlayLim + 1]int
-pAnim: [optPlayLim + 1]int
-pOldAnim: [optPlayLim + 1]int
-pAnimTim: [optPlayLim + 1]int
+pSeq: [optPlayLim + 1][621]i32
+pState: [optPlayLim + 1]i32
+pPromoState: [optPlayLim + 1]i32
+pAnim: [optPlayLim + 1]i32
+pOldAnim: [optPlayLim + 1]i32
+pAnimTim: [optPlayLim + 1]i32
 pAnimSpeed: [optPlayLim + 1]f32
-pStepTim: [optPlayLim + 1]int
+pStepTim: [optPlayLim + 1]i32
 // appearance
-pChar: [optPlayLim + 1]int
-pEyes: [optPlayLim + 1]int
-pOldEyes: [optPlayLim + 1]int
-pMouth: [optPlayLim + 1]int
-pSpeaking: [optPlayLim + 1]bool
-pShadow: [optPlayLim + 1][41]bb.EntityHandle
-pControlTim: [optPlayLim + 1]int
+pChar: [optPlayLim + 1]i32
+pEyes: [optPlayLim + 1]i32
+pOldEyes: [optPlayLim + 1]i32
+pMouth: [optPlayLim + 1]i32
+pSpeaking: [optPlayLim + 1]i32
+pShadow: [optPlayLim + 1][41]i32
+pControlTim: [optPlayLim + 1]i32
 pTag: [3]string
 pHighlight: [3]string
 
@@ -310,165 +310,165 @@ pHighlight: [3]string
 //----------------------- LIMBS -------------------------
 /////////////////////////////////////////////////////////
 // status
-pLimb: [optPlayLim][41]bb.EntityHandle
-pScar: [optPlayLim][41]bb.EntityHandle
-pOldScar: [optPlayLim][41]bb.EntityHandle
+pLimb: [optPlayLim][41]i32
+pScar: [optPlayLim][41]i32
+pOldScar: [optPlayLim][41]i32
 // heirarchy
-limbPrecede: [41]int
-limbSource: [41]int
+limbPrecede: [41]i32
+limbSource: [41]i32
 
 /////////////////////////////////////////////////////////
 //--------------------- CHARACTERS ----------------------
 /////////////////////////////////////////////////////////
-no_chars: int
-no_costumes := 8
-no_models := 5
-no_hairstyles := 31
-no_specs := 4
+no_chars: i32
+no_costumes: i32 = 8
+no_models: i32 = 5
+no_hairstyles: i32 = 31
+no_specs: i32 = 4
 // appearance
-charModel: [optCharLim + 1]int
+charModel: [optCharLim + 1]i32
 charHeight: [optCharLim + 1]f32
-charSpecs: [optCharLim + 1]int
-charAccessory: [optCharLim + 1]int // 1-6=gangs, 7=warden hat
-charHairStyle: [optCharLim + 1]int
-charHair: [optCharLim + 1]int
-charFace: [optCharLim + 1]int
-charCostume: [optCharLim + 1]int // 0=bare-chested, 1=tight vest, 2=baggy vest, 3=tight t-shirt, 4=baggy t-shirt, 5=tight short sleeve, 6=baggy short sleeve, 7=tight long sleeve, 8=baggy long sleeve
-charScar: [optCharLim + 1][41]bb.EntityHandle
+charSpecs: [optCharLim + 1]i32
+charAccessory: [optCharLim + 1]i32 // 1-6=gangs, 7=warden hat
+charHairStyle: [optCharLim + 1]i32
+charHair: [optCharLim + 1]i32
+charFace: [optCharLim + 1]i32
+charCostume: [optCharLim + 1]i32 // 0=bare-chested, 1=tight vest, 2=baggy vest, 3=tight t-shirt, 4=baggy t-shirt, 5=tight short sleeve, 6=baggy short sleeve, 7=tight long sleeve, 8=baggy long sleeve
+charScar: [optCharLim + 1][41]i32
 // attributes
 charHealth: [optCharLim + 1]f32
-charHP: [optCharLim + 1]int
-charStrength: [optCharLim + 1]int
-charAgility: [optCharLim + 1]int
-charHappiness: [optCharLim + 1]int
-charBreakdown: [optCharLim + 1]int
-charIntelligence: [optCharLim + 1]int
-charReputation: [optCharLim + 1]int
-charOldStrength: [optCharLim + 1]int
-charOldAgility: [optCharLim + 1]int
-charOldIntelligence: [optCharLim + 1]int
-charOldReputation: [optCharLim + 1]int
-charExperience: [optCharLim + 1]int
+charHP: [optCharLim + 1]i32
+charStrength: [optCharLim + 1]i32
+charAgility: [optCharLim + 1]i32
+charHappiness: [optCharLim + 1]i32
+charBreakdown: [optCharLim + 1]i32
+charIntelligence: [optCharLim + 1]i32
+charReputation: [optCharLim + 1]i32
+charOldStrength: [optCharLim + 1]i32
+charOldAgility: [optCharLim + 1]i32
+charOldIntelligence: [optCharLim + 1]i32
+charOldReputation: [optCharLim + 1]i32
+charExperience: [optCharLim + 1]i32
 // status
-charPlayer: [optCharLim + 1]bool
+charPlayer: [optCharLim + 1]i32
 charName: [optCharLim + 1]string
 charPhoto: [optCharLim + 1]string
-charSnapped: [optCharLim + 1]bool
-charRole: [optCharLim + 1]int // 0=prisoner, 1=warden
-charSentence: [optCharLim + 1]int
+charSnapped: [optCharLim + 1]i32
+charRole: [optCharLim + 1]i32 // 0=prisoner, 1=warden
+charSentence: [optCharLim + 1]i32
 charCrime: [optCharLim + 1]string
-charLocation: [optCharLim + 1]int // 0=dead, 1=north block, 2=yard, 3=east block, 4=study, 5=south block, 6=hospital, 7=west block, 8=kitchen, 9=hall, 10=workshop, 11=toilet
-charBlock: [optCharLim + 1]int // 1=north, 2=east, 3=south, 4=west
-charCell: [optCharLim + 1]int
-charGang: [optCharLim + 1]int
-charGangHistory: [optCharLim + 1][7]int
-charRelation: [optCharLim + 1][optCharLim + 1]int // 0=none, -1=enemy, 1=friend
-charAngerTim: [optCharLim + 1][optCharLim + 1]int
-charAttacker: [optCharLim + 1]int
-charWitness: [optCharLim + 1]int
-charFollowTim: [optCharLim + 1]int
-charBribeTim: [optCharLim + 1]int
+charLocation: [optCharLim + 1]i32 // 0=dead, 1=north block, 2=yard, 3=east block, 4=study, 5=south block, 6=hospital, 7=west block, 8=kitchen, 9=hall, 10=workshop, 11=toilet
+charBlock: [optCharLim + 1]i32 // 1=north, 2=east, 3=south, 4=west
+charCell: [optCharLim + 1]i32
+charGang: [optCharLim + 1]i32
+charGangHistory: [optCharLim + 1][7]i32
+charRelation: [optCharLim + 1][optCharLim + 1]i32 // 0=none, -1=enemy, 1=friend
+charAngerTim: [optCharLim + 1][optCharLim + 1]i32
+charAttacker: [optCharLim + 1]i32
+charWitness: [optCharLim + 1]i32
+charFollowTim: [optCharLim + 1]i32
+charBribeTim: [optCharLim + 1]i32
 charX: [optCharLim + 1]f32
 charY: [optCharLim + 1]f32
 charZ: [optCharLim + 1]f32
 charA: [optCharLim + 1]f32
-charInjured: [optCharLim + 1]bool
-charWeapon: [optCharLim + 1]int
-charWeapHistory: [optCharLim + 1][31]int
-charPromo: [optCharLim + 1][optCharLim + 1]int
-charPromoRef: [optCharLim + 1]int
+charInjured: [optCharLim + 1]i32
+charWeapon: [optCharLim + 1]i32
+charWeapHistory: [optCharLim + 1][31]i32
+charPromo: [optCharLim + 1][optCharLim + 1]i32
+charPromoRef: [optCharLim + 1]i32
 
 /////////////////////////////////////////////////////////
 //--------------------- GRAPHICS ------------------------
 /////////////////////////////////////////////////////////
 // Images
 // Variables
-font: [11]bb.FontHandle
-fontTest: [11]bb.FontHandle
-fontNumber: bb.FontHandle
-fontComputer: bb.FontHandle
-fontMoney: bb.FontHandle
-fontClock: bb.FontHandle
-gLogo: [4]bb.ImageHandle
-gMenu: [11]bb.ImageHandle
-gTile: bb.ImageHandle
-gMDickie: bb.ImageHandle
-gHealth: bb.ImageHandle
-gHappiness: bb.ImageHandle
-gMoney: bb.ImageHandle
-gPhoto: bb.ImageHandle
-gMap: bb.ImageHandle
-gMarker: bb.ImageHandle
+font: [11]i32
+fontTest: [11]i32
+fontNumber: i32
+fontComputer: i32
+fontMoney: i32
+fontClock: i32
+gLogo: [4]i32
+gMenu: [11]i32
+gTile: i32
+gMDickie: i32
+gHealth: i32
+gHappiness: i32
+gMoney: i32
+gPhoto: i32
+gMap: i32
+gMarker: i32
 
 /////////////////////////////////////////////////////////
 //--------------------- TEXTURES ------------------------
 /////////////////////////////////////////////////////////
-no_hairs: int
-no_faces: int
-no_bodies: int
-no_arms: int
-no_legs: int
+no_hairs: i32
+no_faces: i32
+no_bodies: i32
+no_arms: i32
+no_legs: i32
 
 // World variables
-tSign: [21]bb.TextureHandle
-tBlock: [5]bb.TextureHandle
-tCell: [21]bb.TextureHandle
-tFence: bb.TextureHandle
-tNet: bb.TextureHandle
-tShower: bb.TextureHandle
-tCrowd: bb.AnimTextureHandle
-tScreen: [11]bb.TextureHandle
-tTray: [11]bb.TextureHandle
+tSign: [21]i32
+tBlock: [5]i32
+tCell: [21]i32
+tFence: i32
+tNet: i32
+tShower: i32
+tCrowd: i32
+tScreen: [11]i32
+tTray: [11]i32
 // Weapon variables
-tMachine: bb.TextureHandle
-tPistol: bb.TextureHandle
+tMachine: i32
+tPistol: i32
 // Character variables
-tShaved: bb.TextureHandle
-tEars: bb.TextureHandle
-tSeverEars: bb.TextureHandle
-tEyes: [4]bb.TextureHandle
-tMouth: [6]bb.TextureHandle
-tSpecs: [4]bb.TextureHandle
-tHair: [201]bb.TextureHandle
-tFace: [101]bb.TextureHandle
-tBody: [101]bb.TextureHandle
-tArm: [101]bb.TextureHandle
-tLegs: [101]bb.TextureHandle
-tBodyShade: [11]bb.TextureHandle
-tArmShade: [11]bb.TextureHandle
-tFaceScar: [6]bb.TextureHandle
-tBodyScar: [6]bb.TextureHandle
-tArmScar: [6]bb.TextureHandle
-tLegScar: [6]bb.TextureHandle
-tSeverBody: [4]bb.TextureHandle
-tSeverArm: [4]bb.TextureHandle
-tSeverLegs: [4]bb.TextureHandle
-tTattooBody: [7]bb.TextureHandle
-tTattooVest: [7]bb.TextureHandle
-tTattooArm: [7]bb.TextureHandle
-tTattooTee: [7]bb.TextureHandle
-tTattooSleeve: [7]bb.TextureHandle
+tShaved: i32
+tEars: i32
+tSeverEars: i32
+tEyes: [4]i32
+tMouth: [6]i32
+tSpecs: [4]i32
+tHair: [201]i32
+tFace: [101]i32
+tBody: [101]i32
+tArm: [101]i32
+tLegs: [101]i32
+tBodyShade: [11]i32
+tArmShade: [11]i32
+tFaceScar: [6]i32
+tBodyScar: [6]i32
+tArmScar: [6]i32
+tLegScar: [6]i32
+tSeverBody: [4]i32
+tSeverArm: [4]i32
+tSeverLegs: [4]i32
+tTattooBody: [7]i32
+tTattooVest: [7]i32
+tTattooArm: [7]i32
+tTattooTee: [7]i32
+tTattooSleeve: [7]i32
 
 /////////////////////////////////////////////////////////
 //--------------------- WEAPONS -------------------------
 /////////////////////////////////////////////////////////
-no_weaps := 100
+no_weaps: i32 = 100
 weapList :: 25
 // state
-weap: [optWeapLim + 1]bb.EntityHandle
-weapType: [optWeapLim + 1]int
-weapCarrier: [optWeapLim + 1]int
-weapThrower: [optWeapLim + 1]int
-weapSting: [optWeapLim + 1][optPlayLim + 1]int
-weapClip: [optWeapLim + 1]int
-weapAmmo: [optWeapLim + 1]int
-weapScar: [optWeapLim + 1]bb.EntityHandle
-weapOldScar: [optWeapLim + 1]bb.EntityHandle
-weapState: [optWeapLim + 1]int
-weapLocation: [optWeapLim + 1]int
+weap: [optWeapLim + 1]i32
+weapType: [optWeapLim + 1]i32
+weapCarrier: [optWeapLim + 1]i32
+weapThrower: [optWeapLim + 1]i32
+weapSting: [optWeapLim + 1][optPlayLim + 1]i32
+weapClip: [optWeapLim + 1]i32
+weapAmmo: [optWeapLim + 1]i32
+weapScar: [optWeapLim + 1]i32
+weapOldScar: [optWeapLim + 1]i32
+weapState: [optWeapLim + 1]i32
+weapLocation: [optWeapLim + 1]i32
 // physics
-weapWall: [optWeapLim + 1]bool
-weapGround: [optWeapLim + 1]bool
+weapWall: [optWeapLim + 1]i32
+weapGround: [optWeapLim + 1]i32
 weapX: [optWeapLim + 1]f32
 weapY: [optWeapLim + 1]f32
 weapZ: [optWeapLim + 1]f32
@@ -479,53 +479,53 @@ weapA: [optWeapLim + 1]f32
 weapFlight: [optWeapLim + 1]f32
 weapFlightA: [optWeapLim + 1]f32
 weapGravity: [optWeapLim + 1]f32
-weapBounce: [optWeapLim + 1]int
+weapBounce: [optWeapLim + 1]i32
 // type
 weapName: [weapList + 1]string
 weapFile: [weapList + 1]string
-weapSound: [weapList + 1]bb.SoundHandle
-weapTex: [weapList + 1]bb.TextureHandle
+weapSound: [weapList + 1]i32
+weapTex: [weapList + 1]i32
 weapSize: [weapList + 1]f32
 weapWeight: [weapList + 1]f32
-weapValue: [weapList + 1]int
+weapValue: [weapList + 1]i32
 weapRange: [weapList + 1]f32
-weapDamage: [weapList + 1]int
+weapDamage: [weapList + 1]i32
 weapShiny: [weapList + 1]f32
-weapStyle: [weapList + 1]int // 0=hand, 1=sword, 2=shield, 3=pistol, 4=rifle, 5=???, 6=TNT, 7=stab
-weapHabitat: [weapList + 1]int
-weapCreate: [weapList + 1]int
+weapStyle: [weapList + 1]i32 // 0=hand, 1=sword, 2=shield, 3=pistol, 4=rifle, 5=???, 6=TNT, 7=stab
+weapHabitat: [weapList + 1]i32
+weapCreate: [weapList + 1]i32
 // creation kits
-kit: [7]bb.EntityHandle
-kitType: [7]int
-kitState: [7]int
+kit: [7]i32
+kitType: [7]i32
+kitState: [7]i32
 
 /////////////////////////////////////////////////////////
 //----------------------- WORLD -------------------------
 /////////////////////////////////////////////////////////
-world: int
-no_chairs, no_beds, no_doors: int
-wScreen, wOldScreen: int
+world: i32
+no_chairs, no_beds, no_doors: i32
+wScreen, wOldScreen: i32
 // Food trays
-trayState: [51]int
-trayOldState: [51]int
+trayState: [51]i32
+trayOldState: [51]i32
 // Camera
-camListener, dummy: int
-camType, camTim: int
-cam, camPivot: int
-camFoc, camOldFoc: int
+camListener, dummy: i32
+camType, camTim: i32
+cam, camPivot: i32
+camFoc, camOldFoc: i32
 camX, camY, camZ: f32 = 0, 75, 0
 camTX, camTY, camTZ: f32
 camPivX, camPivY, camPivZ: f32 = 0, 100, 0
 camPivTX, camPivTY, camPivTZ: f32
-camRectify: int
+camRectify: i32
 camMouseX, camMouseY: f32
 // Smooth co-ordination
 speedX, speedY, speedZ: f32
 // Camera presets
-camShortcut := [11]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0}
+camShortcut := [11]i32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0}
 // Lighting
-light: [11]int
-no_lights: int
+light: [11]i32
+no_lights: i32
 lightR, lightG, lightB: f32 = 100, 100, 100
 lightTR, lightTG, lightTB: f32
 ambR, ambG, ambB: f32 = 100, 100, 100
@@ -549,7 +549,7 @@ doorZ2: [16][11]f32
 //////////////////////////////////////////////////////////
 //--------------------- CELLS ----------------------------
 //////////////////////////////////////////////////////////
-cellLocked: [16][21]int
+cellLocked: [16][21]i32
 cellX1: [21]f32
 cellX2: [21]f32
 cellZ1: [21]f32
@@ -562,13 +562,13 @@ cellDoorZ: [21]f32
 //////////////////////////////////////////////////////////
 //--------------- PARTICLE EFFECTS -----------------------
 //////////////////////////////////////////////////////////
-fader: int
+fader: i32
 fadeAlpha: f32
 fadeTraget: f32
 // Particles
-no_particles := 500
-part: [1001]int
-partType: [1001]int
+no_particles: i32 = 500
+part: [1001]i32
+partType: [1001]i32
 partX: [1001]f32
 partY: [1001]f32
 partZ: [1001]f32
@@ -578,42 +578,42 @@ partFlight: [1001]f32
 partSize: [1001]f32
 partAlpha: [1001]f32
 partFade: [1001]f32
-partTim: [1001]int
-partState: [1001]int
+partTim: [1001]i32
+partState: [1001]i32
 // Explotions
 no_explodes :: 20
-exType: [no_explodes + 1]int
+exType: [no_explodes + 1]i32
 exX: [no_explodes + 1]f32
 exY: [no_explodes + 1]f32
 exZ: [no_explodes + 1]f32
 exTim: [no_explodes + 1]f32
 exSource: [no_explodes + 1]f32
-exHurt: [no_explodes + 1][optPlayLim + 1]int
+exHurt: [no_explodes + 1][optPlayLim + 1]i32
 // Pools
 // This variable is assigned again in Gameplay.bb (probably a bug), 
 // so I have to manually set the arrays below to a length of 51
-no_pools := 50
-pool: [51]int
-poolType: [51]int
+no_pools: i32 = 50
+pool: [51]i32
+poolType: [51]i32
 poolX: [51]f32
 poolY: [51]f32
 poolZ: [51]f32
 poolA: [51]f32
 poolSize: [51]f32
 poolAlpha: [51]f32
-poolState: [51]int
+poolState: [51]i32
 // Bullets
 no_bullets :: 40
-bullet: [no_bullets + 1]int
+bullet: [no_bullets + 1]i32
 bulletX: [no_bullets + 1]f32
 bulletY: [no_bullets + 1]f32
 bulletZ: [no_bullets + 1]f32
 bulletXA: [no_bullets + 1]f32
 bulletYA: [no_bullets + 1]f32
 bulletZA: [no_bullets + 1]f32
-bulletState: [no_bullets + 1]int
-bulletTim: [no_bullets + 1]int
-bulletShooter: [no_bullets + 1]int
+bulletState: [no_bullets + 1]i32
+bulletTim: [no_bullets + 1]i32
+bulletShooter: [no_bullets + 1]i32
 
 
 init_values :: proc() {
@@ -633,7 +633,7 @@ init_values :: proc() {
 	sJury[1] = bb.LoadSound("Sound/Cheer.wav")
 	sJury[2] = bb.LoadSound("Sound/Jeer.wav")
 	// world
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		sDoor[count] = bb.Load3DSound(fmt.tprintf("Sound/World/Door0%d.wav", count))
 	}
 	sBuzzer = bb.Load3DSound("Sound/World/Buzzer.wav")
@@ -645,10 +645,10 @@ init_values :: proc() {
 	// movements
 	sFall = bb.Load3DSound("Sound/Movement/Fall.wav")
 	sThud = bb.Load3DSound("Sound/Movement/Thud.wav")
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		sShuffle[count] = bb.Load3DSound(fmt.tprintf("Sound/Movement/Shuffle0%d.wav", count))
 	}
-	for count in 1..=4 {
+	for count in i32(1)..=4 {
 		sStep[count] = bb.Load3DSound(fmt.tprintf("Sound/Movement/Step0%d.wav", count))
 	}
 	// pain
@@ -656,10 +656,10 @@ init_values :: proc() {
 	sChoke = bb.Load3DSound("Sound/Pain/Choke.wav")
 	sSnore = bb.Load3DSound("Sound/Pain/Snoring.wav")
 	sBreakdown = bb.Load3DSound("Sound/Pain/Breakdown.wav")
-	for count in 1..=8 {
+	for count in i32(1)..=8 {
 		sPain[count] = bb.Load3DSound(fmt.tprintf("Sound/Pain/Pain0%d.wav", count))
 	}
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		sAgony[count] = bb.Load3DSound(fmt.tprintf("Sound/Pain/Agony0%d.wav", count))
 	}
 	// impacts
@@ -668,7 +668,7 @@ init_values :: proc() {
 	sStab = bb.Load3DSound("Sound/Props/Stab.wav")
 	sEat = bb.Load3DSound("Sound/Props/Eat.wav")
 	sDrink = bb.Load3DSound("Sound/Props/Drink.wav")
-	for count in 1..=6 {
+	for count in i32(1)..=6 {
 		sImpact[count] = bb.Load3DSound(fmt.tprintf("Sound/Movement/Impact0%d.wav", count))
 	}
 	// weapons
@@ -687,10 +687,10 @@ init_values :: proc() {
 	sBottle = bb.Load3DSound("Sound/Props/Bottle.wav")
 	sSplash = bb.Load3DSound("Sound/Props/Splash.wav")
 	// technology
-	for count in 1..=2 {
+	for count in i32(1)..=2 {
 		sShot[count] = bb.Load3DSound(fmt.tprintf("Sound/Props/Shot0%d.wav", count))
 	}
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		sRicochet[count] = bb.Load3DSound(fmt.tprintf("Sound/Props/Ricochet0%d.wav", count))
 	}
 	sReload = bb.Load3DSound("Sound/Props/Reload.wav")
@@ -744,7 +744,7 @@ init_values :: proc() {
 	texture_loading() // Turned into a function for a cleaner scope
 
 	// Blocks
-	for b in 1..=8 {
+	for b in i32(1)..=8 {
 		if b == 1 || b == 3 || b == 7 {
 			d := 1;
 			doorA[b][d] = 180
@@ -911,7 +911,7 @@ LoadImages :: proc() {
 	bb.MaskImage(gTile, 255, 0, 255)
 
 	// logos
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		gLogo[count] = bb.LoadImage(fmt.tprintf("Graphics/Logo0%d.png", count))
 		bb.MaskImage(gLogo[count], 255, 0, 255)
 	}
@@ -919,7 +919,7 @@ LoadImages :: proc() {
 	bb.MaskImage(gMDickie, 255, 0, 255)
 
 	// menu boxes
-	for count in 1..=4 {
+	for count in i32(1)..=4 {
 		gMenu[count] = bb.LoadImage(fmt.tprintf("Graphics/Menu0%d.png", count))
 		bb.MaskImage(gMenu[count], 255, 0, 255)
 	}
@@ -939,7 +939,7 @@ LoadImages :: proc() {
 	gPhoto = bb.LoadImage("Graphics/Photo.png")
 	bb.MaskImage(gPhoto, 255, 0, 255)
 	// game previews
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		gamPhoto[count] = bb.LoadImage(fmt.tprintf("Data/Slot0%d/Photos/Game.bmp", count))
 		if gamPhoto[count] > 0 {
 			bb.MaskImage(gamPhoto[count], 255, 0, 255)
@@ -948,8 +948,9 @@ LoadImages :: proc() {
 }
 
 
+@(private="file")
 texture_loading :: proc() {
-	count_texture_files :: proc(path, all_caps_prefix: string, counter: ^int) {
+	count_texture_files :: proc(path, all_caps_prefix: string, counter: ^i32) {
 		folder, err := os.open(path, os.O_RDONLY, 0o600); assert(err==nil)
 		defer os.close(folder)
 		files: []os.File_Info
@@ -976,21 +977,21 @@ LoadTextures :: proc() {
 	// Loading process
 	Loader("Please Wait", "Loading Numbers")
 	// signs
-	for count in 1..=11 {
+	for count in i32(1)..=11 {
 		tSign[count - 1] = bb.LoadTexture(fmt.tprintf("World/Signs/Sign%s.png", Dig(count, 10)))
 	}
-	for count in 1..=4 {
+	for count in i32(1)..=4 {
 		tBlock[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Block%s.png", Dig(count, 10)))
 	}
-	for count in 1..=20 {
+	for count in i32(1)..=20 {
 		tCell[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Cell%s.png", Dig(count, 10)))
 	}
 	// video screens
-	for count in 0..=10 {
+	for count in i32(0)..=10 {
 		tScreen[count] = bb.LoadTexture(fmt.tprintf("World/Screens/Screen%s.JPG", Dig(count, 10)))
 	}
 	// food trays
-	for count in 0..=7 {
+	for count in i32(0)..=7 {
 		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.JPG", Dig(count, 10)))
 	}
 	// world
@@ -1004,71 +1005,71 @@ LoadTextures :: proc() {
 	// facial expressions
 	Loader("Please Wait", "Loading Expressions")
 	tEars = bb.LoadTexture("Characters/Expressions/Ears.JPG")
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		tEyes[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Eyes0%d.JPG", count))
 	}
-	for count in 0..=5 {
+	for count in i32(0)..=5 {
 		tMouth[count] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Mouth0%d.JPG", count))
 	}
 	// costume variations
 	tShaved = bb.LoadTexture("Characters/Hair/Shaved.JPG")
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		tSpecs[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.JPG", Dig(count, 10)))
 	}
-	for count in 1..=no_hairs {
+	for count in i32(1)..=no_hairs {
 		tHair[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10)), bb.TextureFlag.MASKED)
 	}
-	for count in 1..=no_faces {
+	for count in i32(1)..=no_faces {
 		Loader("Please Wait", fmt.tprintf("Loading Face %s of %s", Dig(count, 10), no_faces))
 		tFace[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Faces/Face%s.JPG", Dig(count, 10)))
 	}
-	for count in 1..=no_bodies {
+	for count in i32(1)..=no_bodies {
 		Loader("Please Wait", fmt.tprintf("Loading Body %s of %s", Dig(count, 10), no_bodies))
 		tBody[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Bodies/Body%s.JPG", Dig(count, 10)))
 	}
-	for count in 1..=no_arms {
+	for count in i32(1)..=no_arms {
 		Loader("Please Wait", fmt.tprintf("Loading Arm %s of %s", Dig(count, 10), no_arms))
 		tArm[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Arms/Arm%s.JPG", Dig(count, 10)))
 	}
-	for count in 1..=no_legs {
+	for count in i32(1)..=no_legs {
 		Loader("Please Wait", fmt.tprintf("Loading Legs %s of %s", Dig(count, 10), no_legs))
 		tLegs[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Legs/Legs%s.JPG", Dig(count, 10)))
 	}
 	// racial shades
 	Loader("Please Wait", "Loading Shades")
-	for count in 1..=4 {
+	for count in i32(1)..=4 {
 		tBodyShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Body%s.png", Dig(count, 10)))
 	}
-	for count in 1..=8 {
+	for count in i32(1)..=8 {
 		tArmShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Arm%s.png", Dig(count, 10)))
 	}
 	// scarring
 	Loader("Please Wait", "Loading Scars")
-	for count in 0..=5 {
+	for count in i32(0)..=5 {
 		tFaceScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Face%s.JPG", Dig(count, 10)))
 	}
-	for count in 0..=4 {
+	for count in i32(0)..=4 {
 		tBodyScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Body%s.JPG", Dig(count, 10)))
 	}
-	for count in 0..=4 {
+	for count in i32(0)..=4 {
 		tArmScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Arm%s.JPG", Dig(count, 10)))
 	}
-	for count in 0..=4 {
+	for count in i32(0)..=4 {
 		tLegScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Legs%s.JPG", Dig(count, 10)))
 	}
 	// wounds
 	tSeverEars = bb.LoadTexture("Characters/Scarring/Wounds/Ears.JPG")
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		tSeverBody[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Body%s.JPG", Dig(count, 10)))
 	}
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		tSeverArm[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Arm%s.JPG", Dig(count, 10)))
 	}
-	for count in 1..=3 {
+	for count in i32(1)..=3 {
 		tSeverLegs[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Legs%s.JPG", Dig(count, 10)))
 	}
 	// tattoos
-	for count in 1..=6 {
+	for count in i32(1)..=6 {
 		tTattooBody[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Body%s.JPG", Dig(count, 10)))
 		tTattooVest[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Vest%s.JPG", Dig(count, 10)))
 		tTattooArm[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Arm%s.JPG", Dig(count, 10)))

@@ -78,7 +78,7 @@ load_sound :: proc(filename: string, use_3d: bool) -> SoundHandle {
 
 is_sound_handle_valid :: proc(handle: SoundHandle) -> bool {
 	if handle == -1 do return false
-	if handle >= len(loaded_sounds) do return false
+	if cast(int)handle >= len(loaded_sounds) do return false
 	if loaded_sounds[handle] == nil do return false
 	return true
 }

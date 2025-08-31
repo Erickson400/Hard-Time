@@ -130,7 +130,7 @@ mask_image :: proc(image: ImageHandle, r: u8, g: u8, b: u8, loc := #caller_locat
 
 is_image_handle_valid :: proc(handle: ImageHandle) -> bool {
 	if handle == -1 do return false
-	if handle >= len(loaded_images) do return false
+	if cast(int)handle >= len(loaded_images) do return false
 	if loaded_images[handle] == nil do return false
 	return true
 }
@@ -181,7 +181,7 @@ load_texture :: proc(filename: string, flags := TextureFlag.COLOR) -> TextureHan
 	return TextureHandle(slot_used)
 }
 
-load_anim_texture :: proc(filenames: string, flags: TextureFlag, frame_width, frame_height: i32, first_frame, frame_count: int) -> AnimTextureHandle {
+load_anim_texture :: proc(filenames: string, flags: TextureFlag, frame_width, frame_height, first_frame, frame_count: i32) -> AnimTextureHandle {
 	cstring_filenames := strings.clone_to_cstring(filenames)
 	defer delete(cstring_filenames)
 	sprite_sheet := ray.LoadImage(cstring_filenames)

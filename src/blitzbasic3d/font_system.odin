@@ -83,7 +83,7 @@ load_font :: proc(filename: string, height: i32, bold: bool, italic: bool, under
 
 is_font_handle_valid :: proc(handle: FontHandle) -> bool {
 	if handle == -1 do return false
-	if handle >= len(loaded_fonts) do return false
+	if cast(int)handle >= len(loaded_fonts) do return false
 	if loaded_fonts[handle] == nil do return false
 	return true
 }

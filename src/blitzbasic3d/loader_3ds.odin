@@ -1,3 +1,4 @@
+#+ignore
 package blitzbasic3d
 
 import ray "vendor:raylib"

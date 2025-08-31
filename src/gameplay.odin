@@ -1,3 +1,4 @@
+package main
 //-------------------------------------------------------------------------
 ///////////////////////////////// HARD TIME ///////////////////////////////
 //-------------------------------------------------------------------------
@@ -5,8 +6,6 @@
 //~~~~~~~~~~ This program may not be re-released under any other ~~~~~~~~~~
 //~~~~~~~ identity or sold commercially without express permission. ~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-package main
-
 
 // import bb "blitzbasic3d"
 import ray "vendor:raylib"

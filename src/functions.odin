@@ -3,7 +3,7 @@ package main
 import "core:fmt"
 
 
-Dig :: proc(value, degree: int) -> string {
+Dig :: proc(value, degree: i32) -> string {
 	if value == 0 && degree == 10 do return "00"
 	if value == 0 && degree == 100 do return "000"
 	if value < degree {

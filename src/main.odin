@@ -14,6 +14,7 @@ logger: log.Logger
 
 
 main :: proc() {
+	
 	when LEAK_CHECKING {
 		track: mem.Tracking_Allocator
 		mem.tracking_allocator_init(&track, context.allocator)
@@ -28,7 +29,6 @@ main :: proc() {
 			fmt.println("Total leaks: ", total)
 		}
 	}
-
 	err: os.Error
 	file_for_loging, err = os.open("logs.txt", os.O_CREATE | os.O_WRONLY | os.O_TRUNC, 0o600)
 	assert(err==nil)
