@@ -205,9 +205,221 @@ LoadProgress :: proc() {
 //------------------------------------------------------------------------
 ////////////////////////////// CHARACTERS ////////////////////////////////
 //------------------------------------------------------------------------
+SaveChars :: proc() {
+    for char in i32(1)..=no_chars {
+        filepath := fmt.aprintf("%sslot0%d/Character%s.dat", DATA_FOLDER, slot, Dig(char, 100))
+        defer delete(filepath)
+        file := bb.WriteFile(filepath)
+        // Appearance
+        bb.WriteString(file, charName[char])
+        bb.WriteInt(file, charSnapped[char])
+        bb.WriteInt(file, charModel[char])
+        bb.WriteInt(file, charHeight[char])
+        bb.WriteInt(file, charSpecs[char])
+        bb.WriteInt(file, charAccessory[char])
+        bb.WriteInt(file, charHairStyle[char])
+        bb.WriteInt(file, charHair[char])
+        bb.WriteInt(file, charFace[char])
+        bb.WriteInt(file, charCostume[char])
+        for count in i32(1)..=40 {
+            bb.WriteInt(file, charScar[char][count])
+        }
+        // attributes
+        bb.WriteInt(file, charHealth[char])
+        bb.WriteInt(file, charHP[char])
+        bb.WriteInt(file, charInjured[char])
+        bb.WriteInt(file, charStrength[char])
+        bb.WriteInt(file, charAgility[char])
+        bb.WriteInt(file, charHappiness[char])
+        bb.WriteInt(file, charBreakdown[char])
+        bb.WriteInt(file, charIntelligence[char])
+        bb.WriteInt(file, charReputation[char])
+        bb.WriteInt(file, charWeapon[char])
+        for count in i32(1)..=30 {
+            bb.WriteInt(file, charWeapHistory[char][count])
+        }
+        // Status
+        bb.WriteInt(file, charRole[char])
+        bb.WriteInt(file, charSentence[char])
+        bb.WriteInt(file, charCrime[char])
+        bb.WriteInt(file, charLocation[char])
+        bb.WriteInt(file, charBlock[char])
+        bb.WriteInt(file, charCell[char])
+        bb.WriteInt(file, charExperience[char])
+        bb.WriteFloat(file, charX[char])
+        bb.WriteFloat(file, charY[char])
+        bb.WriteFloat(file, charZ[char])
+        bb.WriteFloat(file, charA[char])
+        // Relationships
+        for gang in i32(1)..=6 {
+            bb.WriteInt(file, charGangHistory[char][gang])
+        }
+        bb.WriteInt(file, charAttacker[char])
+        bb.WriteInt(file, charWitness[char])
+        bb.WriteInt(file, charPromoRef[char])
+        bb.WriteInt(file, charFollowTim[char])
+        bb.WriteInt(file, charBribeTim[char])
+        for v in i32(1)..=no_chars {
+            bb.WriteInt(file, charRelation[char][v])
+            bb.WriteInt(file, charAngerTim[char][v])
+            bb.WriteInt(file, charPromo[char][v])
+        }
+        bb.CloseFile(file)
+    }
+}
 
 
+LoadChars :: proc() {
+    for char in i32(1)..=no_chars {
+        filepath := fmt.aprintf("%sslot0%d/Character%s.dat", DATA_FOLDER, slot, Dig(char, 100))
+        defer delete(filepath)
+        file := bb.ReadFile(filepath)
+        // Appearance
+        charName[char] = bb.ReadString(file)
+        charSnapped[char] = bb.ReadInt(file)
+        charModel[char] = bb.ReadInt(file)
+        charHeight[char] = bb.ReadInt(file)
+        charSpecs[char] = bb.ReadInt(file)
+        charAccessory[char] = bb.ReadInt(file)
+        charHairStyle[char] = bb.ReadInt(file)
+        charHair[char] = bb.ReadInt(file)
+        charFace[char] = bb.ReadInt(file)
+        charCostume[char] = bb.ReadInt(file)
+        for count in i32(1)..=40 {
+            charScar[char][count] = bb.ReadInt(file)
+        }
+        // attributes
+        charHealth[char] = bb.ReadInt(file)
+        charHP[char] = bb.ReadInt(file)
+        charInjured[char] = bb.ReadInt(file)
+        charStrength[char] = bb.ReadInt(file)
+        charAgility[char] = bb.ReadInt(file)
+        charHappiness[char] = bb.ReadInt(file)
+        charBreakdown[char] = bb.ReadInt(file)
+        charIntelligence[char] = bb.ReadInt(file)
+        charReputation[char] = bb.ReadInt(file)
+        charWeapon[char] = bb.ReadInt(file)
+        for count in i32(1)..=30 {
+            charWeapHistory[char][count] = bb.ReadInt(file)
+        }
+        // Status
+        charRole[char] = bb.ReadInt(file)
+        charSentence[char] = bb.ReadInt(file)
+        charCrime[char] = bb.ReadInt(file)
+        charLocation[char] = bb.ReadInt(file)
+        charBlock[char] = bb.ReadInt(file)
+        charCell[char] = bb.ReadInt(file)
+        charExperience[char] = bb.ReadInt(file)
+        charX[char] = bb.ReadFloat(file)
+        charY[char] = bb.ReadFloat(file)
+        charZ[char] = bb.ReadFloat(file)
+        charA[char] = bb.ReadFloat(file)
+        // Relationships
+        for gang in i32(1)..=6 {
+            charGangHistory[char][gang] = bb.ReadInt(file)
+        }
+        charAttacker[char] = bb.ReadInt(file)
+        charWitness[char] = bb.ReadInt(file)
+        charPromoRef[char] = bb.ReadInt(file)
+        charFollowTim[char] = bb.ReadInt(file)
+        charBribeTim[char] = bb.ReadInt(file)
+        for v in i32(1)..=no_chars {
+            charRelation[char][v] = bb.ReadInt(file)
+            charAngerTim[char][v] = bb.ReadInt(file)
+            charPromo[char][v] = bb.ReadInt(file)
+        }
+        bb.CloseFile(file)
+    }
+}
 
+
+LoadPhotos :: proc() {
+    Loader("Please Wait","Loading Photos")
+    for char in i32(1)..=no_chars {
+        charPhoto[char] = 0
+        if charSnapped[char] > 0 {
+            path := fmt.aprintf("%sSlot0%s/Photo/Photo%s.bmp", DATA_FOLDER, slot, Dig(char, 100))
+            defer delete(path)
+            charSnapped[char] = bb.LoadImage(path)
+            if charPhoto[char] > 0 do bb.MaskImage(charPhoto[char], 255, 0, 255)
+            if charPhoto[char] == 0 do charSnapped[char] = 0
+        }
+    }
+}
+
+
+SavePhotos :: proc() {
+    if charHealth[gamChar[slot]] > 0 do Loader("Please Wait","Saving Photos")
+    for char in i32(1)..=no_chars {
+        path := fmt.aprintf("%sSlot0%s/Photo/Photo%s.bmp", DATA_FOLDER, slot, Dig(char, 100))
+        defer delete(path)
+        bb.SaveImage(charPhoto[char], path)
+    }
+}
+
+
+//------------------------------------------------------------------------
+//////////////////////////////// WEAPONS /////////////////////////////////
+//------------------------------------------------------------------------
+SaveItems :: proc() {
+    path := fmt.aprintf("%sSlot0%s/Items.dat", DATA_FOLDER, slot)
+    defer delete(path)
+    file := bb.WriteFile(path)
+    // Weapons
+    bb.WriteInt(file, no_weaps)
+    for cyc in i32(1)..=no_weaps {
+        bb.WriteInt(file, weapType[cyc])
+        bb.WriteInt(file, weapState[cyc])
+        bb.WriteInt(file, weapLocation[cyc])
+        bb.WriteFloat(file, weapX[cyc])
+        bb.WriteFloat(file, weapY[cyc])
+        bb.WriteFloat(file, weapZ[cyc])
+        bb.WriteFloat(file, weapA[cyc])
+        bb.WriteInt(file, weapCarrier[cyc])
+        bb.WriteInt(file, weapClip[cyc])
+        bb.WriteInt(file, weapAmmo[cyc])
+        bb.WriteInt(file, weapScar[cyc])
+    }
+    // kits
+    for count in 1..=6 {
+        bb.WriteInt(file, kitType[count])
+        bb.WriteInt(file, kitState[count])
+    }
+    bb.CloseFile(file)
+}
+
+
+LoadItems :: proc() {
+    path := fmt.aprintf("%sSlot0%s/Items.dat", DATA_FOLDER, slot)
+    defer delete(path)
+    file := bb.ReadFile(path)
+    // Weapons
+    no_weaps = bb.ReadInt(file)
+    for cyc in i32(1)..=no_weaps {
+        weapType[cyc] = bb.ReadInt(file)
+        weapState[cyc] = bb.ReadInt(file)
+        weapLocation[cyc] = bb.ReadInt(file)
+        weapX[cyc] = bb.ReadFloat(file)
+        weapY[cyc] = bb.ReadFloat(file)
+        weapZ[cyc] = bb.ReadFloat(file)
+        weapA[cyc] = bb.ReadFloat(file)
+        weapCarrier[cyc] = bb.ReadInt(file)
+        weapClip[cyc] = bb.ReadInt(file)
+        weapAmmo[cyc] = bb.ReadInt(file)
+        weapScar[cyc] = bb.ReadInt(file)
+    }
+    // kits
+    for count in 1..=6 {
+        kitType[count] = bb.ReadInt(file)
+        kitState[count] = bb.ReadInt(file)
+    }
+    bb.CloseFile(file)
+}
+
+
+//////////////////////////////////////////////////////////////////
+//---------------------- RELATED FUNCTIONS -----------------------
+//////////////////////////////////////////////////////////////////
 
 
 

@@ -19,13 +19,13 @@ ImageResource :: struct {
 
 TextureResource :: struct {
 	texture: ray.Texture2D,
-	flags: TextureFlag,
+	flags: i32,
 	path: string,
 }
 
 AnimTextureResource :: struct {
 	textures: [dynamic]ray.Texture2D,
-	flags: TextureFlag,
+	flags: i32,
 }
 
 
@@ -136,7 +136,7 @@ is_image_handle_valid :: proc(handle: ImageHandle) -> bool {
 }
 
 
-load_texture :: proc(filename: string, flags := TextureFlag.COLOR) -> TextureHandle {
+load_texture :: proc(filename: string, flags: i32 = 1) -> TextureHandle {
 	// 1: Color - colour map, what you see is what you get.
 	// 4: Masked - all areas of a texture coloured 0,0,0 will not be drawn to the screen.
 	
@@ -181,7 +181,8 @@ load_texture :: proc(filename: string, flags := TextureFlag.COLOR) -> TextureHan
 	return TextureHandle(slot_used)
 }
 
-load_anim_texture :: proc(filenames: string, flags: TextureFlag, frame_width, frame_height, first_frame, frame_count: i32) -> AnimTextureHandle {
+
+load_anim_texture :: proc(filenames: string, flags: i32, frame_width, frame_height, first_frame, frame_count: i32) -> AnimTextureHandle {
 	cstring_filenames := strings.clone_to_cstring(filenames)
 	defer delete(cstring_filenames)
 	sprite_sheet := ray.LoadImage(cstring_filenames)
@@ -211,5 +212,13 @@ load_anim_texture :: proc(filenames: string, flags: TextureFlag, frame_width, fr
 	append(&loaded_anim_textures, anim_texture)
 
 	return AnimTextureHandle(len(loaded_anim_textures) - 1)
+}
+
+
+save_image :: proc(image_handle: i32, path: string) -> i32 {
+	cpath := fmt.caprint(path)
+	defer delete(cpath)
+	ok := ray.ExportImage(loaded_images[image_handle].image, cpath)
+	return 1 if ok else 0
 }
 

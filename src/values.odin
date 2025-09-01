@@ -327,7 +327,7 @@ no_hairstyles: i32 = 31
 no_specs: i32 = 4
 // appearance
 charModel: [optCharLim + 1]i32
-charHeight: [optCharLim + 1]f32
+charHeight: [optCharLim + 1]i32
 charSpecs: [optCharLim + 1]i32
 charAccessory: [optCharLim + 1]i32 // 1-6=gangs, 7=warden hat
 charHairStyle: [optCharLim + 1]i32
@@ -336,7 +336,7 @@ charFace: [optCharLim + 1]i32
 charCostume: [optCharLim + 1]i32 // 0=bare-chested, 1=tight vest, 2=baggy vest, 3=tight t-shirt, 4=baggy t-shirt, 5=tight short sleeve, 6=baggy short sleeve, 7=tight long sleeve, 8=baggy long sleeve
 charScar: [optCharLim + 1][41]i32
 // attributes
-charHealth: [optCharLim + 1]f32
+charHealth: [optCharLim + 1]i32
 charHP: [optCharLim + 1]i32
 charStrength: [optCharLim + 1]i32
 charAgility: [optCharLim + 1]i32
@@ -352,11 +352,11 @@ charExperience: [optCharLim + 1]i32
 // status
 charPlayer: [optCharLim + 1]i32
 charName: [optCharLim + 1]string
-charPhoto: [optCharLim + 1]string
+charPhoto: [optCharLim + 1]i32
 charSnapped: [optCharLim + 1]i32
 charRole: [optCharLim + 1]i32 // 0=prisoner, 1=warden
 charSentence: [optCharLim + 1]i32
-charCrime: [optCharLim + 1]string
+charCrime: [optCharLim + 1]i32
 charLocation: [optCharLim + 1]i32 // 0=dead, 1=north block, 2=yard, 3=east block, 4=study, 5=south block, 6=hospital, 7=west block, 8=kitchen, 9=hall, 10=workshop, 11=toilet
 charBlock: [optCharLim + 1]i32 // 1=north, 2=east, 3=south, 4=west
 charCell: [optCharLim + 1]i32
@@ -995,13 +995,13 @@ LoadTextures :: proc() {
 		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.JPG", Dig(count, 10)))
 	}
 	// world
-	tFence = bb.LoadTexture("World/Sprites/Fence.png", bb.TextureFlag.MASKED)
-	tNet = bb.LoadTexture("World/Sprites/Net.png", bb.TextureFlag.MASKED)
-	tShower = bb.LoadTexture("World/Sprites/Shower.png", bb.TextureFlag.MASKED)
-	tCrowd = bb.LoadAnimTexture("World/Sprites/Crowd.png", bb.TextureFlag.MASKED, 512, 128, 0, 4)
+	tFence = bb.LoadTexture("World/Sprites/Fence.png", 4)
+	tNet = bb.LoadTexture("World/Sprites/Net.png", 4)
+	tShower = bb.LoadTexture("World/Sprites/Shower.png", 4)
+	tCrowd = bb.LoadAnimTexture("World/Sprites/Crowd.png", 4, 512, 128, 0, 4)
 	// weapons
-	tMachine = bb.LoadTexture("Weapons/Textures/Machine.png", bb.TextureFlag.MASKED)
-	tPistol = bb.LoadTexture("Weapons/Textures/Pistol.png", bb.TextureFlag.MASKED)
+	tMachine = bb.LoadTexture("Weapons/Textures/Machine.png", 4)
+	tPistol = bb.LoadTexture("Weapons/Textures/Pistol.png", 4)
 	// facial expressions
 	Loader("Please Wait", "Loading Expressions")
 	tEars = bb.LoadTexture("Characters/Expressions/Ears.JPG")
@@ -1017,7 +1017,7 @@ LoadTextures :: proc() {
 		tSpecs[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_hairs {
-		tHair[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10)), bb.TextureFlag.MASKED)
+		tHair[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10)), 4)
 	}
 	for count in i32(1)..=no_faces {
 		Loader("Please Wait", fmt.tprintf("Loading Face %s of %s", Dig(count, 10), no_faces))
