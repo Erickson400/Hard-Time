@@ -4,69 +4,97 @@ package main
 //////////////////////////////////////////////////////////////////////////////////
 
 // Key names
-Key: [256]string
+@(rodata)
+Key := [256]string {0..=1 = "?", 2 = "1", 3 = "2", 4 = "3", 5 = "4", 6 = "5", 7 = "6", 8 = "7",
+					9 = "8", 10 = "9" , 11 = "0", 12 = "-", 13 = "+", 14 = "Backspace",
+					15 = "Tab", 16 = "Q", 17 = "W", 18 = "E", 19 = "R", 20 = "T",
+					21 = "Y", 22 = "U", 23 = "I", 24 = "O", 25 = "P", 26 = "[",
+					27 = "]", 28 = "?", 29 = "Left Ctrl", 30 = "A", 31 = "S", 32 = "D", 33 = "F",
+					34 = "G", 35 = "H", 36 = "J", 37 = "K", 38 = "L", 39 = ";", 40 = "'",
+					41 = "#", 42 = "Left Shift", 43 = "\b", 44 = "Z", 45 = "X", 46 = "C",
+					47 = "V", 48 = "B", 49 = "N", 50 = "M", 51 = ",", 52 = ".", 53 = "/",
+					54 = "Right Shift", 55 = "?", 56 = "Left Alt", 57 = "Space", 
+					58..=156 = "?", 157 = "Right Ctrl" , 158..=183 = "?", 184 = "Right Alt",  
+					185..=199 = "?", 200 = "Cursor Up" ,  201..=202 = "?", 208 = "Cursor Down" , 
+					203 = "Cursor Left" ,  204 = "?", 205 = "Cursor Right", 209..=255 = "?" }
 
 ////////////////////////////////////////////////////////
 //-------------------- STATUS --------------------------
 ////////////////////////////////////////////////////////
 // Unused
 //weeks
-textWeek :: [5]string{"?", "1st week", "2nd week", "3rd week", "4th week"}
+@(rodata)
+textWeek := [5]string{"?", "1st week", "2nd week", "3rd week", "4th week"}
 // Unused
 //months
-textMonth :: [13]string{"?", "January", "February", "March", "April",
+@(rodata)
+textMonth := [13]string{"?", "January", "February", "March", "April",
 						"May", "June", "July", "August",
 						"September", "October", "November", "December"}
 //blocks
-textBlock :: [5]string{"?", "North", "East", "South", "West"}
+@(rodata)
+textBlock := [5]string{"?", "North", "East", "South", "West"}
 //locations
-textLocation :: [16]string{"None", "North Block", "Exercise Yard", "East Block",
+@(rodata)
+textLocation := [16]string{"None", "North Block", "Exercise Yard", "East Block",
 							"Study", "South Block", "Hospital", "West Block",
 							"Canteen", "Main Hall", "Workshop", "Bathroom",
 							"?", "?", "?", "?"}
 //warrants
-textWarrant :: [21]string{"None", "Dissent", "Gang Membership", "Trying To Escape",
+@(rodata)
+textWarrant := [21]string{"None", "Dissent", "Gang Membership", "Trying To Escape",
 							"Carrying An Illegal Item", "Drug Abuse", "Dealing",
 							"Stealing", "Assault", "Assaulting A Warden",
 							"Assault With A Weapon", "Grievous Bodily Harm",
 							"Attempted Murder", "Murder", "Serial Murder",
 							"?", "?", "?", "?", "?", "?"}
 //crimes
-textCrime :: [21]string{"None", "Fraud", "Prostitution", "Drug Abuse",
+@(rodata)
+textCrime := [21]string{"None", "Fraud", "Prostitution", "Drug Abuse",
 						"Drug Dealing", "Theft", "Armed Robbery",
 						"Vandalism", "Assault", "Child Abuse",
 						"Rape", "Grievous Bodily Harm", "Attempted Murder",
 						"Manslaughter", "Murder", "Terrorism",
 						"?", "?", "?", "?", "?"}
 //gangs
-textGang :: [7]string{"None", "The Suns Of God", "The Avatars Of Allah",
+@(rodata)
+textGang := [7]string{"None", "The Suns Of God", "The Avatars Of Allah",
 						"The Dark Side", "The Powers That Be", "The Gladiators",
 						"The Peaks"}
 // Unused
 //gang member
-textMember :: [7]string{"None", "a Sun Of God", "an Avatar Of Allah",
+@(rodata)
+textMember := [7]string{"None", "a Sun Of God", "an Avatar Of Allah",
 						"a Dark Force", "a Power", "a Gladiator", "a Peak"}
 
 ////////////////////////////////////////////////////////
 //------------------- OPTIONS --------------------------
 ////////////////////////////////////////////////////////
-textOnOff :: [2]string{"Off", "On"} // on/off
-textResX :: [6]string{"320", "640", "800", "1024", "1280", "1280"} // resolution X
-textResY :: [6]string{"240", "480", "600", "768", "1024", "800"} // resolution Y
-textGore :: [6]string{"None", "Scars Only", "Scars & Pools", "Scars, Pools, & Limb Loss", "?", "?"} // gore
-textFX :: [4]string{"None", "Minimal", "Maximum", "?"} // particle effects
-textShadows :: [4]string{"None", "Minimal", "Maximum", "?"} // shadows
+@(rodata)
+textOnOff := [2]string{"Off", "On"} // on/off
+@(rodata)
+textResX := [6]string{"320", "640", "800", "1024", "1280", "1280"} // resolution X
+@(rodata)
+textResY := [6]string{"240", "480", "600", "768", "1024", "800"} // resolution Y
+@(rodata)
+textGore := [6]string{"None", "Scars Only", "Scars & Pools", "Scars, Pools, & Limb Loss", "?", "?"} // gore
+@(rodata)
+textFX := [4]string{"None", "Minimal", "Maximum", "?"} // particle effects
+@(rodata)
+textShadows := [4]string{"None", "Minimal", "Maximum", "?"} // shadows
 
 ////////////////////////////////////////////////////////
 //---------------- CHARACTERIZATION --------------------
 ////////////////////////////////////////////////////////
 //hair references
-hairFile :: [16]string{"?", "Hair_Bald", "Hair_Thin", "Hair_Short", "Hair_Raise",
+@(rodata)
+hairFile := [16]string{"?", "Hair_Bald", "Hair_Thin", "Hair_Short", "Hair_Raise",
 						"Hair_Quiff", "Hair_Mop", "Hair_Thick", "Hair_Full",
 						"Hair_Curl", "Hair_Afro", "Hair_Spike", "Hair_Punk",
 						"Hair_Rolls", "Hair_Pony", "Hair_Long"}
 //hair styles
-textHair :: [41]string{"Bald", "Shaved", "Balding", "Receding", "Short", "Raised",
+@(rodata)
+textHair := [41]string{"Bald", "Shaved", "Balding", "Receding", "Short", "Raised",
 						"Quiff", "Fringe", "Thick", "Full", "Small Afro", "Big Afro",
 						"Spikey", "Mohican", "Corn Rows", "Balding w/Ponytail",
 						"Receding w/Ponytail", "Short w/Ponytail", "Raised w/Ponytail",
@@ -76,21 +104,26 @@ textHair :: [41]string{"Bald", "Shaved", "Balding", "Receding", "Short", "Raised
 						"Quiff w/Length", "Fringe w/Length", "Thick w/Length", 
 						"?", "?", "?", "?", "?", "?", "?", "?", "?"}
 //eyewear
-textSpecs :: [6]string{"None", "Gold Frames", "Silver Frames", "Dark Frames", "Sunglasses", "?"}
+@(rodata)
+textSpecs := [6]string{"None", "Gold Frames", "Silver Frames", "Dark Frames", "Sunglasses", "?"}
 //models
-textModel :: [11]string{"?", "Slim", "Normal", "Muscular", "Chubby", "Fat", "?", "?", "?", "?", "?"}
+@(rodata)
+textModel := [11]string{"?", "Slim", "Normal", "Muscular", "Chubby", "Fat", "?", "?", "?", "?", "?"}
 //costumes
-textCostume :: [11]string{"Bare Chest", "Tight Vest", "Baggy Vest", "Tight T-Shirt",
+@(rodata)
+textCostume := [11]string{"Bare Chest", "Tight Vest", "Baggy Vest", "Tight T-Shirt",
 							"Baggy T-Shirt", "Tight Short Sleeve", "Baggy Short Sleeve",
 							"Tight Long Sleeve", "Baggy Long Sleeve", "?", "?"}
 // Races
-textRace :: [4]string{"white", "Asian", "black", "?"}
+@(rodata)
+textRace := [4]string{"white", "Asian", "black", "?"}
 
 ////////////////////////////////////////////////////////
 //------------------------ NAMES -----------------------
 ////////////////////////////////////////////////////////
 //first names
-textFirstName :: [101]string {0  = "Vic", 1  = "Eddie", 2  = "Matt", 3  = "Liam", 4  = "Stuart",
+@(rodata)
+textFirstName := [101]string {0  = "Vic", 1  = "Eddie", 2  = "Matt", 3  = "Liam", 4  = "Stuart",
 							5  = "Scott", 6  = "Mike", 7  = "Gez", 8  = "Adam", 9  = "Joe",
 							10 = "Lee", 11 = "Alan", 12 = "Dennis", 13 = "Peter", 14 = "Leon",
 							15 = "Andy", 16 = "Theo", 17 = "Dan", 18 = "Henry", 19 = "Grant",
@@ -105,7 +138,7 @@ textFirstName :: [101]string {0  = "Vic", 1  = "Eddie", 2  = "Matt", 3  = "Liam"
 							59 = "Gaz", 60 = "Kevin", 61 = "Frank", 62 = "Bruce", 63 = "Gavin",
 							64 = "Cody", 65 = "Noel", 66..=100="?"}
 //surnames
-textSurName :: [101]string{0  = "Aceveda", 1  = "Sanders", 2  = "Grimm", 3  = "Clark", 4  = "Evans",
+textSurName := [101]string{0  = "Aceveda", 1  = "Sanders", 2  = "Grimm", 3  = "Clark", 4  = "Evans",
 						5  = "Bryant", 6  = "Madison", 7  = "Jackson", 8  = "Mackey",
 						9  = "Rooney", 10 = "Gaunt", 11 = "Collins", 12 = "Dickin",
 						13 = "Loveday", 14 = "Atkins", 15 = "Luther", 16 = "Walsch",
@@ -124,7 +157,8 @@ textSurName :: [101]string{0  = "Aceveda", 1  = "Sanders", 2  = "Grimm", 3  = "C
 						65 = "Mendoza", 66..=100="?"}
 
 // nicknames
-textNickName :: [101]string{0  = "Lemonhead",  1  = "Sugar Tits", 2  = "Hat Trick", 3  = "Deep Throat",
+@(rodata)
+textNickName := [101]string{0  = "Lemonhead",  1  = "Sugar Tits", 2  = "Hat Trick", 3  = "Deep Throat",
 							4  = "Big Hit", 5  = "Super Lucha", 6  = "Machoman",
 							7  = "Heavyweight", 8  = "Thug Angel", 9  = "God's Son",
 							10 = "Escobar", 11 = "Young Boy", 12 = "Wide Boy",
@@ -153,72 +187,3 @@ textNickName :: [101]string{0  = "Lemonhead",  1  = "Sugar Tits", 2  = "Hat Tric
 							79 = "Assassin", 80 = "Nightmare", 81..=100 = "?"}
 
 
-init_texts :: proc() {
-	//------------------- KEY NAMES ------------------------
-	////////////////////////////////////////////////////////
-	for i in 0..=255 {
-		Key[i] = "?"
-	}
-	{ // Thang too long to scroll
-		Key[2] = "1"
-		Key[3] = "2"
-		Key[4] = "3"
-		Key[5] = "4"
-		Key[6] = "5"
-		Key[7] = "6"
-		Key[8] = "7"
-		Key[9] = "8"
-		Key[10] = "9" 
-		Key[11] = "0"
-		Key[12] = "-"
-		Key[13] = "+"
-		Key[14] = "Backspace"
-		Key[15] = "Tab"
-		Key[16] = "Q"
-		Key[17] = "W"
-		Key[18] = "E"
-		Key[19] = "R"
-		Key[20] = "T"
-		Key[21] = "Y"
-		Key[22] = "U"
-		Key[23] = "I"
-		Key[24] = "O"
-		Key[25] = "P"
-		Key[26] = "["
-		Key[27] = "]"
-		Key[29] = "Left Ctrl"
-		Key[30] = "A"
-		Key[31] = "S"
-		Key[32] = "D"
-		Key[33] = "F"
-		Key[34] = "G"
-		Key[35] = "H"
-		Key[36] = "J"
-		Key[37] = "K"
-		Key[38] = "L"
-		Key[39] = ";"
-		Key[40] = "'"
-		Key[41] = "#"
-		Key[42] = "Left Shift"
-		Key[43] = "\b" // Backslash
-		Key[44] = "Z"
-		Key[45] = "X"
-		Key[46] = "C"
-		Key[47] = "V"
-		Key[48] = "B"
-		Key[49] = "N"
-		Key[50] = "M"
-		Key[51] = ","
-		Key[52] = "."
-		Key[53] = "/"
-		Key[54] = "Right Shift"
-		Key[56] = "Left Alt"
-		Key[57] = "Space"
-		Key[157] = "Right Ctrl" 
-		Key[184] = "Right Alt"
-		Key[200] = "Cursor Up" 
-		Key[208] = "Cursor Down" 
-		Key[203] = "Cursor Left" 
-		Key[205] = "Cursor Right"
-	}
-}

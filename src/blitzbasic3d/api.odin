@@ -7,6 +7,8 @@ package blitzbasic3d
 */
 
 import ray "vendor:raylib"
+import "core:os"
+import "core:math/rand"
 
 
 SoundHandle :: i32 // DeleteMe
@@ -36,6 +38,22 @@ SaveImage :: proc(image_handle: i32, path: string) -> i32 { SaveImage(image_hand
 
 // -------Text--------
 LoadFont :: proc(filename: string, height: i32, bold: bool, italic: bool, underline: bool) -> FontHandle { return load_font(filename, height, bold, italic, underline) }
+
+// -------File--------
+WriteFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, false, loc) }
+ReadFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, true, loc) }
+CloseFile :: proc(file: os.Handle) { os.close(file) }
+WriteInt :: proc(file: os.Handle, value: i32, loc := #caller_location) { write_int(file, value, loc) }
+WriteFloat :: proc(file: os.Handle, value: f32, loc := #caller_location)  { write_float(file, value, loc) }
+WriteString :: proc(file: os.Handle, text: string, loc := #caller_location) { write_string(file, text, loc) }
+ReadInt :: proc(file: os.Handle, loc := #caller_location) -> i32 { return read_int(file, loc) }
+ReadString :: proc(file: os.Handle, loc := #caller_location) -> string { return read_string(file, loc) }
+ReadFloat :: proc(file: os.Handle, loc := #caller_location) -> f32 { return read_float(file, loc) }
+
+// -------Math-------
+Rnd :: proc{ rnd_float, rnd_int}
+
+
 
 // -------Entity-------
 

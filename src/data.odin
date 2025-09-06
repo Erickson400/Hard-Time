@@ -4,6 +4,8 @@ package main
 ////////////////////////////////////////////////////////////////////////////////
 
 import bb "blitzbasic3d"
+import "core:strings"
+import "core:slice"
 import "core:fmt"
 import "core:os"
 import "core:mem"
@@ -420,6 +422,205 @@ LoadItems :: proc() {
 //////////////////////////////////////////////////////////////////
 //---------------------- RELATED FUNCTIONS -----------------------
 //////////////////////////////////////////////////////////////////
+GenerateGame :: proc() {
+
+}
+
+
+GenerateCharacter :: proc(char, role: i32) {
+    
+}
+
+
+GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
+    // Type
+    weapType[cyc] = style
+    if weapType[cyc] == 0 {
+        weapType = bb.Rnd(1, weapList)
+        randy := bb.Rnd(1, 20)
+        if randy == 1 do weapType[cyc] = bb.Rnd(24, 25)
+        if randy == 2 do weapType[cyc] = 15
+        if randy >= 3 && randy <= 5 do weapType[cyc] = 16
+        if randy >= 6 && randy <= 8 do weapType[cyc] = bb.Rnd(16, 18)
+    }
+    // General location
+    weapLocation[cyc] = area
+    if area == 0 {
+        randy := bb.Rnd(0, 20)
+        if randy <= 1 do weapLocation[cyc] = 1
+        if randy >= 2 && randy <= 4 do weapLocation[cyc] = 2
+        if randy >= 4 && randy <= 5 do weapLocation[cyc] = 3
+        if randy == 6 do weapLocation[cyc] = 4
+        if randy >= 7 && randy <= 8 do weapLocation[cyc] = 5
+        if randy == 9 do weapLocation[cyc] = 6
+        if randy >= 10 && randy <= 11 do weapLocation[cyc] = 7
+        if randy >= 12 && randy <= 13 do weapLocation[cyc] = 8
+        if randy >= 14 && randy <= 15 do weapLocation[cyc] = 9
+        if randy == 17 do weapLocation[cyc] = 10
+        if randy >= 18 && randy <= 20 do weapLocation[cyc] = 11
+    }
+    randy := bb.Rnd(0, 4)
+    if randy == 0 && style == 0 && area == 0 do weapLocation[cyc] = 0
+    // Favour habitat
+    if weapLocation[cyc] > 0 && GetBlock(weapLocation[cyc]) == 0 && weapType[cyc] != 16 {
+        randy := bb.Rnd(0, 2)
+        if randy > 0 && weapHabitat[weapType[cyc]] > 0 && weapHabitat[weapType[cyc]] != 99 {
+            weapLocation[cyc] = weapHabitat[weapType[cyc]]
+        }
+        if randy > 0 && weapType[cyc] == 14 do weapLocation[cyc] = 2
+        if randy == 0 && weapType[cyc] >= 24 && weapType[cyc] <= 25 do weapLocation[cyc] = 11
+    }
+    // Pinpoint location
+    weapX[cyc] = x; weapY[cyc] = y; weapZ[cyc] = z; 
+    weapA[cyc] = bb.Rnd(0.0, 360.0)
+    if weapY[cyc] == 0 && weapY[cyc] == 0 && weapZ[cyc] == 0 {
+        weapX[cyc] = 50
+        // Cell block locations
+        if GetBlock(weapLocation[cyc]) > 0 {
+            randy = bb.Rnd(0, 9)
+            if randy <= 5 {
+                for {
+                    weapX[cyc] = bb.Rnd(-300.0, 300.0); weapZ[cyc] = bb.Rnd(-140.0, 350.0) 
+                    if randy == 0 {
+                        weapY[cyc] = 50
+                    } else {
+                        weapY[cyc] = 150
+                    }
+                    if InsideCell(weapX[cyc], weapY[cyc], weapZ[cyc]) > 0 do break
+                }
+                switch randy {
+                    case 6:
+                        weapX[cyc] = bb.Rnd(-190.0, 60.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
+                    case 7:
+                        weapX[cyc] = bb.Rnd(60.0, 190.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
+                    case 8:
+                        weapX[cyc] = bb.Rnd(-115.0, 115.0); weapZ[cyc] = bb.Rnd(-335.0, 15.0) 
+                    case 9:
+                        weapX[cyc] = bb.Rnd(-80.0, 80.0); weapZ[cyc] = bb.Rnd(-220.0, 350.0); weapY[cyc] = 150
+                }
+            }
+            // Yard Locations
+            if weapLocation[cyc] == 2 {
+                randy := bb.Rnd(1, 2)
+                switch randy {
+                    case 1:
+                        weapX[cyc] = bb.Rnd(-20.0, 475.0); weapZ[cyc] = bb.Rnd(-210.0, 475.0)
+                    case 2:
+                        weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 475.0) 
+                }
+                if weapType[cyc] == 11 {
+                    weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 200.0) 
+                }
+                if weapType[cyc] == 14 {
+                    weapX[cyc] = bb.Rnd(-30.0, 100.0); weapZ[cyc] = bb.Rnd(270.0, 425.0) 
+                }
+            }
+            // Study locations
+            if weapLocation[cyc] == 4 {
+                randy := bb.Rnd(1, 5)
+                switch randy {
+                    case 1:
+                        weapX[cyc] = bb.Rnd(-135.0, 135.0); weapZ[cyc] = bb.Rnd(-130.0, -40.0)
+                    case 2:
+                        weapX[cyc] = bb.Rnd(-120.0, 135.0); weapZ[cyc] = bb.Rnd(40.0, 120.0)
+                    case 3:
+                        weapX[cyc] = bb.Rnd(-120.0, -40.0); weapZ[cyc] = bb.Rnd(-135.0, 120.0)
+                    case 4:
+                        weapX[cyc] = bb.Rnd(40.0, 135.0); weapZ[cyc] = bb.Rnd(-125.0, 105.0)
+                    case 5:
+                        weapX[cyc] = bb.Rnd(-140.0, 140.0); weapZ[cyc] = bb.Rnd(-140.0, 140.0)
+                }
+                // Hospital locations
+                // CONTINUE HERE
+                
+            }
+
+        }
+
+
+    }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+GenerateName :: proc(char: i32, allocator := context.allocator) -> string {
+    name: string
+    for {
+        name = fmt.aprintf("Character%s", Dig(char, 100), allocator = allocator)
+        // Inmate
+        if charRole[char] == 0 {
+            randy := bb.Rnd(0, 1)
+            random_index := bb.Rnd(0, 80)
+            if randy == 0 || randy == 1 do delete(name)
+            if randy == 0 do name = strings.clone(textNickName[random_index], allocator)
+            if randy == 1 do name = fmt.aprint(textFirstName[random_index], " ", textSurName[bb.Rnd(0, 65)], allocator = allocator) 
+        }
+        // Officials
+        if charRole[char] >= 1 {
+            inclusions := [3]i32{1, 2, 3}
+            if slice.contains(inclusions[:], charRole[char]) do delete(name, allocator)
+            if charRole[char] == 1 do name = strings.clone("Warden ", allocator)
+            if charRole[char] == 2 do name = strings.clone("Lawyer ", allocator)
+            if charRole[char] == 3 do name = strings.clone("Judge ", allocator)
+            name = strings.concatenate({name, textSurName[bb.Rnd(0, 65)]}, allocator)
+        }
+        // Find conflicts
+        conflict := 0
+        for v in 1..=no_chars {
+            if charName[v] == name do conflict = 1
+        }
+        if conflict == 0 do break
+        delete(name, allocator)
+    }
+    return name
+}
+
+
+AssignCell :: proc(char: i32) {
+    its := 0
+    for {
+        its += 1
+        satisfied := 1
+        block := bb.Rnd(1, 4)
+        cell := bb.Rnd(1, 20)
+        if its < 10 && CellPopulation(block, cell) > 0 do satisfied = 0
+        if CellPopulation(block, cell) > 1 do satisfied = 0
+        if its < 10 && AreaPopulation(TranslateBlock(block), 0) >= optPopulation/5 do satisfied = 0
+        if satisfied == 1 do break
+    }
+    charBlock[char] = block
+    charCell[char] = cell
+}
+
+
+FindCellMates :: proc() {
+    char := gamChar[slot]
+    for v in 1..=no_chars {
+        if v != char && 
+        charRole[v] == 0 && 
+        charCell[v] == charCell[char] && 
+        charBlock[v] == charBlock[char] {
+            randy := bb.Rnd(0, 2)
+            if randy == 1 || (randy == 0 && charReputation[v] < charReputation[char]) {
+                charPromo[v][char] = bb.Rnd(202, 203)
+            }
+            if randy == 2 || (randy == 0 && charReputation[v] >= charReputation[char]) {
+                charPromo[v][char] = bb.Rnd(203, 204)
+            }
+        }
+    }
+}
