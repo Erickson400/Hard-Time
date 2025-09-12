@@ -11,33 +11,26 @@ import "core:os"
 import "core:math/rand"
 
 
-SoundHandle :: i32 // DeleteMe
-ImageHandle :: i32 // DeleteMe
-TextureHandle :: i32 // DeleteMe
-AnimTextureHandle :: i32 // DeleteMe
-FontHandle :: i32 // DeleteMe
-
-
 // ------Graphics-------
 Cls :: proc() { cls() }
 Flip :: proc() { flip() }
 
 
 // ------Audio-----
-LoadSound :: proc(filename: string) -> SoundHandle { return load_sound(filename, false) }
-Load3DSound :: proc(filename: string) -> SoundHandle { return load_sound(filename, true) }
+LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
+Load3DSound :: proc(filename: string) -> i32 { return load_sound(filename, true) }
 
 // ------Images/Textures-----
-LoadImage :: proc(filename: string) -> ImageHandle { return load_image(filename) }
-MaskImage :: proc(image: ImageHandle, r: u8, g: u8, b: u8) { mask_image(image, r, g, b) }
-LoadTexture :: proc(filename: string, flags: i32 = 1) -> TextureHandle { return load_texture(filename, flags) }
-LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height: i32, first_frame, frame_count: i32) -> AnimTextureHandle { 
+LoadImage :: proc(filename: string) -> i32 { return load_image(filename) }
+MaskImage :: proc(image: i32, r: u8, g: u8, b: u8) { mask_image(image, r, g, b) }
+LoadTexture :: proc(filename: string, flags: i32 = 1) -> i32 { return load_texture(filename, flags) }
+LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height: i32, first_frame, frame_count: i32) -> i32 { 
 	return load_anim_texture(filenames, flags, frame_width, frame_height, first_frame, frame_count)
 }
-SaveImage :: proc(image_handle: i32, path: string) -> i32 { SaveImage(image_handle, path) }
+SaveImage :: proc(image_handle: i32, path: string) -> i32 { return save_image(image_handle, path) }
 
 // -------Text--------
-LoadFont :: proc(filename: string, height: i32, bold: bool, italic: bool, underline: bool) -> FontHandle { return load_font(filename, height, bold, italic, underline) }
+LoadFont :: proc(filename: string, height: i32, bold: bool, italic: bool, underline: bool) -> i32 { return load_font(filename, height, bold, italic, underline) }
 
 // -------File--------
 WriteFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, false, loc) }

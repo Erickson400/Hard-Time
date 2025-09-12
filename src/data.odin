@@ -592,11 +592,12 @@ GenerateName :: proc(char: i32, allocator := context.allocator) -> string {
 
 AssignCell :: proc(char: i32) {
     its := 0
+    block, cell: i32
     for {
         its += 1
         satisfied := 1
-        block := bb.Rnd(1, 4)
-        cell := bb.Rnd(1, 20)
+        block = bb.Rnd(1, 4)
+        cell = bb.Rnd(1, 20)
         if its < 10 && CellPopulation(block, cell) > 0 do satisfied = 0
         if CellPopulation(block, cell) > 1 do satisfied = 0
         if its < 10 && AreaPopulation(TranslateBlock(block), 0) >= optPopulation/5 do satisfied = 0

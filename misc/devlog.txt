@@ -27,5 +27,7 @@ This 3ds stuff is tougher than I thought. The blitz compiler is turning the 3ds 
 --------------Aug 9, 2025-----------
 Wonderful. I managed to render the plank model. I fixed the indices issue by testing if the vertices were in their correct position. I have to be very careful when debugging, the vertices were in the right position, but the way I was rendering them was incorrect. For some reason an entry in the Face list holds 4 u16's instead of just 3, the last value is never used. I forgot to read it so it moves the stream and that fixed my issue. Next-up I'll figure out why rendering a model crashes, and also handle multiple objects correctly. 
 
+--------------Sep 11, 2025-----------
+My free plan of Copilot has renewed, I can continue working on repetitive tasks. I've noticed that Hardtime only calls FreeTimer and FreeEntity. Texture, images, fonts, sounds, and models are never unloaded. This remove the need for me to add unecessary freeing features.
 
 

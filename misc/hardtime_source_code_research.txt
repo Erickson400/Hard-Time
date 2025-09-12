@@ -1,8 +1,6 @@
 The entry point is on Gameplay.bb
 
 For loops are inclusive, For i = 0 to 99 is the same as for i in 0..=99 in odin. Dim takes the last index of its elements, not the size of the array, So Dim arr(9) means there are 10 elements.
-Mat is using array wrong. Hes starting from index 1 instead of 0, and most of his arrays are too long with elements never used. My theory is that he uses the 0 index for as an invalid type, and was too lazy to cap the array size to their supposed size.
+Mat is using arrays wrong. Hes starting from index 1 instead of 0, and most of his arrays are too long with elements never used. My theory is that he uses the 0 index for as an invalid type, and was too lazy to cap the array size to their supposed size.
 I can keep the indexing the same in odin. Just set the array size to one less, and change the loops to inclusive.
-
-
 
