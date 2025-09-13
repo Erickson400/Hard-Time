@@ -1,4 +1,4 @@
-- Texts.bb fully ported
-
+- Texts.bb fully ported, accesible, and functional. 
+- Data.bb fully ported, non funcitonal due to undefined functions in other files.
 
 

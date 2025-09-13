@@ -423,12 +423,229 @@ LoadItems :: proc() {
 //---------------------- RELATED FUNCTIONS -----------------------
 //////////////////////////////////////////////////////////////////
 GenerateGame :: proc() {
-
+    // initiate characters
+    no_chars = optPopulation + 3
+    no_wardens := optPopulation / 5
+    if no_wardens < 10 do no_wardens = 10
+    for char in 1..=no_chars {
+        charRole[char] = 0; charLocation[char] = 0
+        charBlock[char] = 0; charCell[char] = 0
+        charName[char] = fmt.aprintf("Character%s", Dig(char, 100))
+    }
+    gamChar[slot] = bb.Rnd(no_wardens + 4, no_chars)
+    for char in 1..=no_chars {
+        if char <= 2 do GenerateCharacter(char, 2)
+        if char == 3 do GenerateCharacter(char, 3)
+        if char >= 4 {
+            if char - 3 <= no_wardens {
+                GenerateCharacter(char, 1)
+            } else {
+                GenerateCharacter(char, 0)
+            }
+        }
+    }
+    // reset player status
+    char := gamChar[slot]
+    charHealth[char] = 50
+    charStrength[char] = 50
+    charAgility[char] = 50
+    charHappiness[char] = 50
+    charIntelligence[char] = 50
+    charReputation[char] = 50
+    gamMoney[slot] = 0
+    // reset clock
+    gamSecs[slot] = 0
+    gamMins[slot] = 0
+    gamHours[slot] = bb.Rnd(8, 20)
+    // missions
+    gamMission[slot] = 0
+    gamClient[slot] = 0
+    gamTarget[slot] = 0
+    gamDeadline[slot] = 0
+    gamReward[slot] = 0
+    // reset game status
+    gamWarrant[slot] = 0
+    gamArrival[slot] = 0
+    gamFatality[slot] = 0
+    gamRelease[slot] = 0
+    gamEscape[slot] = 0
+    gamGrowth[slot] = 0
+    // reset promos
+    for count in 1..=no_promos {
+        promoUsed[count] = 0
+    }
+    // find cell mates
+    FindCellMates()
+    // initial location
+    charLocation[char] = 9
+    gamLocation[slot] = charLocation[char]
+    charX[char] = 0.0; charZ[char] = 0.0
+    camX = 0.0; camY = 75.0; camZ = 0.0
+    camPivX = camX; camPivY = camY; camPivZ = camZ
+    // generate weapons
+    no_weaps = optPopulation
+    for cyc in 1..=no_weaps {
+        if cyc == 1 do GenerateWeapon(cyc, 14, 2, bb.Rnd(-30.0, 100.0), 50.0, bb.Rnd(270.0, 425.0))
+        if cyc == 2 || cyc == 3 do GenerateWeapon(cyc, 5, 9, bb.Rnd(-30.0, 40.0), 50.0, bb.Rnd(235.0, 280.0))
+        if cyc >= 4 do GenerateWeapon(cyc, 0, 0, 0.0, 0.0, 0.0)
+    }
+    // distribute weapons
+    for cyc in 1..=no_weaps {
+        if weapLocation[cyc] > 0 && (weapType[cyc] == 7 || weapType[cyc] == 8 || weapType[cyc] == 12) {
+            for v in 1..=no_chars {
+                if charRole[v] == 1 && charWeapon[v] == 0 && FindCarrier(cyc) == 0 {
+                    charWeapon[v] = cyc; weapLocation[cyc] = charLocation[v]
+                    weapX[cyc] = charX[v]; weapY[cyc] = charY[v] + 10.0; weapZ[cyc] = charZ[v]
+                }
+            }
+        }
+        if weapLocation[cyc] > 0 {
+            for v in 1..=no_chars {
+                randy := bb.Rnd(0, 100)
+                if randy == 0 && charRole[v] == 0 && v != gamChar[slot] && 
+                charWeapon[v] == 0 && FindCarrier(cyc) == 0 && weapState[cyc] > 0 {
+                    charWeapon[v] = cyc; weapLocation[cyc] = charLocation[v]
+                    weapX[cyc] = charX[v]; weapY[cyc] = charY[v] + 10.0; weapZ[cyc] = charZ[v]
+                }
+            }
+        }
+    }
+    // generate kits
+    for cyc in 1..=6 {
+        for {
+            kitType[cyc] = bb.Rnd(1, weapList)
+            if weapCreate[kitType[cyc]] == 1 do break
+        }
+        randy := bb.Rnd(0, 2)
+        if randy <= 1 do kitState[cyc] = 1
+    }
+    // save generation
+    SaveProgress()
+    SaveChars()
+    SavePhotos()
+    SaveItems()
 }
 
 
-GenerateCharacter :: proc(char, role: i32) {
-    
+GenerateCharacter :: proc(char, role: i32, allocator := context.allocator) {
+    // Appearance
+    charRole[char] = role
+    charName[char] = GenerateName(char, allocator)
+    charPhoto[char] = 0; charSnapped[char] = 0
+    randy := bb.Rnd(0, 5)
+    charModel[char] = 2 if randy == 0 else bb.Rnd(1, no_models)
+    randy = bb.Rnd(0, 2)
+    charHeight[char] = bb.Rnd(10, 15) if randy == 0 else bb.Rnd(5, 24)
+    charSpecs[char] = bb.Rnd(-10, 4)
+    if charSpecs[char] < 0 do charSpecs[char] = 0
+    randy = bb.Rnd(0, 2)
+    if randy == 0 && charRole[char] == 1 {
+        charAccessory[char] = 7
+    } else {
+        charAccessory[char] = 0
+    }
+    charFace[char] = bb.Rnd(1, no_faces)
+    charHair[char] = bb.Rnd(1, no_hairs)
+    randy = bb.Rnd(0, 2)
+    if randy <= 1 && charHair[char] >= 8 do charHair[char] = bb.Rnd(1, 7)
+    if GetRace(char) == 1 && charHair[char] >= 3 && charHair[char] <= 7 do charHair[char] = bb.Rnd(1, 2)
+    if GetRace(char) == 2 && charHair[char] >= 2 && charHair[char] <= 7 do charHair[char] = 1
+    charHairStyle[char] = bb.Rnd(-30, 31)
+    if charHairStyle[char] < 0 || charRole[char] >= 2 do charHairStyle[char] = bb.Rnd(0, 10)
+    charCostume[char] = bb.Rnd(0, 8)
+    if charRole[char] == 1 do charCostume[char] = 5
+    if charRole[char] >= 2 do charCostume[char] = 7
+    charWeapon[char] = 0
+    for count in 1..=30 {
+        charWeapHistory[char][count] = 0
+    }
+    for limb in 1..=40 {
+        charScar[char][limb] = 0
+    }
+    // Inmate location
+    if charRole[char] == 0 {
+        AssignCell(char)
+        charLocation[char] = TranslateBlock(charBlock[char])
+        charX[char] = GetCentre(cellX1[charCell[char]], cellX2[charCell[char]])
+        charZ[char] = GetCentre(cellZ1[charCell[char]], cellZ2[charCell[char]])
+        charY[char] = cellY1[charCell[char]] + 20; charA[char] = bb.Rnd(0.0, 360.0)
+    }
+    // Warden location
+    if charRole[char] == 1 {
+        its := 0
+        area: i32
+        for {
+            area = bb.Rnd(1, 10); its = its + 1
+            if AreaPopulation(area, 1) == 0 || its > 100 do break
+        }
+        charLocation[char] = area
+        charX[char] = bb.Rnd(-100.0, 100.0); charZ[char] = bb.Rnd(-100.0, 100.0)
+        if charLocation[char] == 2 {
+            charX[char] = bb.Rnd(250.0, 450.0); charZ[char] = bb.Rnd(250.0, 450.0)
+        }
+        charY[char] = 50; charA[char] = bb.Rnd(0.0, 360.0)
+    }
+    // attributes
+    charHealth[char] = bb.Rnd(10, 100); charHP[char] = 10
+    if charModel[char] == 1 {
+        charStrength[char] = bb.Rnd(40, 70); charAgility[char] = bb.Rnd(70, 100)
+    }
+    if charModel[char] == 2 {
+        charStrength[char] = bb.Rnd(50, 80); charAgility[char] = bb.Rnd(60, 90)
+    }
+    if charModel[char] == 3 {
+        charStrength[char] = bb.Rnd(60, 90); charAgility[char] = bb.Rnd(60, 90)
+    }
+    if charModel[char] >= 4 {
+        charStrength[char] = bb.Rnd(60, 90); charAgility[char] = bb.Rnd(50, 80)
+    }
+    charStrength[char] = charStrength[char] + (charHeight[char] / 2)
+    charAgility[char] = charAgility[char] - (charHeight[char] / 2)
+    charHappiness[char] = bb.Rnd(10, 100)
+    charIntelligence[char] = bb.Rnd(50, 100)
+    charReputation[char] = bb.Rnd(50, 100)
+    if charRole[char] > 0 {
+        charIntelligence[char] = bb.Rnd(70, 100); charReputation[char] = bb.Rnd(70, 100)
+    }
+    charSentence[char] = 0 if charRole[char] > 0 else bb.Rnd(1, 365)
+    charCrime[char] = 0 if charRole[char] > 0 else bb.Rnd(1, 15)
+    charExperience[char] = 0
+    // gang membership
+    for gang in 1..=6 {
+        charGangHistory[char][gang] = 0
+    }
+    charGang[char] = bb.Rnd(-1, 6)
+    if charGang[char] < 0 || charRole[char] > 0 || char == gamChar[slot] do charGang[char] = 0
+    if charGang[char] == 1 && GetRace(char) > 0 do charGang[char] = 0
+    if charGang[char] == 2 && GetRace(char) != 1 do charGang[char] = 0
+    if charGang[char] == 3 && GetRace(char) != 2 do charGang[char] = 0
+    if charGang[char] == 4 && charIntelligence[char] < 70 do charGang[char] = 0
+    if charGang[char] == 5 && charStrength[char] + charAgility[char] < 140 do charGang[char] = 0
+    if charGang[char] == 6 && charReputation[char] > 80 do charGang[char] = 0
+    if charGang[char] > 0 do charGangHistory[char][charGang[char]] = 1
+    GangAdjust(char)
+    // relationships
+    for v in i32(1)..=no_chars {
+        ChangeRelationship(char, v, 0)
+        if char != gamChar[slot] && v != gamChar[slot] {
+            randy = bb.Rnd(0, 20)
+            if randy == 0 do ChangeRelationship(char, v, 1)
+            if randy == 1 do ChangeRelationship(char, v, -1)
+            if randy <= 5 && charRole[char] == 1 && charRole[v] == 1 do ChangeRelationship(char, v, 1)
+            if randy <= 5 && charGang[char] > 0 && charGang[char] == charGang[v] do ChangeRelationship(char, v, 1)
+        }
+        charAngerTim[char][v] = 0
+        charPromo[char][v] = 0
+    }
+    charAttacker[char] = 0
+    charWitness[char] = 0
+    charFollowTim[char] = 0
+    charBribeTim[char] = 0
+    // risk dead status
+    randy = bb.Rnd(0, 20)
+    if randy == 0 && char != gamChar[slot] {
+        charLocation[char] = 0; charHealth[char] = bb.Rnd(0, 1)
+    }
 }
 
 
@@ -488,72 +705,111 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
                     }
                     if InsideCell(weapX[cyc], weapY[cyc], weapZ[cyc]) > 0 do break
                 }
-                switch randy {
-                    case 6:
-                        weapX[cyc] = bb.Rnd(-190.0, 60.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
-                    case 7:
-                        weapX[cyc] = bb.Rnd(60.0, 190.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
-                    case 8:
-                        weapX[cyc] = bb.Rnd(-115.0, 115.0); weapZ[cyc] = bb.Rnd(-335.0, 15.0) 
-                    case 9:
-                        weapX[cyc] = bb.Rnd(-80.0, 80.0); weapZ[cyc] = bb.Rnd(-220.0, 350.0); weapY[cyc] = 150
-                }
             }
-            // Yard Locations
-            if weapLocation[cyc] == 2 {
-                randy := bb.Rnd(1, 2)
-                switch randy {
-                    case 1:
-                        weapX[cyc] = bb.Rnd(-20.0, 475.0); weapZ[cyc] = bb.Rnd(-210.0, 475.0)
-                    case 2:
-                        weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 475.0) 
-                }
-                if weapType[cyc] == 11 {
-                    weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 200.0) 
-                }
-                if weapType[cyc] == 14 {
-                    weapX[cyc] = bb.Rnd(-30.0, 100.0); weapZ[cyc] = bb.Rnd(270.0, 425.0) 
-                }
+            switch randy {
+                case 6:
+                    weapX[cyc] = bb.Rnd(-190.0, 60.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
+                case 7:
+                    weapX[cyc] = bb.Rnd(60.0, 190.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
+                case 8:
+                    weapX[cyc] = bb.Rnd(-115.0, 115.0); weapZ[cyc] = bb.Rnd(-335.0, 15.0) 
+                case 9:
+                    weapX[cyc] = bb.Rnd(-80.0, 80.0); weapZ[cyc] = bb.Rnd(-220.0, 350.0); weapY[cyc] = 150
             }
-            // Study locations
-            if weapLocation[cyc] == 4 {
-                randy := bb.Rnd(1, 5)
-                switch randy {
-                    case 1:
-                        weapX[cyc] = bb.Rnd(-135.0, 135.0); weapZ[cyc] = bb.Rnd(-130.0, -40.0)
-                    case 2:
-                        weapX[cyc] = bb.Rnd(-120.0, 135.0); weapZ[cyc] = bb.Rnd(40.0, 120.0)
-                    case 3:
-                        weapX[cyc] = bb.Rnd(-120.0, -40.0); weapZ[cyc] = bb.Rnd(-135.0, 120.0)
-                    case 4:
-                        weapX[cyc] = bb.Rnd(40.0, 135.0); weapZ[cyc] = bb.Rnd(-125.0, 105.0)
-                    case 5:
-                        weapX[cyc] = bb.Rnd(-140.0, 140.0); weapZ[cyc] = bb.Rnd(-140.0, 140.0)
-                }
-                // Hospital locations
-                // CONTINUE HERE
-                
-            }
-
         }
-
-
+        // Yard Locations
+        if weapLocation[cyc] == 2 {
+            randy := bb.Rnd(1, 2)
+            switch randy {
+                case 1:
+                    weapX[cyc] = bb.Rnd(-20.0, 475.0); weapZ[cyc] = bb.Rnd(-210.0, 475.0)
+                case 2:
+                    weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 475.0) 
+            }
+            if weapType[cyc] == 11 {
+                weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 200.0) 
+            }
+            if weapType[cyc] == 14 {
+                weapX[cyc] = bb.Rnd(-30.0, 100.0); weapZ[cyc] = bb.Rnd(270.0, 425.0) 
+            }
+        }
+        // Study locations
+        if weapLocation[cyc] == 4 {
+            randy := bb.Rnd(1, 5)
+            switch randy {
+                case 1:
+                    weapX[cyc] = bb.Rnd(-135.0, 135.0); weapZ[cyc] = bb.Rnd(-130.0, -40.0)
+                case 2:
+                    weapX[cyc] = bb.Rnd(-120.0, 135.0); weapZ[cyc] = bb.Rnd(40.0, 120.0)
+                case 3:
+                    weapX[cyc] = bb.Rnd(-120.0, -40.0); weapZ[cyc] = bb.Rnd(-135.0, 120.0)
+                case 4:
+                    weapX[cyc] = bb.Rnd(40.0, 135.0); weapZ[cyc] = bb.Rnd(-125.0, 105.0)
+                case 5:
+                    weapX[cyc] = bb.Rnd(-140.0, 140.0); weapZ[cyc] = bb.Rnd(-140.0, 140.0)
+            }
+        }
+        // Hospital locations
+        if weapLocation[cyc] == 6 {
+            weapX[cyc] = bb.Rnd(-140.0, 140.0); weapZ[cyc] = bb.Rnd(-140.0, 140.0)
+        }
+        // Kitchen locations
+        if weapLocation[cyc] == 8 {
+            randy := bb.Rnd(1, 4)
+            switch randy {
+                case 1:
+                    weapX[cyc] = bb.Rnd(-105.0, 105.0); weapZ[cyc] = bb.Rnd(-325.0, -160.0)
+                case 2:
+                    weapX[cyc] = bb.Rnd(-105.0, 250.0); weapZ[cyc] = bb.Rnd(-160.0, 250.0)
+                case 3:
+                    weapX[cyc] = bb.Rnd(-250.0, 250.0); weapZ[cyc] = bb.Rnd(170.0, 325.0)
+                case 4:
+                    weapX[cyc] = bb.Rnd(-240.0, -145.0); weapZ[cyc] = bb.Rnd(-120.0, 140.0)
+            }
+        }
+        // Hall locations
+        if weapLocation[cyc] == 9 {
+            weapX[cyc] = bb.Rnd(-295.0, 295.0); weapZ[cyc] = bb.Rnd(-295.0, 295.0)
+        }
+        // Workshop locations
+        if weapLocation[cyc] == 10 {
+            randy := bb.Rnd(1, 4)
+            switch randy {
+                case 1:
+                    weapX[cyc] = bb.Rnd(-95.0, 95.0); weapZ[cyc] = bb.Rnd(-115.0, 115.0)
+                case 2:
+                    weapX[cyc] = bb.Rnd(-65.0, -30.0); weapZ[cyc] = -114.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
+                case 3:
+                    weapX[cyc] = bb.Rnd(30.0, 70.0); weapZ[cyc] = -114.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
+                case 4:
+                    weapX[cyc] = bb.Rnd(-20.0, 20.0); weapZ[cyc] = 119.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
+            }
+        }
+        // Toilet locations
+        if weapLocation[cyc] == 11 {
+            randy := bb.Rnd(1, 7)
+            if randy >= 1 && randy <= 2 {
+                weapX[cyc] = bb.Rnd(-140.0, 50.0); weapZ[cyc] = bb.Rnd(-65.0, 10.0)
+            }
+            if randy >= 3 && randy <= 4 {
+                weapX[cyc] = bb.Rnd(50.0, 140.0); weapZ[cyc] = bb.Rnd(-65.0, 70.0)
+            }
+            if randy == 5 {
+                weapX[cyc] = bb.Rnd(-140.0, -115.0); weapZ[cyc] = bb.Rnd(10.0, 70.0)
+            }
+            if randy == 6 {
+                weapX[cyc] = bb.Rnd(-70.0, -40.0); weapZ[cyc] = bb.Rnd(10.0, 70.0)
+            }
+            if randy == 7 {
+                weapX[cyc] = bb.Rnd(0.0, 30.0); weapZ[cyc] = bb.Rnd(10.0, 70.0)
+            }
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Reset status
+    weapState[cyc], weapCarrier[cyc] = 1, 0
+    weapScar[cyc], weapOldScar[cyc] = 0, -1
+    weapAmmo[cyc], weapClip[cyc] = 100, 10
+    if weapStyle[weapType[cyc]] == 6 do weapClip[cyc] = 0
 }
 
 
