@@ -1,3 +1,13 @@
+API Implementations:
+- SoundPitch
+- SoundVolume
+- EmitSound 
+- Color
+- SetFont
+- Line
+- Text
+- GraphicsWidth
+- GraphicsHeight
 
 
 

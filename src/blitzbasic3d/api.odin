@@ -14,11 +14,19 @@ import "core:math/rand"
 // ------Graphics-------
 Cls :: proc() { cls() }
 Flip :: proc() { flip() }
-
+Color :: proc(r, g, b: i32) {}
+SetFont :: proc(font: i32) {}
+Text :: proc(x, y: i32, text: string, centerx, centery: i32) {}
+Line :: proc(p1x, p1y, p2x, p2y: i32) {}
+GraphicsWidth :: proc() -> i32 { return 1}
+GraphicsHeight :: proc() -> i32 { return 1}
 
 // ------Audio-----
 LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
 Load3DSound :: proc(filename: string) -> i32 { return load_sound(filename, true) }
+SoundPitch :: proc(sound: i32, pitch: i32) {}
+SoundVolume :: proc(sound: i32, volume: f32) {}
+EmitSound :: proc(sound: i32, entity: i32) {}
 
 // ------Images/Textures-----
 LoadImage :: proc(filename: string) -> i32 { return load_image(filename) }
