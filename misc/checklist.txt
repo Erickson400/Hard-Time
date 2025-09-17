@@ -25,3 +25,12 @@ Data.bb
 - Last time checked if is matching: Sep 16, 2025
 - Score: 5
 
+
+Functions.bb
+- Accesible
+- Not Runnable
+- Last time checked if is matching: Sep 16, 2025
+- Score: 8
+
+
+

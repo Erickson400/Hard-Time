@@ -14,7 +14,6 @@ logger: log.Logger
 
 
 main :: proc() {
-	
 	when LEAK_CHECKING {
 		track: mem.Tracking_Allocator
 		mem.tracking_allocator_init(&track, context.allocator)
@@ -43,8 +42,8 @@ main :: proc() {
 
 	// Includes
 	// Note: Make sure its in the same order as the include commands in Gameplay.bb.
-	// If the ported file has no init function then its because there is no global code execution or
-	// because it only defines constants & functions.
+	// If the ported file has no init function then its because there is no global code execution,
+	// they only defines constants & functions.
 	init_values()
 	free_all(context.temp_allocator) // Cleanup tprints
 

@@ -8,6 +8,16 @@ API Implementations:
 - Text
 - GraphicsWidth
 - GraphicsHeight
-
-
-
+- CreateTimer
+- WaitTimer
+- KeyDown
+- KeyHit
+- ButtonPressed
+- JoyXDir
+- JoyYDir
+- PlaySound
+- UpdateWorld
+- RenderWorld
+- TileImage
+- DrawImage
+- FreeTimer

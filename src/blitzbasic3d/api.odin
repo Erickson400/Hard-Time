@@ -20,6 +20,8 @@ Text :: proc(x, y: i32, text: string, centerx, centery: i32) {}
 Line :: proc(p1x, p1y, p2x, p2y: i32) {}
 GraphicsWidth :: proc() -> i32 { return 1}
 GraphicsHeight :: proc() -> i32 { return 1}
+TileImage :: proc(image: i32) {}
+DrawImage :: proc(image: i32, x, y: i32) {}
 
 // ------Audio-----
 LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
@@ -27,6 +29,7 @@ Load3DSound :: proc(filename: string) -> i32 { return load_sound(filename, true)
 SoundPitch :: proc(sound: i32, pitch: i32) {}
 SoundVolume :: proc(sound: i32, volume: f32) {}
 EmitSound :: proc(sound: i32, entity: i32) {}
+PlaySound :: proc(sound: i32) {}
 
 // ------Images/Textures-----
 LoadImage :: proc(filename: string) -> i32 { return load_image(filename) }
@@ -54,7 +57,10 @@ ReadFloat :: proc(file: os.Handle, loc := #caller_location) -> f32 { return read
 // -------Math-------
 Rnd :: proc{ rnd_float, rnd_int}
 
-
+// -------Time----------
+CreateTimer :: proc(fps: i32) -> i32 { return 1}
+WaitTimer :: proc(timer: i32) -> i32 { return 1}
+FreeTimer :: proc(timer: i32) {}
 
 // -------Entity-------
 
@@ -62,8 +68,19 @@ Rnd :: proc{ rnd_float, rnd_int}
 // -------Models--------
 
 
-// -------Input--------
+// -------Camera--------
 
+
+// --------World-------
+UpdateWorld :: proc() {}
+RenderWorld :: proc(mode: i32) {}
+
+// -------Input--------
+KeyDown :: proc(key: i32) -> bool { return false}
+ButtonPressed :: proc() -> bool { return false}
+JoyYDir :: proc() -> i32 { return 0}
+JoyXDir :: proc() -> i32 { return 0}
+KeyHit :: proc(key: i32) -> i32 { return 1}
 
 // -------Collision--------
 
