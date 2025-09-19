@@ -15,9 +15,23 @@ API Implementations:
 - ButtonPressed
 - JoyXDir
 - JoyYDir
+- JoyDown
 - PlaySound
 - UpdateWorld
 - RenderWorld
 - TileImage
 - DrawImage
 - FreeTimer
+- MoveMouse
+- MouseX
+- MouseY
+- Rect
+- StringWidth
+- GfxMode3DExists
+- CreateImage
+- Graphics3DWidth
+- GfxMode3DExists
+- GrabImage
+- CreateImage
+- MilliSecs
+

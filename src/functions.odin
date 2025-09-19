@@ -36,7 +36,7 @@ ProduceSound :: proc(entity, sound, pitch: i32, vol: f32) {
 //---------------------------------------------------------------------------
 
 // Outline
-Outline :: proc(script: string, x, y: i32, r1, g1, b1, r2, g2, b2: i32) {
+Outline :: proc(script: string, x, y, r1, g1, b1, r2, g2, b2: i32) {
 	// outline
 	if r1 != r2 || g1 != g2 || b1 != b2 {
 		bb.Color(r1, g1, b1)

@@ -11,6 +11,11 @@ import "core:os"
 import "core:math/rand"
 
 
+
+// ------Internals-------
+GfxMode3DExists :: proc(width, height, color: i32) -> bool { return true }
+Graphics3DWidth :: proc(width, height, color, thingy: i32) {}
+
 // ------Graphics-------
 Cls :: proc() { cls() }
 Flip :: proc() { flip() }
@@ -22,6 +27,8 @@ GraphicsWidth :: proc() -> i32 { return 1}
 GraphicsHeight :: proc() -> i32 { return 1}
 TileImage :: proc(image: i32) {}
 DrawImage :: proc(image: i32, x, y: i32) {}
+Rect :: proc(x, y, width, height, color: i32) {}
+GrabImage :: proc(image: i32, x, y, width, height: i32) -> i32 { return 1}
 
 // ------Audio-----
 LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
@@ -32,6 +39,7 @@ EmitSound :: proc(sound: i32, entity: i32) {}
 PlaySound :: proc(sound: i32) {}
 
 // ------Images/Textures-----
+CreateImage :: proc(width, height: i32) -> i32 { return 1}
 LoadImage :: proc(filename: string) -> i32 { return load_image(filename) }
 MaskImage :: proc(image: i32, r: u8, g: u8, b: u8) { mask_image(image, r, g, b) }
 LoadTexture :: proc(filename: string, flags: i32 = 1) -> i32 { return load_texture(filename, flags) }
@@ -57,10 +65,14 @@ ReadFloat :: proc(file: os.Handle, loc := #caller_location) -> f32 { return read
 // -------Math-------
 Rnd :: proc{ rnd_float, rnd_int}
 
+// -------String-------
+StringWidth :: proc(text: string) -> i32 { return 1 }
+
 // -------Time----------
 CreateTimer :: proc(fps: i32) -> i32 { return 1}
 WaitTimer :: proc(timer: i32) -> i32 { return 1}
 FreeTimer :: proc(timer: i32) {}
+MilliSecs :: proc() -> i32 { return 1}
 
 // -------Entity-------
 
@@ -80,7 +92,11 @@ KeyDown :: proc(key: i32) -> bool { return false}
 ButtonPressed :: proc() -> bool { return false}
 JoyYDir :: proc() -> i32 { return 0}
 JoyXDir :: proc() -> i32 { return 0}
+JoyDown :: proc(something: i32) -> bool { return false}
 KeyHit :: proc(key: i32) -> i32 { return 1}
+MoveMouse :: proc(x, y: i32) {}
+MouseX :: proc() -> i32 { return 0}
+MouseY :: proc() -> i32 { return 0}
 
 // -------Collision--------
 
