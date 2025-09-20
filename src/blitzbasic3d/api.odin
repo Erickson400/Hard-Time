@@ -29,6 +29,7 @@ TileImage :: proc(image: i32) {}
 DrawImage :: proc(image: i32, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
 GrabImage :: proc(image: i32, x, y, width, height: i32) -> i32 { return 1}
+Locate :: proc(x, y: i32) {}
 
 // ------Audio-----
 LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
@@ -47,6 +48,11 @@ LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height
 	return load_anim_texture(filenames, flags, frame_width, frame_height, first_frame, frame_count)
 }
 SaveImage :: proc(image_handle: i32, path: string) -> i32 { return save_image(image_handle, path) }
+
+// -------Sprite---------
+LoadSprite :: proc(filename: string, flags: i32) -> i32 { return 1}
+ScaleSprite :: proc(sprite: i32, scale: f32) {}
+SpriteViewMode :: proc(mode, other: i32) {}
 
 // -------Text--------
 LoadFont :: proc(filename: string, height: i32, bold: bool, italic: bool, underline: bool) -> i32 { return load_font(filename, height, bold, italic, underline) }
@@ -75,17 +81,32 @@ FreeTimer :: proc(timer: i32) {}
 MilliSecs :: proc() -> i32 { return 1}
 
 // -------Entity-------
-
+PositionEntity :: proc(entity: i32, x, y, z: f32) {}
+RotateEntity :: proc(entity: i32, x, y, z: f32) {}
+ScaleEntity :: proc(entity: i32, x, y, z: f32) {}
+EntityAlpha :: proc(entity: i32, alpha: f32) {}
+EntityColor :: proc(entity: i32, r, g, b: i32) {}
+EntityYaw :: proc(entity: i32, angle: f32) {}
+EntityX :: proc(entity: i32, x: f32) {}
+EntityZ :: proc(entity: i32, z: f32) {}
 
 // -------Models--------
-
+LoadAnimMesh :: proc(filename: string) -> i32 { return 1}
 
 // -------Camera--------
-
+CreateCamera :: proc() -> i32 { return 1}
+CameraViewport :: proc(camera: i32, x, y, width, height: i32) {}
 
 // --------World-------
 UpdateWorld :: proc() {}
 RenderWorld :: proc(mode: i32) {}
+
+// -------Lights--------
+AmbientLight :: proc(r, g, b: i32) {}
+CreateLight :: proc(type: i32) -> i32 { return 1}
+LightRange :: proc(light: i32, range: f32) {}
+LightConeAngles :: proc(light: i32, inner_angle, outer_angle: f32) {}
+LightColor :: proc(light: i32, r, g, b: i32) {}
 
 // -------Input--------
 KeyDown :: proc(key: i32) -> bool { return false}
@@ -97,6 +118,8 @@ KeyHit :: proc(key: i32) -> i32 { return 1}
 MoveMouse :: proc(x, y: i32) {}
 MouseX :: proc() -> i32 { return 0}
 MouseY :: proc() -> i32 { return 0}
+FlushKeys :: proc() {}
+Input :: proc(prompt: string) -> string { return ""}
 
 // -------Collision--------
 

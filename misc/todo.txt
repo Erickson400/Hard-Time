@@ -34,4 +34,38 @@ API Implementations:
 - GrabImage
 - CreateImage
 - MilliSecs
+- LoadAnimMesh
+- CreateCamera
+- CameraViewport
+- PositionEntity
+- RotateEntity
+- AmbientLight
+- CreateLight
+- LightRange
+- LightConeAngles
+- LightColor
+- LoadSprite
+- ScaleSprite
+- SpriteViewMode
+- EntityAlpha
+- EntityColor
+- ScaleEntity
+- EntityYaw
+- EntityX
+- EntityZ
+- FlushKeys
+- Locate
+- Input
+
+
+
+
+
+
+
+
+
+
+
+
 
