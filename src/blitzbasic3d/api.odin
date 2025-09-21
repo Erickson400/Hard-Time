@@ -51,7 +51,7 @@ SaveImage :: proc(image_handle: i32, path: string) -> i32 { return save_image(im
 
 // -------Sprite---------
 LoadSprite :: proc(filename: string, flags: i32) -> i32 { return 1}
-ScaleSprite :: proc(sprite: i32, scale: f32) {}
+ScaleSprite :: proc(sprite: i32, scalex, scaley: f32) {}
 SpriteViewMode :: proc(mode, other: i32) {}
 
 // -------Text--------
@@ -89,9 +89,14 @@ EntityColor :: proc(entity: i32, r, g, b: i32) {}
 EntityYaw :: proc(entity: i32, angle: f32) {}
 EntityX :: proc(entity: i32, x: f32) {}
 EntityZ :: proc(entity: i32, z: f32) {}
-
+EntityTexture :: proc(entity: i32, texture, sus, sos: i32) {}
+FindChild :: proc(parent: i32, name: string) -> i32 { return 1}
+HideEntity :: proc(entity: i32, hide: bool) {}
+Animate :: proc(entity: i32, sequence: i32, speed: f32, loop, other: i32) {}
 // -------Models--------
 LoadAnimMesh :: proc(filename: string) -> i32 { return 1}
+LoadAnimSequence :: proc(entity: i32, filename: string) -> i32 { return 1}
+ExtractAnimSequence :: proc(entity: i32, seq: i32, start_frame, end_frame: i32) -> i32 {return 1}
 
 // -------Camera--------
 CreateCamera :: proc() -> i32 { return 1}

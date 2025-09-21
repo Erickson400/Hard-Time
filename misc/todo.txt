@@ -56,11 +56,12 @@ API Implementations:
 - FlushKeys
 - Locate
 - Input
-
-
-
-
-
+- LoadAnimSeq
+- Animate
+- ExtractAnimSeq
+- EntityTexture
+- FindChild
+- HideEntity
 
 
 
