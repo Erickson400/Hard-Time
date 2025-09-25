@@ -1,7 +1,7 @@
 package blitzbasic3d
 /*
 	Here goes all the public functions and types exposed
-	by the blitz package to be used outside the package.
+	by the blitz package to be used in the ported source code.
 
 	If the function name is not PascalCase, then its used by main.odin
 */
@@ -9,6 +9,7 @@ package blitzbasic3d
 import ray "vendor:raylib"
 import "core:os"
 import "core:math/rand"
+import "core:strings"
 
 
 
@@ -73,6 +74,18 @@ Rnd :: proc{ rnd_float, rnd_int}
 
 // -------String-------
 StringWidth :: proc(text: string) -> i32 { return 1 }
+Left :: proc(text: string, count: i32) -> string {
+	result, ok := strings.substring_to(text, int(count))
+	if ok do return result
+	return text
+}
+Right :: proc(text: string, count: i32) -> string {
+	result, ok := strings.substring_from(text, int(count))
+	if ok do return result
+	return text
+}
+
+
 
 // -------Time----------
 CreateTimer :: proc(fps: i32) -> i32 { return 1}
@@ -86,13 +99,15 @@ RotateEntity :: proc(entity: i32, x, y, z: f32) {}
 ScaleEntity :: proc(entity: i32, x, y, z: f32) {}
 EntityAlpha :: proc(entity: i32, alpha: f32) {}
 EntityColor :: proc(entity: i32, r, g, b: i32) {}
-EntityYaw :: proc(entity: i32, angle: f32) {}
-EntityX :: proc(entity: i32, x: f32) {}
-EntityZ :: proc(entity: i32, z: f32) {}
+EntityYaw :: proc(entity: i32, angle: f32) -> f32 { return 0}
+EntityX :: proc(entity: i32, x: f32) -> f32 { return 0}
+EntityZ :: proc(entity: i32, z: f32) -> f32 { return 0}
 EntityTexture :: proc(entity: i32, texture, sus, sos: i32) {}
 FindChild :: proc(parent: i32, name: string) -> i32 { return 1}
 HideEntity :: proc(entity: i32, hide: bool) {}
 Animate :: proc(entity: i32, sequence: i32, speed: f32, loop, other: i32) {}
+FreeEntity :: proc(entity: i32) {}
+
 // -------Models--------
 LoadAnimMesh :: proc(filename: string) -> i32 { return 1}
 LoadAnimSequence :: proc(entity: i32, filename: string) -> i32 { return 1}

@@ -6,6 +6,7 @@ package main
 import "core:fmt"
 import "core:math"
 import "core:strings"
+import "core:strconv"
 import bb "blitzbasic3d"
 
 //-------------------------------------------------------------------
@@ -33,7 +34,7 @@ Editor :: proc() {
     bb.LightConeAngles(light1, 0, 135)
     bb.LightColor(light1, 200, 180, 160)
     // load model
-    cyc := 1
+    cyc: i32 = 1
     char := gamChar[0]
     pChar[cyc] = char
     pX[cyc] = -257
@@ -402,18 +403,18 @@ Editor :: proc() {
         bb.RenderWorld(1)
 
         // DISPLAY
-        bb.DrawImage(gLogo[3], rX(570), rY(65))
+        bb.DrawImage(gLogo[3], i32(rX(570)), i32(rY(65)))
         // PROFILE DISPLAY
         if page == 1 {
             // main options
-            x := 570
-            y := 145
+            x: f32 = 570
+            y: f32 = 145
             DrawOption(1, rX(x), rY(y), "Name", charName[char])
             DrawOption(2, rX(x), rY(y + 55), "Height", GetHeight(charHeight[char]))
-            DrawOption(3, rX(x), rY(y + 115), "Strength", charStrength[char])
-            DrawOption(4, rX(x), rY(y + 170), "Agility", charAgility[char])
-            DrawOption(5, rX(x), rY(y + 230), "Intelligence", charIntelligence[char])
-            DrawOption(6, rX(x), rY(y + 285), "Crime", fmt.Sprintf("%d. %s", charCrime[char], textCrime[charCrime[char]]))
+            DrawOption(3, rX(x), rY(y + 115), "Strength", fmt.tprintf("%d", charStrength[char]))
+            DrawOption(4, rX(x), rY(y + 170), "Agility", fmt.tprintf("%d", charAgility[char]))
+            DrawOption(5, rX(x), rY(y + 230), "Intelligence", fmt.tprintf("%d", charIntelligence[char]))
+            DrawOption(6, rX(x), rY(y + 285), "Crime", fmt.tprintf("%d. %s", charCrime[char], textCrime[charCrime[char]]))
             DrawOption(7, rX(x), rY(y + 345), ">>> APPEARANCE >>>", "")
             DrawOption(8, rX(x), rY(y + 400), "<<< SAVE & EXIT <<<", "")
             // enter name
@@ -421,25 +422,25 @@ Editor :: proc() {
                 bb.PlaySound(sMenuBrowse)
                 keytim = 20
                 bb.FlushKeys()
-                bb.DrawImage(gMenu[1], rX(x), rY(y))
+                bb.DrawImage(gMenu[1], i32(rX(x)), i32(rY(y)))
                 DrawOption(1, rX(x), rY(y), "Name", "   ")
                 bb.Flip()
-                bb.Locate(rX(x) + 15, rY(y) - 10)
+                bb.Locate(i32(rX(x)) + 15, i32(rY(y)) - 10)
                 bb.Color(255, 255, 255)
                 bb.SetFont(font[3])
                 oldName := charName[char]
-                charName[char] = strings.Left(bb.Input(""), 20)
+                charName[char] = bb.Left(bb.Input(""), 20)
                 if charName[char] == "" {
                     charName[char] = oldName
                 }
             } else {
                 bb.SetFont(font[2])
                 if foc == 1 {
-                    Outline("(Press BACKSPACE to change)", rX(x), rY(y) + 18, 0, 0, 0, 255, 200, 150)
+                    Outline("(Press BACKSPACE to change)", i32(rX(x)), i32(rY(y)) + 18, 0, 0, 0, 255, 200, 150)
                 }
             }
             // point reminder
-            showY := 0
+            showY: f32 = 0
             if foc >= 3 && foc <= 5 && gamPointLimit < 999 {
                 bb.SetFont(font[2])
                 switch foc {
@@ -449,21 +450,21 @@ Editor :: proc() {
                 case 6: showY = y + 285
                 }
                 if gamPoints > 0 {
-                    Outline(fmt.Sprintf("(%d Points Remaining)", gamPoints), rX(x), rY(showY) + 18, 0, 0, 0, 255, 200, 150)
+                    Outline(fmt.tprintf("(%d Points Remaining)", gamPoints), i32(rX(x)), i32(rY(showY)) + 18, 0, 0, 0, 255, 200, 150)
                 }
                 if gamPoints == 0 {
-                    Outline("(No Points Remaining!)", rX(x), rY(showY) + 18, 0, 0, 0, 200, 100, 100)
+                    Outline("(No Points Remaining!)", i32(rX(x)), i32(rY(showY)) + 18, 0, 0, 0, 200, 100, 100)
                 }
             }
         }
         // APPEARANCE DISPLAY
         if page == 2 {
             // main options
-            x := 570
-            y := 145
+            x: f32 = 570
+            y: f32 = 145
             DrawOption(1, rX(x), rY(y), "Hair Style", textHair[charHairStyle[char]])
-            DrawOption(2, rX(x), rY(y + 55), "Hair Colour", fmt.Sprintf("%d/%d", charHair[char], no_hairs))
-            DrawOption(3, rX(x), rY(y + 115), "Face", fmt.Sprintf("%d/%d", charFace[char], no_faces))
+            DrawOption(2, rX(x), rY(y + 55), "Hair Colour", fmt.tprintf("%d/%d", charHair[char], no_hairs))
+            DrawOption(3, rX(x), rY(y + 115), "Face", fmt.tprintf("%d/%d", charFace[char], no_faces))
             DrawOption(4, rX(x), rY(y + 170), "Eyewear", textSpecs[charSpecs[char]])
             DrawOption(5, rX(x), rY(y + 230), "Build", textModel[charModel[char]])
             DrawOption(6, rX(x), rY(y + 285), "Outfit", textCostume[charCostume[char]])
@@ -472,7 +473,7 @@ Editor :: proc() {
             // advice
             bb.SetFont(font[2])
             if foc == 5 {
-                Outline("(Press ENTER to apply)", rX(x), rY(y + 230) + 18, 0, 0, 0, 255, 200, 150)
+                Outline("(Press ENTER to apply)", i32(rX(x)), i32(rY(y + 230)) + 18, 0, 0, 0, 255, 200, 150)
             }
         }
         // loading call
@@ -492,7 +493,7 @@ Editor :: proc() {
 
         bb.Flip()
         // screenshot (F12)
-        if bb.KeyHit(88) {
+        if bb.KeyHit(88) > 0 {
             Screenshot()
         }
     }
@@ -507,10 +508,10 @@ Editor :: proc() {
 
     // take photo
     QuickLoader(rX(400), rY(300), "Please Wait", "Saving Character")
-    charPhoto[char] = bb.CreateImage(rX(300), rY(200))
+    charPhoto[char] = bb.CreateImage(i32(rX(300)), i32(rY(200)))
     bb.GrabImage(charPhoto[char], rX(210), rY(220 - charHeight[char]))
     bb.ResizeImage(charPhoto[char], 150, 100)
-    bb.SaveImage(charPhoto[char], fmt.Sprintf("Data/Slot0%s/Photos/Photo%s.bmp", slot, Dig(char, 100)))
+    bb.SaveImage(charPhoto[char], fmt.tprintf("Data/Slot0%s/Photos/Photo%s.bmp", slot, Dig(char, 100)))
     bb.MaskImage(charPhoto[char], 255, 0, 255)
     charSnapped[char] = 1
     SaveChars()
@@ -562,6 +563,7 @@ ReloadModel :: proc(cyc: i32) {
         bb.HideEntity(bb.FindChild(p[cyc], weapFile[v]))
     }
 }
+
 
 // IDENTIFY LIMBS
 GetLimbs :: proc(cyc: i32) {
@@ -677,10 +679,181 @@ GetRace :: proc(char: i32) -> i32 {
 }
 
 
+BaggyTop :: proc(costume: i32) -> i32 {
+    baggy: i32 = 0
+    if costume == 2 || costume == 4 || costume == 6 || costume == 8 {
+        baggy = 1
+    }
+    return baggy
+}
+
+
+ApplyCostume :: proc(cyc: i32) {
+    GetLimbs(cyc)
+    ApplyHairstyle(cyc)
+    ApplyEyewear(cyc)
+    ApplyAccessories(cyc)
+    ApplyClothing(cyc)
+}
+
+
+RemoveHair :: proc(cyc: i32) {
+    for limb in 1..=15 {
+        if bb.FindChild(p[cyc], hairFile[limb]) > 0 {
+            bb.EntityAlpha(bb.FindChild(p[cyc], hairFile[limb]), 0)
+        }
+    }
+}
+
+
+ApplyHairstyle :: proc(cyc: i32) {
+    // Hide all hair by default
+    char := pChar[cyc]
+    RemoveHair(cyc)
+    showA: i32 = 0
+    showB: i32 = 0
+    hairerA: string = ""
+    hairerB: string = ""
+
+    switch charHairStyle[char] {
+    case 2:  hairerA = "Hair_Bald";   showA = 1
+    case 3:  hairerA = "Hair_Thin";   showA = 1
+    case 4:  hairerA = "Hair_Short";  showA = 1
+    case 5:  hairerA = "Hair_Raise";  showA = 1
+    case 6:  hairerA = "Hair_Quiff";  showA = 1
+    case 7:  hairerA = "Hair_Mop";    showA = 1
+    case 8:  hairerA = "Hair_Thick";  showA = 1
+    case 9:  hairerA = "Hair_Full";   showA = 1
+    case 10: hairerA = "Hair_Curl";   showA = 1
+    case 11: hairerA = "Hair_Afro";   showA = 1
+    case 12: hairerA = "Hair_Spike";  showA = 1
+    case 13: hairerA = "Hair_Punk";   showA = 1
+    case 14: hairerA = "Hair_Rolls";  showA = 1
+    case 15: hairerA = "Hair_Bald";   hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 16: hairerA = "Hair_Thin";   hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 17: hairerA = "Hair_Short";  hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 18: hairerA = "Hair_Raise";  hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 19: hairerA = "Hair_Quiff";  hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 20: hairerA = "Hair_Mop";    hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 21: hairerA = "Hair_Thick";  hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 22: hairerA = "Hair_Curl";   hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 23: hairerA = "Hair_Punk";   hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 24: hairerA = "Hair_Rolls";  hairerB = "Hair_Pony";   showA = 1; showB = 1
+    case 25: hairerA = "Hair_Bald";   hairerB = "Hair_Long";   showA = 1; showB = 1
+    case 26: hairerA = "Hair_Thin";   hairerB = "Hair_Long";   showA = 1; showB = 1
+    case 27: hairerA = "Hair_Short";  hairerB = "Hair_Long";   showA = 1; showB = 1
+    case 28: hairerA = "Hair_Raise";  hairerB = "Hair_Long";   showA = 1; showB = 1
+    case 29: hairerA = "Hair_Quiff";  hairerB = "Hair_Long";   showA = 1; showB = 1
+    case 30: hairerA = "Hair_Mop";    hairerB = "Hair_Long";   showA = 1; showB = 1
+    case 31: hairerA = "Hair_Thick";  hairerB = "Hair_Long";   showA = 1; showB = 1
+    }
+
+    // Tuck hair under hat
+    if charAccessory[char] == 2 || charAccessory[char] == 7 {
+        if charHairStyle[char] >= 2 {
+            hairerA = "Hair_Bald"
+        }
+    }
+    // Tuck mop into headband
+    if charAccessory[char] == 5 {
+        if charHairStyle[char] == 7 || charHairStyle[char] == 20 || charHairStyle[char] == 30 {
+            hairerA = "Hair_Short"
+        }
+    }
+
+    // Compose hair
+    if charHairStyle[char] > 1 {
+        if showA {
+            limbA := bb.FindChild(p[cyc], hairerA)
+            if limbA > 0 {
+                bb.EntityAlpha(limbA, 1)
+                bb.EntityTexture(limbA, tHair[charHair[char]], 0, 1)
+            }
+        }
+        if showB {
+            limbB := bb.FindChild(p[cyc], hairerB)
+            if limbB > 0 {
+                bb.EntityAlpha(limbB, 1)
+                bb.EntityTexture(limbB, tHair[charHair[char]], 0, 1)
+            }
+        }
+    }
+
+    // Add shaved layer
+    if charHairStyle[char] == 1 || charHairStyle[char] == 14 || charHairStyle[char] == 24 {
+        bb.EntityTexture(bb.FindChild(p[cyc], "Head"), tShaved, 0, 2)
+    } else {
+        bb.EntityTexture(bb.FindChild(p[cyc], "Head"), tMouth[0], 0, 2)
+    }
+}
+
 
 /*
 
-
+;APPLY HAIRSTYLE
+Function ApplyHairstyle(cyc)
+ ;hide all by default
+ char=pChar(cyc)
+ RemoveHair(cyc)
+ ;determine style
+ showA=0 : showB=0
+ If charHairStyle(char)=2 Then hairerA$="Hair_Bald" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=3 Then hairerA$="Hair_Thin" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=4 Then hairerA$="Hair_Short" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=5 Then hairerA$="Hair_Raise" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=6 Then hairerA$="Hair_Quiff" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=7 Then hairerA$="Hair_Mop" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=8 Then hairerA$="Hair_Thick" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=9 Then hairerA$="Hair_Full" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=10 Then hairerA$="Hair_Curl" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=11 Then hairerA$="Hair_Afro" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=12 Then hairerA$="Hair_Spike" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=13 Then hairerA$="Hair_Punk" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=14 Then hairerA$="Hair_Rolls" : hairerB$="" : showA=1 : showB=0
+ If charHairStyle(char)=15 Then hairerA$="Hair_Bald" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=16 Then hairerA$="Hair_Thin" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=17 Then hairerA$="Hair_Short" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=18 Then hairerA$="Hair_Raise" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=19 Then hairerA$="Hair_Quiff" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=20 Then hairerA$="Hair_Mop" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=21 Then hairerA$="Hair_Thick" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=22 Then hairerA$="Hair_Curl" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=23 Then hairerA$="Hair_Punk" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=24 Then hairerA$="Hair_Rolls" : hairerB$="Hair_Pony" : showA=1 : showB=1
+ If charHairStyle(char)=25 Then hairerA$="Hair_Bald" : hairerB$="Hair_Long" : showA=1 : showB=1
+ If charHairStyle(char)=26 Then hairerA$="Hair_Thin" : hairerB$="Hair_Long" : showA=1 : showB=1
+ If charHairStyle(char)=27 Then hairerA$="Hair_Short" : hairerB$="Hair_Long" : showA=1 : showB=1
+ If charHairStyle(char)=28 Then hairerA$="Hair_Raise" : hairerB$="Hair_Long" : showA=1 : showB=1
+ If charHairStyle(char)=29 Then hairerA$="Hair_Quiff" : hairerB$="Hair_Long" : showA=1 : showB=1
+ If charHairStyle(char)=30 Then hairerA$="Hair_Mop" : hairerB$="Hair_Long" : showA=1 : showB=1
+ If charHairStyle(char)=31 Then hairerA$="Hair_Thick" : hairerB$="Hair_Long" : showA=1 : showB=1
+ ;tuck hair under hat
+ If charAccessory(char)=2 Or charAccessory(char)=7
+  If charHairStyle(char)=>2 Then hairerA$="Hair_Bald"
+ EndIf
+ ;tuck mop into headband
+ If charAccessory(char)=5
+  If charHairStyle(char)=7 Or charHairStyle(char)=20 Or charHairStyle(char)=30 Then hairerA$="Hair_Short"
+ EndIf
+ ;compose hair
+ If charHairStyle(char)>1
+  randy=Rnd(1,3)
+  If showA=1
+   EntityAlpha FindChild(p(cyc),hairerA$),1
+   EntityTexture FindChild(p(cyc),hairerA$),tHair(charHair(pChar(cyc)));,0,1
+  EndIf
+  If showB=1
+   EntityAlpha FindChild(p(cyc),hairerB$),1 
+   EntityTexture FindChild(p(cyc),hairerB$),tHair(charHair(pChar(cyc)));,0,1
+  EndIf
+ EndIf
+ ;add shaved layer
+ If charHairStyle(char)=1 Or charHairStyle(char)=14 Or charHairStyle(char)=24
+  EntityTexture FindChild(p(cyc),"Head"),tShaved,0,2
+ Else
+  EntityTexture FindChild(p(cyc),"Head"),tMouth(0),0,2
+ EndIf
+End Function
 */
 
 

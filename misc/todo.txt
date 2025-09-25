@@ -22,6 +22,7 @@ API Implementations:
 - TileImage
 - DrawImage
 - FreeTimer
+- FreeEntity
 - MoveMouse
 - MouseX
 - MouseY
@@ -62,8 +63,6 @@ API Implementations:
 - EntityTexture
 - FindChild
 - HideEntity
-
-
 
 
 
