@@ -2,39 +2,47 @@ Terms:
 --- Accesible if all global variables and constants can be accessed from any other hardtime file (with or without running the file's init function).
 --- Runnable if all its functions can be called without crashing, and run as expected as the original. This also means Blitz function calls from this file should be fully implemented in the API. Also any global/function declared in another hardtime file should be implemented.
 --- Last time checked if is matching, is the last time I personally read from start to end comparing the Odin code to the blitz source code. Its recommended to do frequent checks when big API changes are made. The more checks I do the more likely I can encounter bugs before any big annoyances occure.
---- Score goes from 0 to 10, 10 being I'm 100% confident the code matches the original blitz source. No matter if its runnable or not.
+--- Accuracy goes from 0 to 10, 10 being I'm 100% confident the code matches the original blitz source. No matter if its runnable or not.
 
 
 Text.bb
 - Accesible
 - Runnable
 - Last time checked if is matching: Sep 6, 2025
-- Score: 9
+- Accuracy: 9/10
 
 
 Value.bb
 - Accesible
 - Not Runnable
 - Last time checked if is matching: Sep 12, 2025
-- Score: 1
+- Accuracy: 1/10
 
 
 Data.bb
 - Accesible
 - Not Runnable
 - Last time checked if is matching: Sep 16, 2025
-- Score: 5
+- Accuracy: 5/10
 
 
 Functions.bb
 - Accesible
 - Not Runnable
 - Last time checked if is matching: Sep 16, 2025
-- Score: 8
+- Accuracy: 8/10
 
 
 Menus.bb
 - Accesible
 - Not Runnable
 - Last time checked if is matching: Sep 18, 2025
-- Score: 8
+- Accuracy: 8/10
+
+
+Editor.bb
+- Not Accesible
+- Not Runnable
+- Last time checked if is matching: Sep 27, 2025
+- Accuracy: 5/10
+

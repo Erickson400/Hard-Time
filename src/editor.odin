@@ -509,7 +509,7 @@ Editor :: proc() {
     // take photo
     QuickLoader(rX(400), rY(300), "Please Wait", "Saving Character")
     charPhoto[char] = bb.CreateImage(i32(rX(300)), i32(rY(200)))
-    bb.GrabImage(charPhoto[char], rX(210), rY(220 - charHeight[char]))
+    bb.GrabImage(charPhoto[char], i32(rX(210)), i32(rY(f32(220 - charHeight[char]))))
     bb.ResizeImage(charPhoto[char], 150, 100)
     bb.SaveImage(charPhoto[char], fmt.tprintf("Data/Slot0%s/Photos/Photo%s.bmp", slot, Dig(char, 100)))
     bb.MaskImage(charPhoto[char], 255, 0, 255)
@@ -547,8 +547,8 @@ Editor :: proc() {
 ReloadModel :: proc(cyc: i32) {
     // sequences
     p[cyc] = bb.LoadAnimMesh(fmt.tprintf("Characters/Models/Model%d.3ds", charModel[pChar[cyc]]))
-    pSeq[cyc, 604] = bb.LoadAnimSeq(p[cyc], "Characters/Sequences/Standard04.3ds")
-    pSeq[cyc, 1] = bb.ExtractAnimSeq(p[cyc], 770, 850, pSeq[cyc][604])
+    pSeq[cyc][604] = bb.LoadAnimSeq(p[cyc], "Characters/Sequences/Standard04.3ds")
+    pSeq[cyc][1] = bb.ExtractAnimSeq(p[cyc], 770, 850, pSeq[cyc][604])
     // position
     bb.Animate(p[cyc], 1, 0.1, pSeq[cyc][1], 0)
     bb.PositionEntity(p[cyc], pX[cyc], pY[cyc], pZ[cyc])
@@ -574,7 +574,7 @@ GetLimbs :: proc(cyc: i32) {
     // upper body
     pLimb[cyc][1] = bb.FindChild(p[cyc], "Head")
     pLimb[cyc][2] = bb.FindChild(p[cyc], "Neck")
-    if BaggyTop(charCostume[pChar[cyc]]) {
+    if BaggyTop(charCostume[pChar[cyc]]) > 0 {
         pLimb[cyc][3] = bb.FindChild(p[cyc], "Body_Baggy")
     } else {
         pLimb[cyc][3] = bb.FindChild(p[cyc], "Body")
@@ -710,10 +710,8 @@ ApplyHairstyle :: proc(cyc: i32) {
     // Hide all hair by default
     char := pChar[cyc]
     RemoveHair(cyc)
-    showA: i32 = 0
-    showB: i32 = 0
-    hairerA: string = ""
-    hairerB: string = ""
+    showA, showB: i32 = 0, 0
+    hairerA, hairerB: string = "", ""
 
     switch charHairStyle[char] {
     case 2:  hairerA = "Hair_Bald";   showA = 1
@@ -747,7 +745,6 @@ ApplyHairstyle :: proc(cyc: i32) {
     case 30: hairerA = "Hair_Mop";    hairerB = "Hair_Long";   showA = 1; showB = 1
     case 31: hairerA = "Hair_Thick";  hairerB = "Hair_Long";   showA = 1; showB = 1
     }
-
     // Tuck hair under hat
     if charAccessory[char] == 2 || charAccessory[char] == 7 {
         if charHairStyle[char] >= 2 {
@@ -760,25 +757,18 @@ ApplyHairstyle :: proc(cyc: i32) {
             hairerA = "Hair_Short"
         }
     }
-
     // Compose hair
     if charHairStyle[char] > 1 {
-        if showA {
-            limbA := bb.FindChild(p[cyc], hairerA)
-            if limbA > 0 {
-                bb.EntityAlpha(limbA, 1)
-                bb.EntityTexture(limbA, tHair[charHair[char]], 0, 1)
-            }
+        randy := bb.Rnd(1, 3)
+        if showA == 1 {
+            bb.EntityAlpha(bb.FindChild(p[cyc], hairerA), 1)
+            bb.EntityTexture(bb.FindChild(p[cyc], hairerA), tHair[charHair[char]], 0, 1)
         }
-        if showB {
-            limbB := bb.FindChild(p[cyc], hairerB)
-            if limbB > 0 {
-                bb.EntityAlpha(limbB, 1)
-                bb.EntityTexture(limbB, tHair[charHair[char]], 0, 1)
-            }
+        if showB == 1 {
+            bb.EntityAlpha(bb.FindChild(p[cyc], hairerB), 1)
+            bb.EntityTexture(bb.FindChild(p[cyc], hairerB), tHair[charHair[char]], 0, 1)
         }
     }
-
     // Add shaved layer
     if charHairStyle[char] == 1 || charHairStyle[char] == 14 || charHairStyle[char] == 24 {
         bb.EntityTexture(bb.FindChild(p[cyc], "Head"), tShaved, 0, 2)
@@ -788,77 +778,204 @@ ApplyHairstyle :: proc(cyc: i32) {
 }
 
 
-/*
-
-;APPLY HAIRSTYLE
-Function ApplyHairstyle(cyc)
- ;hide all by default
- char=pChar(cyc)
- RemoveHair(cyc)
- ;determine style
- showA=0 : showB=0
- If charHairStyle(char)=2 Then hairerA$="Hair_Bald" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=3 Then hairerA$="Hair_Thin" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=4 Then hairerA$="Hair_Short" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=5 Then hairerA$="Hair_Raise" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=6 Then hairerA$="Hair_Quiff" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=7 Then hairerA$="Hair_Mop" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=8 Then hairerA$="Hair_Thick" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=9 Then hairerA$="Hair_Full" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=10 Then hairerA$="Hair_Curl" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=11 Then hairerA$="Hair_Afro" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=12 Then hairerA$="Hair_Spike" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=13 Then hairerA$="Hair_Punk" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=14 Then hairerA$="Hair_Rolls" : hairerB$="" : showA=1 : showB=0
- If charHairStyle(char)=15 Then hairerA$="Hair_Bald" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=16 Then hairerA$="Hair_Thin" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=17 Then hairerA$="Hair_Short" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=18 Then hairerA$="Hair_Raise" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=19 Then hairerA$="Hair_Quiff" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=20 Then hairerA$="Hair_Mop" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=21 Then hairerA$="Hair_Thick" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=22 Then hairerA$="Hair_Curl" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=23 Then hairerA$="Hair_Punk" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=24 Then hairerA$="Hair_Rolls" : hairerB$="Hair_Pony" : showA=1 : showB=1
- If charHairStyle(char)=25 Then hairerA$="Hair_Bald" : hairerB$="Hair_Long" : showA=1 : showB=1
- If charHairStyle(char)=26 Then hairerA$="Hair_Thin" : hairerB$="Hair_Long" : showA=1 : showB=1
- If charHairStyle(char)=27 Then hairerA$="Hair_Short" : hairerB$="Hair_Long" : showA=1 : showB=1
- If charHairStyle(char)=28 Then hairerA$="Hair_Raise" : hairerB$="Hair_Long" : showA=1 : showB=1
- If charHairStyle(char)=29 Then hairerA$="Hair_Quiff" : hairerB$="Hair_Long" : showA=1 : showB=1
- If charHairStyle(char)=30 Then hairerA$="Hair_Mop" : hairerB$="Hair_Long" : showA=1 : showB=1
- If charHairStyle(char)=31 Then hairerA$="Hair_Thick" : hairerB$="Hair_Long" : showA=1 : showB=1
- ;tuck hair under hat
- If charAccessory(char)=2 Or charAccessory(char)=7
-  If charHairStyle(char)=>2 Then hairerA$="Hair_Bald"
- EndIf
- ;tuck mop into headband
- If charAccessory(char)=5
-  If charHairStyle(char)=7 Or charHairStyle(char)=20 Or charHairStyle(char)=30 Then hairerA$="Hair_Short"
- EndIf
- ;compose hair
- If charHairStyle(char)>1
-  randy=Rnd(1,3)
-  If showA=1
-   EntityAlpha FindChild(p(cyc),hairerA$),1
-   EntityTexture FindChild(p(cyc),hairerA$),tHair(charHair(pChar(cyc)));,0,1
-  EndIf
-  If showB=1
-   EntityAlpha FindChild(p(cyc),hairerB$),1 
-   EntityTexture FindChild(p(cyc),hairerB$),tHair(charHair(pChar(cyc)));,0,1
-  EndIf
- EndIf
- ;add shaved layer
- If charHairStyle(char)=1 Or charHairStyle(char)=14 Or charHairStyle(char)=24
-  EntityTexture FindChild(p(cyc),"Head"),tShaved,0,2
- Else
-  EntityTexture FindChild(p(cyc),"Head"),tMouth(0),0,2
- EndIf
-End Function
-*/
+ApplyEyewear :: proc(cyc: i32) {
+    // hide by default
+    char := pChar[cyc]
+    bb.HideEntity(bb.FindChild(p[cyc], "Specs"))
+    bb.HideEntity(bb.FindChild(p[cyc], "Lens01"))
+    bb.HideEntity(bb.FindChild(p[cyc], "Lens02"))
+    if charSpecs[char] > 0 {
+        // compose specs
+        bb.ShowEntity(bb.FindChild(p[cyc], "Specs"))
+        bb.EntityShininess(bb.FindChild(p[cyc], "Specs"), 0.5)
+        for count in 1..=2 {
+            bb.ShowEntity(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)))
+            bb.EntityColor(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 255, 255, 255)
+            bb.EntityAlpha(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 0.35)
+            bb.EntityShininess(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 1)
+        }
+        // golden frame
+        if charSpecs[char] == 1 {
+            bb.EntityTexture(bb.FindChild(p[cyc], "Specs"), tSpecs[1])
+        }
+        // silver frame
+        if charSpecs[char] == 2 {
+            bb.EntityTexture(bb.FindChild(p[cyc], "Specs"), tSpecs[2])
+        }
+        // black frame
+        if charSpecs[char] == 3 {
+            bb.EntityTexture(bb.FindChild(p[cyc], "Specs"), tSpecs[3])
+        }
+        // shades
+        if charSpecs[char] == 4 {
+            bb.EntityTexture(bb.FindChild(p[cyc], "Specs"), tSpecs[3])
+            for count in 1..=2 {
+                bb.EntityColor(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 0, 0, 0)
+                bb.EntityAlpha(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 0.75)
+            }
+        }
+    }
+}
 
 
+ApplyAccessories :: proc(cyc: i32) {
+    // hide by default
+    char := pChar[cyc]
+    bb.HideEntity(bb.FindChild(p[cyc], "Turban"))
+    bb.HideEntity(bb.FindChild(p[cyc], "Bling"))
+    bb.HideEntity(bb.FindChild(p[cyc], "Tie"))
+    bb.HideEntity(bb.FindChild(p[cyc], "BandA"))
+    bb.HideEntity(bb.FindChild(p[cyc], "BandB"))
+    bb.HideEntity(bb.FindChild(p[cyc], "Armband"))
+    bb.HideEntity(bb.FindChild(p[cyc], "Cap"))
+    // turban
+    if charAccessory[char] == 2 {
+        bb.ShowEntity(bb.FindChild(p[cyc], "Turban"))
+    }
+    // bling
+    if charAccessory[char] == 3 {
+        bb.EntityShininess(bb.FindChild(p[cyc], "Bling"), 1.0)
+        bb.ShowEntity(bb.FindChild(p[cyc], "Bling"))
+    }
+    // tie
+    if charAccessory[char] == 4 {
+        bb.ShowEntity(bb.FindChild(p[cyc], "Tie"))
+    }
+    // headband
+    if charAccessory[char] == 5 {
+        bb.ShowEntity(bb.FindChild(p[cyc], "BandA"))
+        if charHairStyle[char] < 1 || charHairStyle[char] == 13 || charHairStyle[char] == 14 ||
+           charHairStyle[char] == 23 || charHairStyle[char] == 24 {
+            bb.ShowEntity(bb.FindChild(p[cyc], "BandB"))
+        }
+    }
+    // armband
+    if charAccessory[char] == 6 {
+        bb.ShowEntity(bb.FindChild(p[cyc], "Armband"))
+    }
+    // cap
+    if charAccessory[char] == 7 {
+        bb.ShowEntity(bb.FindChild(p[cyc], "Cap"))
+    }
+}
 
 
+ApplyClothing :: proc(cyc: i32) {
+    // head
+    char := pChar[cyc]
+    for limb in 1..=2 {
+        bb.EntityTexture(pLimb[cyc][1], tFace[charFace[char]], 0, 1)
+        bb.EntityTexture(pLimb[cyc][2], tFace[charFace[char]], 0, 1)
+    }
+    // ears
+    for limb in 37..=38 {
+        bb.EntityTexture(pLimb[cyc][limb], tFace[charFace[char]], 0, 1)
+        bb.EntityTexture(pLimb[cyc][limb], tEars, 0, 3)
+    }
+    // body
+    limb := 3
+    bb.EntityTexture(pLimb[cyc][limb], tMouth[0], 0, 2)
+    bb.EntityTexture(pLimb[cyc][limb], tMouth[0], 0, 3)
+    bb.EntityTexture(pLimb[cyc][limb], tMouth[0], 0, 4)
+    if charRole[char] == 0 {
+        if charCostume[char] == 0 {
+            body: i32
+            if (charModel[char] < 2 && charStrength[char] < 70) || charModel[char] > 4 {
+                body = 10
+            } else {
+                body = 1
+            }
+            bb.EntityTexture(pLimb[cyc][limb], tBody[body], 0, 1)
+            if GetRace(char) > 0 {
+                bb.EntityTexture(pLimb[cyc][limb], tBodyShade[GetRace(char)], 0, 2)
+            }
+            if charGang[char] > 0 {
+                bb.EntityTexture(pLimb[cyc][limb], tTattooBody[charGang[char]], 0, 3)
+            }
+        }
+        if charCostume[char] >= 1 && charCostume[char] <= 2 {
+            bb.EntityTexture(pLimb[cyc][limb], tBody[2], 0, 1)
+            if GetRace(char) > 0 {
+                bb.EntityTexture(pLimb[cyc][limb], tBodyShade[2 + GetRace(char)], 0, 2)
+            }
+            if charGang[char] > 0 {
+                bb.EntityTexture(pLimb[cyc][limb], tTattooVest[charGang[char]], 0, 3)
+            }
+        }
+        if charCostume[char] >= 3 && charCostume[char] <= 4 {
+            bb.EntityTexture(pLimb[cyc][limb], tBody[3], 0, 1)
+        }
+        if charCostume[char] >= 5 {
+            bb.EntityTexture(pLimb[cyc][limb], tBody[4 + charBlock[char]], 0, 1)
+        }
+        if charCostume[cyc] >= 3 {
+            bb.EntityTexture(pLimb[cyc][limb], tBlock[charBlock[char]], 0, 3)
+            bb.EntityTexture(pLimb[cyc][limb], tCell[charCell[char]], 0, 4)
+        }
+    }
+    if charRole[char] == 1 do bb.EntityTexture(pLimb[cyc][limb], tBody[4], 0, 1)
+    if charRole[char] >= 2 do bb.EntityTexture(pLimb[cyc][limb], tBody[9], 0, 1)
+    if BaggyTop(charCostume[char]) > 0 {
+        bb.EntityAlpha(bb.FindChild(p[cyc], "Body_Baggy"), 1)
+        bb.EntityAlpha(bb.FindChild(p[cyc], "Body"), 0)
+    } else {
+        bb.EntityAlpha(bb.FindChild(p[cyc], "Body"), 1)
+        bb.EntityAlpha(bb.FindChild(p[cyc], "Body_Baggy"), 0)
+    }
+    // arms
+    for limb in 4..=29 {
+        bb.EntityTexture(pLimb[cyc][limb], tMouth[0], 0, 2)
+        bb.EntityTexture(pLimb[cyc][limb], tMouth[0], 0, 3)
+        if charRole[char] == 0 {
+            if charCostume[char] <= 2 {
+                bb.EntityTexture(pLimb[cyc][limb], tArm[1], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooArm[charGang[char]], 0, 3)
+            }
+            if charCostume[char] >= 3 && charCostume[char] <= 4 {
+                bb.EntityTexture(pLimb[cyc][limb], tArm[2], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[2 + GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooTee[charGang[char]], 0, 3)
+            }
+            if charCostume[char] >= 5 && charCostume[char] <= 6 {
+                bb.EntityTexture(pLimb[cyc][limb], tArm[3 + charBlock[char]], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[2 + GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooTee[charGang[char]], 0, 3)
+            }
+            if charCostume[char] >= 7 && charCostume[char] <= 8 {
+                bb.EntityTexture(pLimb[cyc][limb], tArm[7 + charBlock[char]], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[4 + GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooSleeve[charGang[char]], 0, 3)
+            }
+        }
+        if charRole[char] == 1 {
+            bb.EntityTexture(pLimb[cyc][limb], tArm[3], 0, 1)
+            if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[2 + GetRace(char)], 0, 2)
+        }
+        if charRole[char] >= 2 {
+            bb.EntityTexture(pLimb[cyc][limb], tArm[12], 0, 1)
+            if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[6 + GetRace(char)], 0, 2)
+        }
+    }
+    // legs
+    for limb in 30..=36 {
+        if charRole[char] == 0 do bb.EntityTexture(pLimb[cyc][limb], tLegs[1 + charBlock[char]], 0, 1)
+        if charRole[char] == 1 do bb.EntityTexture(pLimb[cyc][limb], tLegs[1], 0, 1)
+        if charRole[char] >= 2 do bb.EntityTexture(pLimb[cyc][limb], tLegs[6], 0, 1)
+    }
+}
+
+
+GangAdjust :: proc(char: i32) {
+    if charRole[char] == 0 do charAccessory[char] = charGang[char]
+    // skinhead & shades
+    if charGang[char] == 1 && charHairStyle[char] > 1 {
+        charHairStyle[char] = bb.Rnd(0, 1)
+        charSpecs[char] = 4
+    } 
+    // chest vest for thug
+    if charGang[char] == 5 && charCostume[char] > 2 do charCostume[char] = bb.Rnd(0, 2)
+}
 
 
 

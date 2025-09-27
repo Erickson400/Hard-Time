@@ -29,7 +29,7 @@ GraphicsHeight :: proc() -> i32 { return 1}
 TileImage :: proc(image: i32) {}
 DrawImage :: proc(image: i32, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
-GrabImage :: proc(image: i32, x, y, width, height: i32) -> i32 { return 1}
+GrabImage :: proc(image: i32, x, y: i32, frame: i32 = 0) -> i32 { return 1}
 Locate :: proc(x, y: i32) {}
 
 // ------Audio-----
@@ -49,6 +49,7 @@ LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height
 	return load_anim_texture(filenames, flags, frame_width, frame_height, first_frame, frame_count)
 }
 SaveImage :: proc(image_handle: i32, path: string) -> i32 { return save_image(image_handle, path) }
+ResizeImage :: proc(image: i32, new_width, new_height: i32) {}
 
 // -------Sprite---------
 LoadSprite :: proc(filename: string, flags: i32) -> i32 { return 1}
@@ -102,16 +103,18 @@ EntityColor :: proc(entity: i32, r, g, b: i32) {}
 EntityYaw :: proc(entity: i32, angle: f32) -> f32 { return 0}
 EntityX :: proc(entity: i32, x: f32) -> f32 { return 0}
 EntityZ :: proc(entity: i32, z: f32) -> f32 { return 0}
-EntityTexture :: proc(entity: i32, texture, sus, sos: i32) {}
+EntityTexture :: proc(entity: i32, texture: i32, sus: i32 = 0, sos: i32 = 0) {}
 FindChild :: proc(parent: i32, name: string) -> i32 { return 1}
-HideEntity :: proc(entity: i32, hide: bool) {}
+HideEntity :: proc(entity: i32) {}
+ShowEntity :: proc(entity: i32) {}
 Animate :: proc(entity: i32, sequence: i32, speed: f32, loop, other: i32) {}
 FreeEntity :: proc(entity: i32) {}
+EntityShininess :: proc(entity: i32, shininess: f32) {}
 
 // -------Models--------
 LoadAnimMesh :: proc(filename: string) -> i32 { return 1}
-LoadAnimSequence :: proc(entity: i32, filename: string) -> i32 { return 1}
-ExtractAnimSequence :: proc(entity: i32, seq: i32, start_frame, end_frame: i32) -> i32 {return 1}
+LoadAnimSeq :: proc(entity: i32, filename: string) -> i32 { return 1}
+ExtractAnimSeq :: proc(entity: i32, seq: i32, start_frame, end_frame: i32) -> i32 {return 1}
 
 // -------Camera--------
 CreateCamera :: proc() -> i32 { return 1}

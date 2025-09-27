@@ -63,8 +63,9 @@ API Implementations:
 - EntityTexture
 - FindChild
 - HideEntity
-
-
+- ShowEntity
+- ResizeImage
+- EntityShininess
 
 
 
