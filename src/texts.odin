@@ -15,17 +15,17 @@ Key := [256]string {0..=1 = "?", 2 = "1", 3 = "2", 4 = "3", 5 = "4", 6 = "5", 7 
 					47 = "V", 48 = "B", 49 = "N", 50 = "M", 51 = ",", 52 = ".", 53 = "/",
 					54 = "Right Shift", 55 = "?", 56 = "Left Alt", 57 = "Space", 
 					58..=156 = "?", 157 = "Right Ctrl" , 158..=183 = "?", 184 = "Right Alt",  
-					185..=199 = "?", 200 = "Cursor Up" ,  201..=202 = "?", 208 = "Cursor Down" , 
-					203 = "Cursor Left" ,  204 = "?", 205 = "Cursor Right", 209..=255 = "?" }
+					185..=199 = "?", 200 = "Cursor Up" ,  201..=202 = "?", 203 = "Cursor Left" , 
+					204 = "?", 205 = "Cursor Right", 208 = "Cursor Down", 209..=255 = "?"}
 
 ////////////////////////////////////////////////////////
 //-------------------- STATUS --------------------------
 ////////////////////////////////////////////////////////
-// Unused
+// textWeek is Unused
 //weeks
 @(rodata)
 textWeek := [5]string{"?", "1st week", "2nd week", "3rd week", "4th week"}
-// Unused
+// textMonth is Unused
 //months
 @(rodata)
 textMonth := [13]string{"?", "January", "February", "March", "April",
@@ -61,7 +61,7 @@ textCrime := [21]string{"None", "Fraud", "Prostitution", "Drug Abuse",
 textGang := [7]string{"None", "The Suns Of God", "The Avatars Of Allah",
 						"The Dark Side", "The Powers That Be", "The Gladiators",
 						"The Peaks"}
-// Unused
+// textMember is Unused
 //gang member
 @(rodata)
 textMember := [7]string{"None", "a Sun Of God", "an Avatar Of Allah",

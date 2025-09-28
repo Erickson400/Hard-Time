@@ -976,14 +976,3 @@ GangAdjust :: proc(char: i32) {
     // chest vest for thug
     if charGang[char] == 5 && charCostume[char] > 2 do charCostume[char] = bb.Rnd(0, 2)
 }
-
-
-
-
-
-
-
-
-
-
-
