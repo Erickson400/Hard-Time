@@ -31,6 +31,7 @@ DrawImage :: proc(image: i32, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
 GrabImage :: proc(image: i32, x, y: i32, frame: i32 = 0) -> i32 { return 1}
 Locate :: proc(x, y: i32) {}
+Graphics3D :: proc(width, height, color, fullscreen: i32) {}
 
 // ------Audio-----
 LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
@@ -139,6 +140,7 @@ JoyXDir :: proc() -> i32 { return 0}
 JoyDown :: proc(something: i32) -> bool { return false}
 KeyHit :: proc(key: i32) -> i32 { return 1}
 MoveMouse :: proc(x, y: i32) {}
+MouseDown :: proc(button: i32) -> bool { return false}
 MouseX :: proc() -> i32 { return 0}
 MouseY :: proc() -> i32 { return 0}
 FlushKeys :: proc() {}

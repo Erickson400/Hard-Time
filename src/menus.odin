@@ -529,10 +529,11 @@ SlotSelect :: proc() {
     // frame rating
     timer := bb.CreateTimer(30)
     // MAIN LOOP
+    foc: i32
     if slot >= 1 && slot <= 3 {
-        foc: i32 = slot
+        foc = slot
     } else {
-        foc: i32 = 1
+        foc = 1
     }
     go: i32 = 0
     gotim: i32 = 0
@@ -603,12 +604,12 @@ SlotSelect :: proc() {
             if gamName[foc] != "" && gamPhoto[foc] > 0 {
                 bb.DrawImage(gamPhoto[foc], i32(rX(400.0) - 160), i32(rY(20.0 + 55.0 * f32(foc))))
                 bb.Color(0, 0, 0)
-                bb.Rect(i32(rX(400.0) - 235), i32(rY(20.0 + 55.0 * f32(foc)) - 50), 150, 100, false)
+                bb.Rect(i32(rX(400.0) - 235), i32(rY(20.0 + 55.0 * f32(foc)) - 50), 150, 100, 0)
             }
         }
         // options
         y: i32 = 75
-        for count in 1..=3 {
+        for count in i32(1)..=3 {
             if gamName[count] == "" {
                 DrawOption(count, rX(400.0), rY(f32(y)), "NEW GAME", "")
             } else {

@@ -6,6 +6,7 @@ API Implementations:
 - SetFont
 - Line
 - Text
+- Graphics3D
 - GraphicsWidth
 - GraphicsHeight
 - CreateTimer
@@ -66,7 +67,7 @@ API Implementations:
 - ShowEntity
 - ResizeImage
 - EntityShininess
-
+- MouseDown
 
 
 
