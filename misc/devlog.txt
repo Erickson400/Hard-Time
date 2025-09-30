@@ -30,4 +30,7 @@ Wonderful. I managed to render the plank model. I fixed the indices issue by tes
 --------------Sep 11, 2025-----------
 My free plan of Copilot has renewed, I can continue working on repetitive tasks. I've noticed that Hardtime only calls FreeTimer and FreeEntity. Texture, images, fonts, sounds, and models are never unloaded. This remove the need for me to add unecessary freeing features.
 
+--------------Sep 29, 2025-----------
+I've decided to port all the source files to Odin first before working on the API implementations. I made a checklist text file to keep track of progress, once all the files are 100% accurate, I'll work on the API and not have to edit these files again. Copilot free struggled with translating the last 300 lines of Editor.bb, Big files might not be built for it, I could probably temporarily divide the odin script and see if copilot improves. I'm still questioning if I should buy copilot pro. 
+
 
