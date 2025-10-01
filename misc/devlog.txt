@@ -11,9 +11,9 @@ Tools:
 - Python. For automation scripts, and making a build system if needed.
 
 Implementation:
-The project will have a package called blitz3D. This package is a API wrapper around raylib. I interact with it using Blitz3D like functions, just as if I was writing BlitzBasic but in Odin.
+The project will have a package called blitz3D. This package is an API wrapper around raylib. I interact with it using Blitz3D like functions, just as if I was writing BlitzBasic but in Odin.
 Other than having Blitz3D functions, It also has distinct data-types, and private variables for storing the state of raylib and Blitz3D (Like knowing what textures are loaded on the GPU)
-The main.odin file and the translated game files will all be on the project's working directory. blitz3D will be a package inside it, able to be imported from any file. The main function should initialize the blitz package, and then call the entry point of the game from one of the other files.
+The main.odin file and the translated game files will all be on the project's src directory. blitz3D will be a package inside it, able to be imported from any src file. The main function should initialize the blitz package, and then call the entry point of the game from one of the other files.
 
 ------------Aug 1, 2025-----------
 Before starting to translate the code, I'll do a demo package. This package will be called test3ds, It'll be a package that loads 3ds models and plays them on screen. Im not sure how far this could go but this is a good starting point for learning how 3D works on raylib. I'll just make a camera that orbits the center of the scene, and load a random player model in the middle. I could go even futher and just render a static prop model without animations.

@@ -40,6 +40,7 @@ SoundPitch :: proc(sound: i32, pitch: i32) {}
 SoundVolume :: proc(sound: i32, volume: f32) {}
 EmitSound :: proc(sound: i32, entity: i32) {}
 PlaySound :: proc(sound: i32) {}
+CreateListener :: proc(entity: i32, roll, dopp, dist: f32) -> i32{ return 1}
 
 // ------Images/Textures-----
 CreateImage :: proc(width, height: i32) -> i32 { return 1}
@@ -87,8 +88,6 @@ Right :: proc(text: string, count: i32) -> string {
 	return text
 }
 
-
-
 // -------Time----------
 CreateTimer :: proc(fps: i32) -> i32 { return 1}
 WaitTimer :: proc(timer: i32) -> i32 { return 1}
@@ -96,21 +95,33 @@ FreeTimer :: proc(timer: i32) {}
 MilliSecs :: proc() -> i32 { return 1}
 
 // -------Entity-------
+EntityType :: proc(entity, type_id: i32, other: i32 = 0) -> i32 { return 1}
+DeleteEntity :: proc(entity: i32) {}
 PositionEntity :: proc(entity: i32, x, y, z: f32) {}
 RotateEntity :: proc(entity: i32, x, y, z: f32) {}
 ScaleEntity :: proc(entity: i32, x, y, z: f32) {}
 EntityAlpha :: proc(entity: i32, alpha: f32) {}
-EntityColor :: proc(entity: i32, r, g, b: i32) {}
+EntityColor :: proc(entity: i32, r, g, b: f32) {}
 EntityYaw :: proc(entity: i32, angle: f32) -> f32 { return 0}
 EntityX :: proc(entity: i32, x: f32) -> f32 { return 0}
+EntityY :: proc(entity: i32, y: f32) -> f32 { return 0}
 EntityZ :: proc(entity: i32, z: f32) -> f32 { return 0}
 EntityTexture :: proc(entity: i32, texture: i32, sus: i32 = 0, sos: i32 = 0) {}
 FindChild :: proc(parent: i32, name: string) -> i32 { return 1}
 HideEntity :: proc(entity: i32) {}
 ShowEntity :: proc(entity: i32) {}
-Animate :: proc(entity: i32, sequence: i32, speed: f32, loop, other: i32) {}
+Animate :: proc(entity: i32, sequence: i32, speed: f32, loop: i32 = 0, other: i32 = 0) {}
 FreeEntity :: proc(entity: i32) {}
 EntityShininess :: proc(entity: i32, shininess: f32) {}
+EntityFX :: proc(entity: i32, fx_type: i32) {}
+CountChildren :: proc(entity: i32) -> i32 { return 1}
+GetChild :: proc(entity: i32, index: i32) -> i32 { return 1}
+EntityRadius :: proc(entity: i32, radius: f32) {}
+CreatePivot :: proc() -> i32 { return 1}
+CameraRange :: proc(camera: i32, near, far: f32) {}
+CameraFogColor :: proc(camera: i32, r, g, b: f32) {}
+
+
 
 // -------Models--------
 LoadAnimMesh :: proc(filename: string) -> i32 { return 1}
@@ -120,17 +131,19 @@ ExtractAnimSeq :: proc(entity: i32, seq: i32, start_frame, end_frame: i32) -> i3
 // -------Camera--------
 CreateCamera :: proc() -> i32 { return 1}
 CameraViewport :: proc(camera: i32, x, y, width, height: i32) {}
+CameraFogMode :: proc(camera: i32, mode: i32) {}
+CameraFogRange :: proc(camera: i32, start, end: f32) {}
 
 // --------World-------
 UpdateWorld :: proc() {}
 RenderWorld :: proc(mode: i32) {}
 
 // -------Lights--------
-AmbientLight :: proc(r, g, b: i32) {}
+AmbientLight :: proc(r, g, b: f32) {}
 CreateLight :: proc(type: i32) -> i32 { return 1}
 LightRange :: proc(light: i32, range: f32) {}
 LightConeAngles :: proc(light: i32, inner_angle, outer_angle: f32) {}
-LightColor :: proc(light: i32, r, g, b: i32) {}
+LightColor :: proc(light: i32, r, g, b: f32) {}
 
 // -------Input--------
 KeyDown :: proc(key: i32) -> bool { return false}
@@ -147,7 +160,7 @@ FlushKeys :: proc() {}
 Input :: proc(prompt: string) -> string { return ""}
 
 // -------Collision--------
-
+Collisions :: proc(mode, entity1, entity2, response: i32) {}
 
 // -------Animation--------
 

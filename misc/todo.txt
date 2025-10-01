@@ -54,6 +54,7 @@ API Implementations:
 - ScaleEntity
 - EntityYaw
 - EntityX
+- EntityY
 - EntityZ
 - FlushKeys
 - Locate
@@ -68,6 +69,30 @@ API Implementations:
 - ResizeImage
 - EntityShininess
 - MouseDown
+- Collisions
+- EntityType
+- DeleteEntity
+- EntityFX
+- CountChildren
+- GetChild
+- EntityRadius
+- CreatePivot
+- CameraRange
+- CameraFogMode
+- CameraFogRange
+- CreateListener
+- CameraFogColor
+
+
+
+
+
+
+
+
+
+
+
 
 
 
