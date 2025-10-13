@@ -439,12 +439,306 @@ ManageAtmos :: proc() {
 }
 
 
-
-/*
-
-*/
-
-
+//--------------------------------------------------------------------
+////////////////////// CAMERA OPERATIONS /////////////////////////////
+//--------------------------------------------------------------------
+Camera :: proc(){
+    // honour collision detection
+    camX = bb.EntityX(cam)
+    camY = bb.EntityY(cam)
+    camZ = bb.EntityZ(cam)
+    // timer
+    camTim -= 1
+    if camTim < 0 do camTim = 0
+    camRectify -= 1
+    if camRectify < 0 do camRectify = 0
+    // auto cam type
+    if camType > 0 || camTim == 0 {
+        camType = 1
+        if gamPromo > 0 || screen == 52 do camType = 10
+        if camFoc > 0 && screen == 50 {
+            if pAnim[camFoc] >= 93 && pAnim[camFoc] <= 95 do camType = 10
+            if pAnim[camFoc] == 96 do camType = 11
+            if pAnim[camFoc] >= 97 && pAnim[camFoc] <= 98 do camType = 10
+            if pAnim[camFoc] == 102 do camType = 10
+            if pAnim[camFoc] == 132 do camType = 10
+            if pAnim[camFoc] >= 76 && pAnim[camFoc] <= 77 {
+                if pAnimTim[camFoc] > 150{
+                    camType = 12
+                } else {
+                    camType = 11
+                }
+            }
+        }
+    }
+    // trigger manual
+    //if KeyDown(56) {
+        //if KeyDown(21) && CamConflict(21) == 0 do camType = 0 : camTim = 100
+        //if KeyDown(23) && CamConflict(23) == 0 do camType = 0 : camTim = 100
+        //for count in i32(35)..=38 {
+            //if KeyDown(count) && CamConflict(count) == 0 do camType = 0 : camTim = 100
+        //}
+    //}
+    if screen == 50 {
+        camMouseX = f32(bb.MouseXSpeed() / 2)
+        camMouseY = f32(-(bb.MouseYSpeed() / 2))
+        if camMouseX != 0 || camMouseY != 0{
+            camType = 0
+            camTim = 100
+        }
+        bb.MoveMouse(i32(rX(400)), i32(rY(300)))
+    }
+    // CAMERA PLACEMENT
+    // manual control
+    if camType == 0 {
+        //if KeyDown(36) && CamConflict(36) == 0 do bb.MoveEntity(cam, -2, 0, 0)
+        //if KeyDown(38) && CamConflict(38) == 0 do bb.MoveEntity(cam, 2, 0, 0)
+        //if KeyDown(35) && CamConflict(35) == 0 do bb.MoveEntity(cam, 0, -2, 0)
+        //if KeyDown(21) && CamConflict(21) == 0 do bb.MoveEntity(cam, 0, 2, 0)
+        //if KeyDown(23) && CamConflict(23) == 0 do bb.MoveEntity(cam, 0, 0, 2)
+        //if KeyDown(37) && CamConflict(37) == 0 do bb.MoveEntity(cam, 0, 0, -2)
+        if bb.MouseDown(1) || bb.MouseDown(2) {
+            if camMouseY > 0 && ReachedCord(camX, camZ, camPivTX, camPivTZ, 20) > 0 && camY >= camPivTY - 20 && camY <= camPivTY + 5 {
+                bb.MoveEntity(cam, camMouseX, 0, 0)
+            } else {
+                bb.MoveEntity(cam, camMouseX, 0, camMouseY)
+            }
+        } else {
+            bb.MoveEntity(cam, camMouseX, camMouseY / 2, 0)
+        }
+        camX = bb.EntityX(cam); camTX = camX
+        camY = bb.EntityY(cam); camTY = camY
+        camZ = bb.EntityZ(cam); camTZ = camZ
+    }
+    if camFoc > 0 {
+        // over the shoulder
+        if camType == 1 {
+            ResetDummy(camFoc)
+            camTY = pY[camFoc] + 40
+            zoom: f32 = 0
+            if pGrappler[camFoc] > 0 {
+                zoom = 70
+            } else {
+                zoom = -70
+            }
+            if InsideCell(pX[camFoc], pY[camFoc], pZ[camFoc]) > 0 {
+                zoom = zoom / 2
+                camTY = camTY - 5
+            }
+            bb.MoveEntity(dummy, 0, 0, zoom)
+            camTX = bb.EntityX(dummy)
+            camTZ = bb.EntityZ(dummy)
+            if GetBlock(gamLocation[slot]) > 0 && pBed[camFoc] > 0 && pAnim[camFoc] != 101 {
+                camTX = GetCentre(f32(cellX1[pBed[camFoc]]), f32(cellX2[pBed[camFoc]]))
+                camTZ = GetCentre(f32(cellZ1[pBed[camFoc]]), f32(cellZ2[pBed[camFoc]]))
+            }
+        }
+        // head shot
+        if camType == 10 {
+            ResetDummy(camFoc)
+            zoom: f32 = 0
+            sway: f32 = 0
+            if camFoc == promoActor[1] {
+                sway = 12
+            } else {
+                sway = -12
+            }
+            if OnComputer(camFoc) do sway = 12
+            if pGrappling[camFoc] > 0 || pGrappler[camFoc] > 0 {
+                zoom = -28
+            } else {
+                zoom = 28
+            }
+            if pPhone[camFoc] > 0 {
+                limb := FindChild(world, fmt.tprint("Pad", Dig(pPhone[camFoc],10)))
+                if pZ[camFoc] < bb.EntityZ(limb, 1) {
+                    zoom = -28
+                } else {
+                    zoom = 28
+                }
+            }
+            if gamPromo > 0 && promoActor[1] > 0 && promoActor[2] > 0 {
+                closeness := 30 - GetDistance(f32(pX[promoActor[1]]), f32(pZ[promoActor[1]]), f32(pX[promoActor[2]]), f32(pZ[promoActor[2]]))
+                if closeness < 0 do closeness = 0
+                if sway < 0 do sway = sway - (closeness / 2)
+                if sway > 0 do sway = sway + (closeness / 2)
+                if zoom < 0 do zoom = zoom + (closeness / 2)
+                if zoom > 0 do zoom = zoom - (closeness / 2)
+            }
+            if screen == 52 {
+                if camFoc == 2 {
+                    sway = -12
+                } else {
+                    sway = 12
+                }
+                zoom = 28
+            }
+            bb.MoveEntity(dummy, sway, 0, zoom)
+            camTX = bb.EntityX(dummy)
+            camTY = pY[camFoc] + 30
+            if screen == 50 && pGrappler[camFoc] > 0 do camTY = pY[camFoc] + 10
+            camTZ = bb.EntityZ(dummy)
+        }
+        // dying
+        if camType == 11 {
+            ResetDummy(camFoc)
+            if pAnim[camFoc] == 76 do bb.MoveEntity(dummy, -15, 0, 20); camTY = pY[camFoc] + 10
+            if pAnim[camFoc] == 77 do bb.MoveEntity(dummy, 10, 0, -25); camTY = pY[camFoc] + 1
+            if pAnim[camFoc] == 96 do bb.MoveEntity(dummy, -20, 0, 30); camTY = pY[camFoc] + 10
+            camTX = bb.EntityX(dummy); camTZ = bb.EntityZ(dummy)
+        }
+        // dead
+        if camType == 12 {
+            camTX = pX[camFoc]; camTY = pY[camFoc] + 500; camTZ = pZ[camFoc]
+        }
+    }
+    // PIVOT PLACEMENT
+    if camFoc > 0 {
+        // standard
+        camPivTX = pX[camFoc]
+        camPivTY = pY[camFoc] + 25
+        camPivTZ = pZ[camFoc]
+        if screen == 50 {
+            // seated offset
+            if pAnim[camFoc] == 102 || pAnim[camFoc] == 103 do camPivTY = pY[camFoc] + 15
+            // projected location
+            if pGrappling[camFoc] > 0 || pGrappler[camFoc] > 0 {
+                camPivTX = bb.EntityX(pLimb[camFoc][30], 1)
+                camPivTZ = bb.EntityZ(pLimb[camFoc][30], 1)
+            }
+            // grapple victim
+            if camType == 10 && pGrappler[camFoc] > 0 do camPivTY = pY[camFoc] + 15
+            // dying face
+            if (pAnim[camFoc] >= 76 && pAnim[camFoc] <= 77) || pAnim[camFoc] == 96 {
+                camPivTX = bb.EntityX(pLimb[camFoc][1], 1)
+                camPivTY = bb.EntityY(pLimb[camFoc][1], 1) + 1
+                camPivTZ = bb.EntityZ(pLimb[camFoc][1], 1)
+            }
+        }
+        // court seat offset
+        if screen == 52 && camFoc == 5 do camPivTY = pY[camFoc] + 22
+    }
+    // NOVELTY SPEAKERS
+    // tanoy announcement
+    if camFoc == 0 {
+        limb := bb.FindChild(world, "Tanoy01")
+        bb.PositionEntity(dummy, bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1))
+        bb.RotateEntity(dummy, bb.EntityPitch(limb, 1), bb.EntityYaw(limb, 1), bb.EntityRoll(limb, 1))
+        bb.MoveEntity(dummy, 15, -60, 0)
+        camTX = bb.EntityX(dummy)
+        camTY = bb.EntityY(dummy)
+        camTZ = bb.EntityZ(dummy)
+        camPivTX = bb.EntityX(limb, 1)
+        camPivTY = bb.EntityY(limb, 1)
+        camPivTZ = bb.EntityZ(limb, 1)
+    }
+    // phone call
+    if camFoc < 0 {
+        limb := bb.FindChild(world, fmt.tprint("Pad", Dig(i32(MakePositive(f32(camFoc))),10)))
+        bb.PositionEntity(dummy, bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1))
+        bb.RotateEntity(dummy, 0, 270, 0)
+        if pZ[gamPlayer[slot]] >= bb.EntityZ(limb, 1) do bb.MoveEntity(dummy, 12, 0, 25)
+        if pZ[gamPlayer[slot]] < bb.EntityZ(limb, 1) do bb.MoveEntity(dummy, -12, 0, 25)
+        camTX = bb.EntityX(dummy)
+        camTY = bb.EntityY(dummy) - 5
+        camTZ = bb.EntityZ(dummy)
+        camPivTX = bb.EntityX(limb, 1)
+        camPivTY = bb.EntityY(limb, 1)
+        camPivTZ = bb.EntityZ(limb, 1)
+    }
+    // ENFORCE BLOCKS
+    if screen == 50 && camFoc > 0 && camType > 0 && gamPromo == 0 {
+        // cell logic
+        if GetBlock(gamLocation[slot]) > 0 {
+            current := InsideCell(camX, camY, camZ)
+            target := InsideCell(camTX, camTY, camTZ)
+            if current > 0 && target != current {
+                if ReachedCord(camX, camZ, cellDoorX[current], cellDoorZ[current], 20) == 0 && CellVisible(camX, camY, camZ, current) == 0 {
+                    camTX = cellDoorX[current]
+                    camTZ = cellDoorZ[current]
+                }
+            }
+            if target > 0 && target != current {
+                if ReachedCord(camX, camZ, cellDoorX[target], cellDoorZ[target], 20) == 0 && CellVisible(camX, camY, camZ, target) == 0 {
+                    camTX = cellDoorX[target]
+                    camTZ = cellDoorZ[target]
+                }
+            }
+        }
+        // help over stairs/balcony
+        if GetBlock(gamLocation[slot]) > 0 {
+            if (camX < -145 || camX > 145 || camZ > 205) && pY[camFoc] < 100 {
+                if camY > 100 && camTY < 130 do camTY = 130
+            }
+            stairProgress := pZ[camFoc] - 20
+            if stairProgress < 0 do stairProgress = 0
+            if stairProgress > 180 do stairProgress = 180
+            stairPercent := GetPercent(f32(stairProgress), 180)
+            stairY := 30 + stairPercent
+            if camX > -50 && camX < 50 && camZ > 20 && camZ < 210 {
+                if (pX[camFoc] < -45 || pX[camFoc] > 45) && pZ[camFoc] > 20 && pY[camFoc] < 100 {
+                    if camTY < stairY do camTY = stairY
+                }
+            }
+        }
+        // cubicle logic
+        if gamLocation[slot] == 11 {
+            if camX < 50 || pX[camFoc] < 50 {
+                if camTZ >= 5 do camTZ = 5
+                if pZ[camFoc] > 5 {
+                    if pX[camFoc] > -143 && pX[camFoc] < -112 do camTX = -128
+                    if pX[camFoc] > -107 && pX[camFoc] < -76 do camTX = -92
+                    if pX[camFoc] > -71 && pX[camFoc] < -40 do camTX = -55
+                    if pX[camFoc] > -34 && pX[camFoc] < -6 do camTX = -20
+                    if pX[camFoc] > -1 && pX[camFoc] < 29 do camTX = 15
+                }
+            }
+        }
+    }
+    // CAMERA OPERATION
+    // camera tracking
+    if gotim > 0 {
+        speeder := 100 - (gotim * 2)
+        if speeder < 30 do speeder = 30
+        if screen == 52 && speeder < 60 do speeder = 60
+        if camType == 11 && speeder < 60 do speeder = 60
+        if camType == 12 do speeder = 480
+        GetSmoothSpeeds(camX, camTX, camY, camTY, camZ, camTZ, speeder)
+        if camType == 12 do speedY = 0.4
+        if camX < camTX do camX += speedX
+        if camX > camTX do camX -= speedX
+        if camY < camTY do camY += (speedY / 2)
+        if camY > camTY do camY -= (speedY / 2)
+        if camZ < camTZ do camZ += speedZ
+        if camZ > camTZ do camZ -= speedZ
+    }
+    // pivot tracking
+    speeder: i32 = 15
+    if screen == 52 do speeder = 30
+    GetSmoothSpeeds(camPivX, camPivTX, camPivY, camPivTY, camPivZ, camPivTZ, speeder)
+    if camPivX < camPivTX do camPivX += speedX
+    if camPivX > camPivTX do camPivX -= speedX
+    if camPivY < camPivTY do camPivY += speedY
+    if camPivY > camPivTY do camPivY -= speedY
+    if camPivZ < camPivTZ do camPivZ += speedZ
+    if camPivZ > camPivTZ do camPivZ -= speedZ
+    // position & point
+    bb.PositionEntity(camPivot, camPivX, camPivY, camPivZ)
+    bb.PointEntity(cam, camPivot)
+    bb.PositionEntity(cam, camX, camY, camZ)
+    // fader
+    if screen == 50 {
+        if fadeAlpha < fadeTarget do fadeAlpha += 0.0025
+        if fadeAlpha > fadeTarget do fadeAlpha -= 0.0025
+        if fadeAlpha < 0 do fadeAlpha = 0
+        if fadeAlpha > 1.0 do fadeAlpha = 1.0
+        bb.PositionEntity(dummy, camX, camY, camZ)
+        bb.RotateEntity(dummy, bb.EntityPitch(cam), bb.EntityYaw(cam), bb.EntityRoll(cam))
+        bb.MoveEntity(dummy, 0, 0, 3)
+        bb.PositionEntity(fader, bb.EntityX(dummy), bb.EntityY(dummy), bb.EntityZ(dummy))
+        bb.EntityAlpha(fader, fadeAlpha)
+    }
+}
 
 
 GetBlock :: proc(area: i32) -> i32 {

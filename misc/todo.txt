@@ -52,7 +52,6 @@ API Implementations:
 - EntityAlpha
 - EntityColor
 - ScaleEntity
-- EntityYaw
 - EntityX
 - EntityY
 - EntityZ
@@ -82,12 +81,13 @@ API Implementations:
 - CameraFogRange
 - CreateListener
 - CameraFogColor
-
-
-
-
-
-
+- MoveEntity
+- MouseXSpeed
+- MouseYSpeed
+- EntityPitch
+- EntityRoll
+- EntityYaw
+- PointEntity
 
 
 

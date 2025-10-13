@@ -103,9 +103,14 @@ ScaleEntity :: proc(entity: i32, x, y, z: f32) {}
 EntityAlpha :: proc(entity: i32, alpha: f32) {}
 EntityColor :: proc(entity: i32, r, g, b: f32) {}
 EntityYaw :: proc(entity: i32, angle: f32) -> f32 { return 0}
-EntityX :: proc(entity: i32, x: f32) -> f32 { return 0}
-EntityY :: proc(entity: i32, y: f32) -> f32 { return 0}
-EntityZ :: proc(entity: i32, z: f32) -> f32 { return 0}
+EntityPitch :: proc(entity: i32, global: bool = false) {}
+EntityRoll :: proc(entity: i32, global: bool = false) {}
+PointEntity :: proc(entity: i32, global: bool = false) {}
+
+EntityX :: proc(entity: i32, x: f32 = 0) -> f32 { return 0}
+EntityY :: proc(entity: i32, y: f32 = 0) -> f32 { return 0}
+EntityZ :: proc(entity: i32, z: f32 = 0) -> f32 { return 0}
+MoveEntity :: proc(entity: i32, x, y, z: f32) {}
 EntityTexture :: proc(entity: i32, texture: i32, sus: i32 = 0, sos: i32 = 0) {}
 FindChild :: proc(parent: i32, name: string) -> i32 { return 1}
 HideEntity :: proc(entity: i32) {}
@@ -120,7 +125,6 @@ EntityRadius :: proc(entity: i32, radius: f32) {}
 CreatePivot :: proc() -> i32 { return 1}
 CameraRange :: proc(camera: i32, near, far: f32) {}
 CameraFogColor :: proc(camera: i32, r, g, b: f32) {}
-
 
 
 // -------Models--------
@@ -154,6 +158,8 @@ JoyDown :: proc(something: i32) -> bool { return false}
 KeyHit :: proc(key: i32) -> i32 { return 1}
 MoveMouse :: proc(x, y: i32) {}
 MouseDown :: proc(button: i32) -> bool { return false}
+MouseXSpeed :: proc() -> i32 { return 0}
+MouseYSpeed :: proc() -> i32 { return 0}
 MouseX :: proc() -> i32 { return 0}
 MouseY :: proc() -> i32 { return 0}
 FlushKeys :: proc() {}

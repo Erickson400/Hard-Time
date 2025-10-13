@@ -564,7 +564,7 @@ cellDoorZ: [21]f32
 //////////////////////////////////////////////////////////
 fader: i32
 fadeAlpha: f32
-fadeTraget: f32
+fadeTarget: f32
 // Particles
 no_particles: i32 = 500
 part: [1001]i32
