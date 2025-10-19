@@ -102,10 +102,10 @@ RotateEntity :: proc(entity: i32, x, y, z: f32) {}
 ScaleEntity :: proc(entity: i32, x, y, z: f32) {}
 EntityAlpha :: proc(entity: i32, alpha: f32) {}
 EntityColor :: proc(entity: i32, r, g, b: f32) {}
-EntityYaw :: proc(entity: i32, angle: f32) -> f32 { return 0}
-EntityPitch :: proc(entity: i32, global: bool = false) {}
-EntityRoll :: proc(entity: i32, global: bool = false) {}
-PointEntity :: proc(entity: i32, global: bool = false) {}
+EntityYaw :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
+EntityPitch :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
+EntityRoll :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
+PointEntity :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
 
 EntityX :: proc(entity: i32, x: f32 = 0) -> f32 { return 0}
 EntityY :: proc(entity: i32, y: f32 = 0) -> f32 { return 0}

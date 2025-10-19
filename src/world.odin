@@ -263,7 +263,7 @@ ManageAtmos :: proc() {
             if charSentence[char] < 0 do charSentence[char] = 0
             if char != gamChar[slot] && charLocation[char] > 0 {
                 v := bb.Rnd(1, no_chars)
-                if char != v do charRelation[char][v] = ChangeRelationship(char, v, Rnd(-1, 1))
+                if char != v do charRelation[char][v] = ChangeRelationship(char, v, bb.Rnd(-1, 1))
                 charStrength[char] += bb.Rnd(-2, 2)
                 charAgility[char] += bb.Rnd(-2, 2)
                 if charRole[char] == 1 {
@@ -300,7 +300,7 @@ ManageAtmos :: proc() {
     }
     if GetBlock(gamLocation[slot]) > 0 {
         if (LockDown() == 0 || LockReady(gamLocation[slot]) == 0) && cellLocked[gamLocation[slot]][0] == 1 do LockCells(0)
-        if LockDown() && LockReady(gamLocation[slot]) && cellLocked[gamLocation[slot]][0] == 0 do LockCells(1)
+        if LockDown() > 0 && LockReady(gamLocation[slot]) > 0 && cellLocked[gamLocation[slot]][0] == 0 do LockCells(1)
     }
     // serve dinner
     if gamHours[slot] == 13 && gamMins[slot] == 0 && gamSecs[slot] == 0 {
@@ -543,14 +543,14 @@ Camera :: proc(){
             } else {
                 sway = -12
             }
-            if OnComputer(camFoc) do sway = 12
+            if OnComputer(camFoc) > 0 do sway = 12
             if pGrappling[camFoc] > 0 || pGrappler[camFoc] > 0 {
                 zoom = -28
             } else {
                 zoom = 28
             }
             if pPhone[camFoc] > 0 {
-                limb := FindChild(world, fmt.tprint("Pad", Dig(pPhone[camFoc],10)))
+                limb := bb.FindChild(world, fmt.tprint("Pad", Dig(pPhone[camFoc],10)))
                 if pZ[camFoc] < bb.EntityZ(limb, 1) {
                     zoom = -28
                 } else {
@@ -740,17 +740,665 @@ Camera :: proc(){
     }
 }
 
+//ZOOM CAMERA TO TARGET
+ZoomCamera :: proc() {
+    camX = camTX
+    camY = camTY
+    camZ = camTZ
+}
 
+//RESET DUMMY (in terms of target)
+ResetDummy :: proc(cyc: i32) {
+    bb.PositionEntity(dummy, pX[cyc], pY[cyc], pZ[cyc])
+    bb.RotateEntity(dummy, 0, pA[cyc], 0)
+}
+
+//CAMERA vs CONTROL CONFLICTS?
+CamConflict :: proc(command: i32) -> i32 {
+    // These variables are never declared. The function will always return 0.
+    keyShoot: i32 = 0
+    keyPass: i32 = 0
+    keyLob: i32 = 0
+
+    conflict: i32 = 0
+    if command == keyShoot || command == keyPass || command == keyLob {
+        conflict = 1
+    }
+    return conflict
+}
+
+//ENTER DOOR
+EnterDoor :: proc(cyc: i32, door: i32) -> i32 {
+    //store current location
+    oldLocation: i32 = gamLocation[slot]
+    //north >>> hall
+    if gamLocation[slot] == 1 {
+        charX[pChar[cyc]] = -150
+        charZ[pChar[cyc]] = 280
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 180
+        charLocation[pChar[cyc]] = 9
+    }
+    //yard >>> hall
+    if gamLocation[slot] == 2 {
+        charX[pChar[cyc]] = 150
+        charZ[pChar[cyc]] = 280
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 180
+        charLocation[pChar[cyc]] = 9
+    }
+    //east >>> hall
+    if gamLocation[slot] == 3 {
+        charX[pChar[cyc]] = 280
+        charZ[pChar[cyc]] = 150
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 90
+        charLocation[pChar[cyc]] = 9
+    }
+    //study >>> hall
+    if gamLocation[slot] == 4 && door == 1 {
+        charX[pChar[cyc]] = 280
+        charZ[pChar[cyc]] = -150
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 90
+        charLocation[pChar[cyc]] = 9
+    }
+    //study >>> workshop
+    if gamLocation[slot] == 4 && door == 2 {
+        charX[pChar[cyc]] = 0
+        charZ[pChar[cyc]] = -105
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = 10
+    }
+    //south >>> hall
+    if gamLocation[slot] == 5 {
+        charX[pChar[cyc]] = 150
+        charZ[pChar[cyc]] = -280
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = 9
+    }
+    //hospital >>> hall
+    if gamLocation[slot] == 6 && door != 2 {
+        charX[pChar[cyc]] = -150
+        charZ[pChar[cyc]] = -280
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = 9
+    }
+    //hospital >>> toilets
+    if gamLocation[slot] == 6 && door == 2 {
+        charX[pChar[cyc]] = 90
+        charZ[pChar[cyc]] = -55
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = 11
+    }
+    //west >>> hall
+    if gamLocation[slot] == 7 {
+        charX[pChar[cyc]] = -280
+        charZ[pChar[cyc]] = -150
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 270
+        charLocation[pChar[cyc]] = 9
+    }
+    //kitchen >>> hall
+    if gamLocation[slot] == 8 {
+        charX[pChar[cyc]] = -280
+        charZ[pChar[cyc]] = 150
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 270
+        charLocation[pChar[cyc]] = 9
+    }
+    //hall >>> block
+    if gamLocation[slot] == 9 && (door == 1 || door == 3 || door == 5 || door == 7) {
+        charX[pChar[cyc]] = 0
+        charZ[pChar[cyc]] = -325
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = door
+    }
+    //hall >>> yard
+    if gamLocation[slot] == 9 && door == 2 {
+        charX[pChar[cyc]] = 80
+        charZ[pChar[cyc]] = 215
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = door
+    }
+    //hall >>> study
+    if gamLocation[slot] == 9 && door == 4 {
+        charX[pChar[cyc]] = 5
+        charZ[pChar[cyc]] = -130
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = 4
+    }
+    //hall >>> hospital
+    if gamLocation[slot] == 9 && door == 6 {
+        charX[pChar[cyc]] = 0
+        charZ[pChar[cyc]] = -130
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = 6
+    }
+    //hall >>> kitchen
+    if gamLocation[slot] == 9 && door == 8 {
+        charX[pChar[cyc]] = 0
+        charZ[pChar[cyc]] = -330
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 0
+        charLocation[pChar[cyc]] = 8
+    }
+    //workshop >>> study
+    if gamLocation[slot] == 10 {
+        charX[pChar[cyc]] = 135
+        charZ[pChar[cyc]] = 0
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 90
+        charLocation[pChar[cyc]] = 4
+    }
+    //toilets >>> hospital
+    if gamLocation[slot] == 11 {
+        charX[pChar[cyc]] = 0
+        charZ[pChar[cyc]] = 130
+        charY[pChar[cyc]] = 20
+        charA[pChar[cyc]] = 180
+        charLocation[pChar[cyc]] = 6
+    }
+    //proceed
+    pDoorFriction[cyc][door] = 0
+    go = 1
+    return go
+}
+
+//RELOCATE CPU CHARACTERS
+RelocateChars :: proc() {
+    for char in 1..=no_chars {
+        if char != gamChar[slot] && charRole[char] <= 1 && charLocation[char] > 0 {
+            //get new destination
+            target: i32 = 0
+            source: i32 = charLocation[char]
+            randy: i32 = bb.Rnd(0, 20)
+            if charRole[char] == 1 && AreaPopulation(charLocation[char], 1) > 2 {
+                randy = bb.Rnd(0, 10)
+            }
+            if charLocation[char] == 8 && (gamHours[slot] < 12 || gamHours[slot] > 14) {
+                randy = bb.Rnd(0, 10)
+            }
+            if randy == 0 && charLocation[char] >= 1 && charLocation[char] <= 8 do target = 9
+            if randy == 0 && charLocation[char] == 9 do target = bb.Rnd(1, 8)
+            if randy == 1 && charLocation[char] == 9 do target = 2
+            if randy == 1 && charLocation[char] == 4 do target = 10
+            if randy == 1 && charLocation[char] == 10 do target = 4
+            if randy == 1 && charLocation[char] == 6 do target = 11
+            if randy == 1 && charLocation[char] == 11 do target = 6
+            if randy == 2 && charRole[char] == 0 && charLocation[char] == 9 {
+                target = TranslateBlock(charBlock[char])
+            }
+            if randy == 3 || charY[char] < 0 do target = bb.Rnd(1, 11)
+            if randy >= 4 && randy <= 5 && gamHours[slot] >= 12 && gamHours[slot] <= 14 {
+                target = 8
+            }
+            //consider population
+            if target == 4 || target == 6 || target == 10 || target == 11 {
+                if AreaPopulation(target, -1) >= 10 do target = 0
+                if charRole[char] == 1 && AreaPopulation(target, 1) >= 2 do target = 0
+            }
+            if AreaPopulation(target, -1) >= 20 do target = 0
+            if charRole[char] == 1 && AreaPopulation(charLocation[char], 1) <= 1 && charLocation[char] != 11 do target = 0
+            if charRole[char] == 1 && AreaPopulation(target, 1) >= 4 do target = 0
+            if charRole[char] == 1 && target == 11 do target = 0
+            //force back to cell
+            if LockDown() > 0 || (gamHours[slot] == 21 && gamMins[slot] >= 30) {
+                if charRole[char] == 0 do target = TranslateBlock(charBlock[char])
+            }
+            //mission blocks
+            if gamMission[slot] > 0 && char == gamClient[slot] do target = 0
+            if gamMission[slot] == 11 || gamMission[slot] == 12 || gamMission[slot] == 16 {
+                if char == gamTarget[slot] do target = 0
+            }
+            //shadow runner
+            if charFollowTim[char] > 0 do target = charLocation[gamChar[slot]]
+            //deliver to destination
+            if target > 0 && target != source {
+                //north >>> hall
+                if source == 1 && target == 9 {
+                    charX[char] = bb.Rnd(-200.0, -100.0)
+                    charZ[char] = bb.Rnd(230.0, 280.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(135.0, 225.0)
+                }
+                //yard >>> hall
+                if source == 2 && target == 9 {
+                    charX[char] = bb.Rnd(100.0, 200.0)
+                    charZ[char] = bb.Rnd(230.0, 280.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(135.0, 225.0)
+                }
+                //east >>> hall
+                if source == 3 && target == 9 {
+                    charX[char] = bb.Rnd(230.0, 280.0)
+                    charZ[char] = bb.Rnd(100.0, 200.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(45.0, 135.0)
+                }
+                //study >>> hall
+                if (source == 4 || source == 10) && target == 9 {
+                    charX[char] = bb.Rnd(230.0, 280.0)
+                    charZ[char] = bb.Rnd(-200.0, -100.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(45.0, 135.0)
+                }
+                //study >>> workshop
+                if target == 10 {
+                    charX[char] = bb.Rnd(-25.0, 25.0)
+                    charZ[char] = bb.Rnd(-105.0, -55.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //south >>> hall
+                if source == 5 && target == 9 {
+                    charX[char] = bb.Rnd(100.0, 200.0)
+                    charZ[char] = bb.Rnd(-280.0, -230.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //hospital >>> hall
+                if (source == 6 || source == 11) && target == 9 {
+                    charX[char] = bb.Rnd(-200.0, -100.0)
+                    charZ[char] = bb.Rnd(-280.0, -230.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //hospital >>> toilets
+                if target == 11 {
+                    charX[char] = bb.Rnd(40.0, 140.0)
+                    charZ[char] = bb.Rnd(-55.0, -5.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //west >>> hall
+                if source == 7 && target == 9 {
+                    charX[char] = bb.Rnd(-280.0, -230.0)
+                    charZ[char] = bb.Rnd(-200.0, -100.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(225.0, 315.0)
+                }
+                //kitchen >>> hall
+                if source == 8 && target == 9 {
+                    charX[char] = bb.Rnd(-280.0, -230.0)
+                    charZ[char] = bb.Rnd(100.0, 200.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(225.0, 315.0)
+                }
+                //hall >>> block
+                if GetBlock(target) > 0 {
+                    charX[char] = bb.Rnd(-50.0, 50.0)
+                    charZ[char] = bb.Rnd(-325.0, -275.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //hall >>> yard
+                if target == 2 {
+                    charX[char] = bb.Rnd(30.0, 130.0)
+                    charZ[char] = bb.Rnd(215.0, 265.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //hall >>> study
+                if source != 10 && target == 4 {
+                    charX[char] = bb.Rnd(-45.0, 55.0)
+                    charZ[char] = bb.Rnd(-130.0, -80.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //hall >>> hospital
+                if source != 11 && target == 6 {
+                    charX[char] = bb.Rnd(-50.0, 50.0)
+                    charZ[char] = bb.Rnd(-130.0, -80.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //hall >>> kitchen
+                if target == 8 {
+                    charX[char] = bb.Rnd(-50.0, 50.0)
+                    charZ[char] = bb.Rnd(-330.0, -180.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(-45.0, 45.0)
+                }
+                //workshop >>> study
+                if source == 10 && target == 4 {
+                    charX[char] = bb.Rnd(85.0, 135.0)
+                    charZ[char] = bb.Rnd(-25.0, 25.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(45.0, 135.0)
+                }
+                //toilet >>> hospital
+                if source == 11 && target == 10 {
+                    charX[char] = bb.Rnd(-50.0, 50.0)
+                    charZ[char] = bb.Rnd(80.0, 130.0)
+                    charY[char] = 20
+                    charA[char] = bb.Rnd(135.0, 225.0)
+                }
+                //place inside cell
+                if charRole[char] == 0 && bool(LockDown()) && GetBlock(target) > 0 && target != gamLocation[slot] {
+                    charX[char] = GetCentre(cellX1[charCell[char]], cellX2[charCell[char]])
+                    charZ[char] = GetCentre(cellZ1[charCell[char]], cellZ2[charCell[char]])
+                    charY[char] = cellY1[charCell[char]] + 20
+                    charA[char] = bb.Rnd(0.0, 360.0)
+                }
+                //update location
+                charLocation[char] = target
+            }
+            //released
+            if charRole[char] == 0 && charSentence[char] <= 0 && (char != gamClient[slot] || gamMission[slot] == 0) {
+                charLocation[char] = 0
+                gamRelease[slot] = char
+                RuinMission(char)
+                // TODO: cyc is defined in Editor.bb
+                for v in 1..=no_chars {
+                    if v != gamChar[slot] && charPromo[v][gamChar[slot]] == 0 && charRelation[v][gamChar[slot]] >= 0 && charAngerTim[v][gamChar[slot]] == 0 {
+                        if charRelation[gamChar[slot]][pChar[cyc]] > 0 && charRelation[v][pChar[cyc]] > 0 {
+                            charPromo[v][gamChar[slot]] = 219
+                            charPromoRef[v] = char
+                        }
+                        if charRelation[gamChar[slot]][pChar[cyc]] < 0 && charRelation[v][pChar[cyc]] < 0 {
+                            charPromo[v][gamChar[slot]] = 220
+                            charPromoRef[v] = char
+                        }
+                    }
+                }
+            }
+            //make weapon follow
+            if charWeapon[char] > 0 {
+                weapLocation[charWeapon[char]] = charLocation[char]
+            }
+        }
+        //introduce new characters
+        randy: i32 = bb.Rnd(0, 10)
+        if randy == 0 && char != gamChar[slot] && charRole[char] <= 1 && charLocation[char] == 0 && char != gamFatality[slot] && char != gamRelease[slot] && gamArrival[slot] == 0 {
+            role: i32 = 0
+            if GamePopulation(1) < optPopulation / 5 {
+                role = 1
+            } else {
+                role = 0
+            }
+            GenerateCharacter(char, role)
+            if charLocation[char] > 0 {
+                gamArrival[slot] = char
+            }
+            if role == 0 {
+                randy = bb.Rnd(0, 4)
+                if randy == 1 || (randy == 0 && charReputation[char] < charReputation[gamChar[slot]]) {
+                    charPromo[char][gamChar[slot]] = 200
+                }
+                if randy == 2 || (randy == 0 && charReputation[char] >= charReputation[gamChar[slot]]) {
+                    charPromo[char][gamChar[slot]] = 201
+                }
+                if charRole[char] == 0 && charCell[char] == charCell[gamChar[slot]] && charBlock[char] == charBlock[gamChar[slot]] {
+                    randy = bb.Rnd(0, 2)
+                    if randy == 1 || (randy == 0 && charReputation[char] < charReputation[gamChar[slot]]) {
+                        charPromo[char][gamChar[slot]] = bb.Rnd(202, 203)
+                    }
+                    if randy == 2 || (randy == 0 && charReputation[char] >= charReputation[gamChar[slot]]) {
+                        charPromo[char][gamChar[slot]] = bb.Rnd(203, 204)
+                    }
+                }
+            }
+        }
+        //change gang affilliations
+        oldGang := charGang[char]
+        randy = bb.Rnd(0, 1000)
+        if randy >= 1 && randy <= 6 && char != gamChar[slot] && charRole[char] == 0 && charLocation[char] > 0 {
+            if charGang[char] == 0 {
+                if randy == 1 && charGangHistory[char][1] == 0 && GetRace(char) == 0 {
+                    ChangeGang(char, 1)
+                }
+                if randy == 2 && charGangHistory[char][2] == 0 && GetRace(char) == 1 {
+                    ChangeGang(char, 2)
+                }
+                if randy == 3 && charGangHistory[char][3] == 0 && GetRace(char) == 2 {
+                    ChangeGang(char, 3)
+                }
+                if randy == 4 && charGangHistory[char][4] == 0 && charIntelligence[char] > 70 {
+                    ChangeGang(char, 4)
+                }
+                if randy == 5 && charGangHistory[char][5] == 0 && charStrength[char] + charAgility[char] > 140 {
+                    ChangeGang(char, 5)
+                }
+                if randy == 6 && charGangHistory[char][6] == 0 && charReputation[char] < 70 {
+                    ChangeGang(char, 6)
+                }
+            } else {
+                ChangeGang(char, 0)
+            }
+            if charGang[char] != oldGang && charPromo[char][gamChar[slot]] == 0 {
+                if oldGang == charGang[gamChar[slot]] && charRelation[char][gamChar[slot]] == 1 {
+                    charPromo[char][gamChar[slot]] = 45 // left gang
+                }
+                if charGang[char] > 0 && charGang[char] != charGang[gamChar[slot]] && charRelation[char][gamChar[slot]] == 1 {
+                    charPromo[char][gamChar[slot]] = 46 // friend joins a gang
+                }
+                if charGang[char] > 0 && charGang[char] == charGang[gamChar[slot]] {
+                    charPromo[char][gamChar[slot]] = 47 // new member to your gang
+                }
+            }
+        }
+    }
+}
+
+//COUNT AREA POPULATION
+AreaPopulation :: proc(area: i32, role: i32) -> i32 { // -1=any
+    value: i32 = 0
+    for char in 1..=no_chars {
+        if charRole[char] == role || role == -1 {
+            if charLocation[char] == area do value = value + 1
+        }
+    }
+    return value
+}
+
+//COUNT CELL POPULATION
+CellPopulation :: proc(block: i32, cell: i32) -> i32 {
+    value: i32 = 0
+    for char in 1..=no_chars {
+        if charBlock[char] == block && charCell[char] == cell do value = value + 1
+    }
+    return value
+}
+
+//COUNT GAME POPULATION
+GamePopulation :: proc(role: i32) -> i32 { // -1=any
+    value: i32 = 0
+    for char in 1..=no_chars {
+        if charRole[char] == role || role == -1 do value = value + 1
+    }
+    return value
+}
+
+//GET BLOCK (FROM LOCATION)
 GetBlock :: proc(area: i32) -> i32 {
     block: i32 = 0
-    switch area {
-    case 1: block = 1
-    case 3: block = 2
-    case 5: block = 3
-    case 7: block = 4
-    }
+    if area == 1 do block = 1
+    if area == 3 do block = 2
+    if area == 5 do block = 3
+    if area == 7 do block = 4
     return block
 }
 
+//GET BLOCK LOCATION (FROM ID)
+TranslateBlock :: proc(block: i32) -> i32 {
+    area: i32 = 0
+    if block == 1 do area = 1
+    if block == 2 do area = 3
+    if block == 3 do area = 5
+    if block == 4 do area = 7
+    return area
+}
 
+//LOCK DOWN TIME?
+LockDown :: proc() -> i32 {
+    value: i32 = 0
+    if gamHours[slot] < 7 || gamHours[slot] >= 22 do value = 1
+    return value
+}
+
+// CELLS READY TO BE LOCKED?
+LockReady :: proc(area: i32) -> i32 {
+    value: i32 = 1
+    for v in 1..=no_plays {
+        // not in cell
+        if charRole[pChar[v]] == 0 && (GetBlock(area) == charBlock[pChar[v]] || pChar[v] != gamChar[slot]) {
+            if InsideCell(pX[v], pY[v], pZ[v]) != charCell[pChar[v]] do value = 0
+        }
+        // cell occupied by illegal
+        if charRole[pChar[v]] == 1 || GetBlock(area) != charBlock[pChar[v]] {
+            if InsideCell(pX[v], pY[v], pZ[v]) > 0 do value = 0
+        }
+    }
+    // open for warrant
+    if gamWarrant[slot] > 0 do value = 0
+    return value
+}
+
+LockCells :: proc(lock: i32) { // 0=open, 1=close
+    // play door sound and animate
+    ProduceSound(cam, sDoor[3], 22050, 1)
+    if lock == 0 do bb.Animate(world, 3, 4.0)
+    if lock == 1 do bb.Animate(world, 3, -4.0)
+    for count in 0..=20 {
+        cellLocked[gamLocation[slot]][count] = lock
+    }
+}
+
+InsideCell :: proc(x: f32, y: f32, z: f32) -> i32 {
+    cell: i32 = 0
+    for count in i32(1)..=20 {
+        if y >= cellY1[count] && y <= cellY2[count] {
+            if x >= cellX1[count] && x <= cellX2[count] && z >= cellZ1[count] && z <= cellZ2[count] {
+                cell = count
+            }
+        }
+    }
+    // null if not in block
+    if screen == 50 && go == 0 {
+        if GetBlock(gamLocation[slot]) == 0 do cell = 0
+    }
+    return cell
+}
+
+// IN LINE WITH CELL?
+CellVisible :: proc(x: f32, y: f32, z: f32, cell: i32) -> i32 {
+    value: i32 = 0
+    if GetBlock(gamLocation[slot]) > 0 && cell > 0 {
+        if y >= cellY1[cell] && y <= cellY2[cell] {
+            if cell == 5 || cell == 6 || cell == 15 || cell == 16 {
+                if x >= cellX1[cell] && x <= cellX2[cell] do value = 1
+            } else {
+                if z >= cellZ1[cell] && z <= cellZ2[cell] do value = 1
+            }
+        }
+    }
+    return value
+}
+
+// IN PROXIMITY OF CHAIR?
+ChairProximity :: proc(cyc: i32, chair: i32) -> i32 {
+    value: i32 = 0
+    limb: i32 = bb.FindChild(world, fmt.tprint("Chair%d", Dig(chair, 10)))
+    if pX[cyc] > bb.EntityX(limb, 1)-18 && pX[cyc] < bb.EntityX(limb, 1)+18 &&
+       pY[cyc] > bb.EntityY(limb, 1)-30 && pY[cyc] < bb.EntityY(limb, 1)-5 &&
+       pZ[cyc] > bb.EntityZ(limb, 1)-18 && pZ[cyc] < bb.EntityZ(limb, 1)+18 {
+        back: i32 = 0
+        if gamLocation[slot] != 11 {
+            bb.PositionEntity(dummy, bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1))
+            bb.RotateEntity(dummy, 0, bb.EntityYaw(limb, 1), 0)
+            bb.MoveEntity(dummy, 0, 0, -30)
+            if pX[cyc] > bb.EntityX(dummy, 1)-20 && pX[cyc] < bb.EntityX(dummy, 1)+20 &&
+               pZ[cyc] > bb.EntityZ(dummy, 1)-20 && pZ[cyc] < bb.EntityZ(dummy, 1)+20 {
+                back = 1
+            }
+        }
+        if back == 0 && InLine(cyc, limb, 45) do value = 1
+    }
+    return value
+}
+
+// CHAIR TAKEN?
+ChairTaken :: proc(chair: i32) -> i32 {
+    value: i32 = 0
+    for v in 1..=no_plays {
+        if pSeat[v] == chair do value = 1
+    }
+    return value
+}
+
+// IN PROXIMITY OF BED?
+BedProximity :: proc(cyc: i32, bed: i32) -> i32 {
+    value: i32 = 0
+    limb: i32 = bb.FindChild(world, fmt.tprint("Mat%d", Dig(bed, 10)))
+    if pX[cyc] > bb.EntityX(limb, 1)-25 && pX[cyc] < bb.EntityX(limb, 1)+25 &&
+       pY[cyc] > bb.EntityY(limb, 1)-25 && pY[cyc] < bb.EntityY(limb, 1) &&
+       pZ[cyc] > bb.EntityZ(limb, 1)-25 && pZ[cyc] < bb.EntityZ(limb, 1)+25 {
+        if InLine(cyc, limb, 45) do value = 1
+    }
+    return value
+}
+
+// BED TAKEN?
+BedTaken :: proc(bed: i32) -> i32 {
+    value: i32 = 0
+    for v in 1..=no_plays {
+        if pBed[v] == bed do value = 1
+    }
+    return value
+}
+
+// IN PROXIMITY OF PHONE?
+PhoneProximity :: proc(cyc: i32) -> i32 {
+    value: i32 = 0
+    if gamLocation[slot] == 9 {
+        for v in i32(1)..=4 {
+            limb: i32 = bb.FindChild(world, fmt.tprint("Pad%d", Dig(v, 10)))
+            if pX[cyc] > bb.EntityX(limb, 1)-20 && pX[cyc] < bb.EntityX(limb, 1)+20 &&
+               pZ[cyc] > bb.EntityZ(limb, 1)-15 && pZ[cyc] < bb.EntityZ(limb, 1)+15 {
+                value = v
+            }
+        }
+    }
+    return value
+}
+
+// PHONE TAKEN?
+PhoneTaken :: proc(phone: i32) -> i32 {
+    value: i32 = 0
+    for v in 1..=no_plays {
+        if pPhone[v] == phone do value = 1
+    }
+    return value
+}
+
+// ON COMPUTER?
+OnComputer :: proc(cyc: i32) -> i32 {
+    value: i32 = 0
+    if gamLocation[slot] == 4 && pSeat[cyc] == 5 do value = 1
+    if gamLocation[slot] == 6 && pSeat[cyc] == 5 do value = 1
+    if gamLocation[slot] == 9 && pSeat[cyc] == 7 do value = 1
+    return value
+}
+
+// NEAR BASKET
+NearBasket :: proc(cyc: i32) -> i32 {
+    value: i32 = 0
+    if gamLocation[slot] == 2 && pWeapon[cyc] > 0 {
+        limb: i32 = bb.FindChild(world, "Rim")
+        if pX[cyc] > bb.EntityX(limb, 1)-100 && pX[cyc] < bb.EntityX(limb, 1)+100 &&
+           pZ[cyc] > bb.EntityZ(limb, 1)-100 && pZ[cyc] < bb.EntityZ(limb, 1)+100 {
+            if InLine(cyc, limb, 60) do value = 1
+        }
+    }
+    return value
+}
 

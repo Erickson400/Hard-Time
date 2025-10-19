@@ -17,4 +17,11 @@ Terms:
 | Functions.bb    | Sep 16, 2025      | 8/10     |
 | Menus.bb        | Sep 18, 2025      | 8/10     |
 | Editor.bb       | Sep 27, 2025      | 5/10     |
+| World.bb        | Oct 19, 2025      | 5/10     |
+| Weapons.bb        | .., 2025      | ../10     |
+| Weapons.bb        | .., 2025      | ../10     |
+| Weapons.bb        | .., 2025      | ../10     |
+| Weapons.bb        | .., 2025      | ../10     |
+| Weapons.bb        | .., 2025      | ../10     |
+| Weapons.bb        | .., 2025      | ../10     |
 

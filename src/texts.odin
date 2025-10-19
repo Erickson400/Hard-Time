@@ -185,5 +185,3 @@ textNickName := [101]string{0  = "Lemonhead",  1  = "Sugar Tits", 2  = "Hat Tric
 							73 = "Duke Nukem", 74 = "Body Bag", 75 = "Cum Bucket",
 							76 = "Steroid Roy", 77 = "Bulletproof", 78 = "Stone Malone",
 							79 = "Assassin", 80 = "Nightmare", 81..=100 = "?"}
-
-
