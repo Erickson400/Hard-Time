@@ -121,7 +121,7 @@ EntityShininess :: proc(entity: i32, shininess: f32) {}
 EntityFX :: proc(entity: i32, fx_type: i32) {}
 CountChildren :: proc(entity: i32) -> i32 { return 1}
 GetChild :: proc(entity: i32, index: i32) -> i32 { return 1}
-EntityRadius :: proc(entity: i32, radius: f32) {}
+EntityRadius :: proc(entity: i32, x_radius: f32, y_radious: f32 = 0) {}
 CreatePivot :: proc() -> i32 { return 1}
 CameraRange :: proc(camera: i32, near, far: f32) {}
 CameraFogColor :: proc(camera: i32, r, g, b: f32) {}
