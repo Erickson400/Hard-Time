@@ -12,7 +12,6 @@ import "core:math/rand"
 import "core:strings"
 
 
-
 // ------Internals-------
 GfxMode3DExists :: proc(width, height, color: i32) -> bool { return true }
 Graphics3DWidth :: proc(width, height, color, thingy: i32) {}
