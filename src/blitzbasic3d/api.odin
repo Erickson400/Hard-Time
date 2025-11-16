@@ -110,6 +110,7 @@ PointEntity :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
 EntityX :: proc(entity: i32, x: f32 = 0) -> f32 { return 0}
 EntityY :: proc(entity: i32, y: f32 = 0) -> f32 { return 0}
 EntityZ :: proc(entity: i32, z: f32 = 0) -> f32 { return 0}
+ResetEntity :: proc(entity: i32) {}
 MoveEntity :: proc(entity: i32, x, y, z: f32) {}
 EntityTexture :: proc(entity: i32, texture: i32, sus: i32 = 0, sos: i32 = 0) {}
 FindChild :: proc(parent: i32, name: string) -> i32 { return 1}

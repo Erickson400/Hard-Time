@@ -18,14 +18,15 @@ Terms:
 | Menus.bb        | Sep 18, 2025      | 8/10     |
 | Editor.bb       | Sep 27, 2025      | 5/10     |
 | World.bb        | Oct 19, 2025      | 5/10     |
-| Weapons.bb      | .., 2025          | ../10    |
-| Particles.bb    | .., 2025          | ../10    |
-| Players.bb      | .., 2025          | ../10    |
-| Anims.bb        | .., 2025          | ../10    |
-| Moves.bb        | .., 2025          | ../10    |
-| AI.bb           | .., 2025          | ../10    |
-| Promos.bb       | .., 2025          | ../10    |
-| Crimes.bb       | .., 2025          | ../10    |
-| Missions.bb     | .., 2025          | ../10    |
-| Credits.bb      | .., 2025          | ../10    |
+| Weapons.bb      | Nov 16, 2025      | 8/10     |
+| Particles.bb    |     .., 2025      | ./10     |
+| Players.bb      |     .., 2025      | ./10     |
+| Anims.bb        |     .., 2025      | ./10     |
+| Moves.bb        |     .., 2025      | ./10     |
+| AI.bb           |     .., 2025      | ./10     |
+| Promos.bb       |     .., 2025      | ./10     |
+| Crimes.bb       |     .., 2025      | ./10     |
+| Missions.bb     |     .., 2025      | ./10     |
+| Credits.bb      |     .., 2025      | ./10     |
+| Gameplay.bb     |     .., 2025      | ./10     |
 
