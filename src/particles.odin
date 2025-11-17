@@ -1,6 +1,5 @@
 package main
 
-import "core:fmt"
 import bb "blitzbasic3d"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +225,7 @@ CreateExplosion :: proc(source, entity: i32, x, y, z: f32, style: i32) {
 }
 
 ExplosionCycle :: proc() {
-    for cyc in 1..=no_explodes {
+    for cyc in i32(1)..=no_explodes {
         if exTim[cyc] > 0 {
             // blaze
             if exTim[cyc] == 20 || exTim[cyc] == 15 || exTim[cyc] == 10 || exTim[cyc] == 5 {
@@ -258,8 +257,8 @@ ExplosionCycle :: proc() {
             // human damage
             if exTim[cyc] >= 5 && exTim[cyc] <= 18 {
                 for v in 1..=no_plays {
-                    if BlastProximity(cyc, pX[v], pY[v], pZ[v], 40.0) do pDazed[v] = bb.Rnd(100, 300)
-                    if exHurt[cyc][v] == 0 && BlastProximity(cyc, pX[v], pY[v], pZ[v], 30.0) {
+                    if cast(bool)BlastProximity(cyc, pX[v], pY[v], pZ[v], 40.0) do pDazed[v] = bb.Rnd(100, 300)
+                    if exHurt[cyc][v] == 0 && cast(bool)BlastProximity(cyc, pX[v], pY[v], pZ[v], 30.0) {
                         charAttacker[pChar[v]] = pChar[i32(exSource[cyc])]
                         if exType[cyc] == 10 {
                             ProduceSound(p[v], sBlaze, 22050, 0.5)
@@ -275,7 +274,7 @@ ExplosionCycle :: proc() {
                         if AttackViable(v) != 3 do pDT[v] = (150 - cast(i32)pHealth[v]) * 2
                         if AttackViable(v) >= 1 && AttackViable(v) <= 2 do ChangeAnim(v, 70)
                         if AttackViable(v) == 3 do GroundReaction(v)
-                        if BlastProximity(cyc, pX[v], pY[v], pZ[v], 15.0) {
+                        if cast(bool)BlastProximity(cyc, pX[v], pY[v], pZ[v], 15.0) {
                             randy: i32 = bb.Rnd(1, 3)
                             if randy == 1 && pHealth[v] > 0 do ChangeAnim(v, 80)
                             if randy == 2 && pHealth[v] > 0 do ChangeAnim(v, 83)
@@ -320,8 +319,79 @@ ExplosionCycle :: proc() {
     }
 }
 
+BlastProximity :: proc(cyc: i32, x, y, z, range: f32) -> i32 {
+    value: i32 = 0
+    if x > exX[cyc] - range && x < exX[cyc] + range && z > exZ[cyc] - range && z < exZ[cyc] + range && y > exY[cyc] - 50 && y < exY[cyc] + 50 {
+        value = 1
+    }
+    return value
+}
 
+//-----------------------------------------------------------------
+////////////////////////////// POOLS //////////////////////////////
+//-----------------------------------------------------------------
 
-/*
+LoadPools :: proc() {
+    for cyc in 1..=no_pools {
+        pool[cyc] = bb.LoadSprite("World/Sprites/Pool.png", 4)
+        bb.SpriteViewMode(pool[cyc], 2)
+        bb.HideEntity(pool[cyc])
+        poolState[cyc] = 0
+    }
+}
 
-*/
+CreatePool :: proc(x, y, z, size: f32, layers, style: i32) {
+    if optGore >= 2 {
+        for count in 1..=layers {
+            // find empty spot
+            cyc: i32 = 0
+            for check in 1..=no_pools {
+                if poolState[check] == 0 do cyc = check
+            }
+            // force spot!
+            if cyc == 0 do cyc = bb.Rnd(1, no_pools)
+            // generate pool
+            poolX[cyc] = x
+            poolZ[cyc] = z
+            if count > 1 {
+                poolX[cyc] = x + f32(bb.Rnd(-5, 5))
+                poolZ[cyc] = z + f32(bb.Rnd(-5, 5))
+            }
+            poolA[cyc] = bb.Rnd(0.0, 360.0)
+            poolY[cyc] = y
+            poolSize[cyc] = size
+            poolAlpha[cyc] = 0.7
+            poolState[cyc] = 1
+            bb.ShowEntity(pool[cyc])
+            // colour variations
+            poolType[cyc] = style
+            if style == 1 do bb.EntityColor(pool[cyc], bb.Rnd(150, 220), 0, 0) // blood
+            if style == 2 do bb.EntityColor(pool[cyc], 255, 255, 255) // foam
+            if style == 3 do bb.EntityColor(pool[cyc], 100, 200, 255) // water
+            if style == 4 do bb.EntityColor(pool[cyc], 150, 50, 0) // beer
+        }
+    }
+}
+
+PoolCycle :: proc() {
+    for cyc in 1..=no_pools {
+        if poolState[cyc] == 1 {
+            // location
+            bb.PositionEntity(pool[cyc], poolX[cyc], poolY[cyc], poolZ[cyc])
+            bb.RotateEntity(pool[cyc], 90.0, poolA[cyc], 0.0)
+            // fade away
+            poolAlpha[cyc] -= 0.0005
+            if poolY[cyc] < 0 do poolAlpha[cyc] -= 0.001
+            bb.EntityAlpha(pool[cyc], poolAlpha[cyc])
+            // shrink away
+            poolSize[cyc] -= 0.01
+            if poolY[cyc] < 0 do poolSize[cyc] -= 0.01
+            bb.ScaleSprite(pool[cyc], poolSize[cyc], poolSize[cyc])
+            // remove
+            if poolSize[cyc] < 0.5 || poolAlpha[cyc] < 0.01 {
+                poolState[cyc] = 0
+                bb.HideEntity(pool[cyc])
+            }
+        }
+    }
+}

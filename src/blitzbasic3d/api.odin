@@ -104,6 +104,8 @@ EntityYaw :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
 EntityPitch :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
 EntityRoll :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
 PointEntity :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
+CountCollisions :: proc(entity: i32) -> i32 { return 1}
+CollisionEntity :: proc(entity: i32, index: i32) -> i32 { return 1}
 
 EntityX :: proc(entity: i32, x: f32 = 0) -> f32 { return 0}
 EntityY :: proc(entity: i32, y: f32 = 0) -> f32 { return 0}

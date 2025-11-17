@@ -96,14 +96,14 @@ WeaponCycle :: proc() {
                     weapGravity[cyc] -= (weapGravity[cyc] / 3)
                     if weapGravity[cyc] < 0.25 || gotim < 0 do weapGravity[cyc] = 0
                     if weapFlight[cyc] < weapGravity[cyc] / 5 do weapFlight[cyc] = weapGravity[cyc] / 5
-                    weapA[cyc] = weapA[cyc] + bb.Rnd(-20, 20)
+                    weapA[cyc] += bb.Rnd(-20.0, 20.0)
                     if weapGravity[cyc] < 1.0 {
                         for v in 1..=no_plays {
                             weapSting[cyc][v] = 0
                         }
                     }
                     for v in 1..=no_plays {
-                        if charRole[pChar[v]] == 1 && WeaponProximity(v, cyc, weapSize[weapType[cyc]] * 5) {
+                        if charRole[pChar[v]] == 1 && cast(bool)WeaponProximity(v, cyc, cast(i32)weapSize[weapType[cyc]] * 5) {
                             pAgenda[v] = 1
                             pExploreY[v] = pY[v]
                             pExploreX[v] = weapX[cyc]
@@ -129,10 +129,10 @@ WeaponCycle :: proc() {
                             if weapX[cyc] > bb.EntityX(basket, 1) - 100 && weapX[cyc] < bb.EntityX(basket, 1) + 100 &&
                                weapY[cyc] > bb.EntityY(basket, 1) - 20  && weapY[cyc] < bb.EntityY(basket, 1) + 30 &&
                                weapZ[cyc] > bb.EntityZ(basket, 1) - 100 && weapZ[cyc] < bb.EntityZ(basket, 1) + 100 {
-                                weapFlightA[cyc] += bb.Rnd(-90, 90)
+                                weapFlightA[cyc] += bb.Rnd(-90.0, 90.0)
                             }
                         }
-                        weapA[cyc] += bb.Rnd(-20, 20)
+                        weapA[cyc] += bb.Rnd(-20.0, 20.0)
                         ExplodeWeapon(cyc, 0)
                     }
                 }
@@ -141,7 +141,7 @@ WeaponCycle :: proc() {
                     for v in 1..=no_plays {
                         range := weapSize[weapType[cyc]] - (weapSize[weapType[cyc]] / 3)
                         if AttackViable(v) == 3 do range *= 2
-                        if WeaponProximity(v, cyc, range) && weapY[cyc] >= pY[v] + 5 && weapY[cyc] <= bb.EntityY(bb.FindChild(p[v], "Head"), 1) + 5 && AttackViable(v) > 0 && weapSting[cyc][v] == 1 {
+                        if cast(bool)WeaponProximity(v, cyc, cast(i32)range) && weapY[cyc] >= pY[v] + 5 && weapY[cyc] <= bb.EntityY(bb.FindChild(p[v], "Head"), 1) + 5 && AttackViable(v) > 0 && weapSting[cyc][v] == 1 {
                             charAttacker[pChar[v]] = pChar[weapThrower[cyc]]
                             blocked := 0
                             if pAnim[v] >= 74 && pAnim[v] <= 75 && InLine(v, weap[cyc], 90) do blocked = 1
@@ -152,7 +152,7 @@ WeaponCycle :: proc() {
                                 CreateSpurt(pX[v], weapY[cyc] - 4, pZ[v], 2, 10, 99)
                                 ScarArea(v, weapX[cyc], weapY[cyc], weapZ[cyc], 5)
                                 if CountScars(v) >= 2 do ScarWeapon(cyc, 0)
-                                pHealth[v] -= bb.Rnd(1, weapDamage[weapType[cyc]])
+                                pHealth[v] -= cast(f32)bb.Rnd(1, weapDamage[weapType[cyc]])
                                 pHP[v] -= bb.Rnd(1, weapDamage[weapType[cyc]])
                                 pHurtA[v] = weapFlightA[cyc]
                                 pStagger[v] = 0.5
@@ -273,7 +273,7 @@ FireBullet :: proc(cyc: i32) {
     if weapClip[pWeapon[cyc]] < 0 do weapClip[pWeapon[cyc]] = 0
     //find slot
     v: i32 = 0
-    for count in 1..=no_bullets {
+    for count in i32(1)..=no_bullets {
         if bulletState[count] == 0 do v = count
     }
     if v == 0 do v = bb.Rnd(1, no_bullets)
@@ -335,7 +335,7 @@ BulletCycle :: proc() {
                 }
                 //human contact
                 for v in 1..=no_plays {
-                    range: i32 = 10
+                    range: f32 = 10
                     if AttackViable(v) == 3 do range = 20
                     if bulletX[cyc] > pX[v] - range && bulletX[cyc] < pX[v] + range && bulletZ[cyc] > pZ[v] - range && bulletZ[cyc] < pZ[v] + range && bulletY[cyc] >= pY[v] && bulletY[cyc] <= bb.EntityY(bb.FindChild(p[v], "Head"), 1) + 5 {
                         if AttackViable(v) > 0 && bulletState[cyc] == 1 {
@@ -349,13 +349,13 @@ BulletCycle :: proc() {
                             if AttackViable(v) >= 1 && AttackViable(v) <= 2 {
                                 if bulletY[cyc] >= pY[v] + 20 && pAnim[v] != 70 do ChangeAnim(v, 70)
                                 if bulletY[cyc] < pY[v] + 20 && pAnim[v] != 71 do ChangeAnim(v, 71)
-                                pDT[v] = (150 - pHealth[v]) * 2
+                                pDT[v] = i32((150 - pHealth[v]) * 2)
                             }
                             if AttackViable(v) == 3 && pAnim[v] != 72 && pAnim[v] != 73 {
                                 GroundReaction(v)
                                 pDT[v] = pDT[v] - 10
                             }
-                            pHealth[v] -= bb.Rnd(1, 5)
+                            pHealth[v] -= bb.Rnd(1.0, 5.0)
                             pHP[v] -= bb.Rnd(1, 5)
                             pHurtA[v] = bulletYA[cyc]
                             pStagger[v] = 0.6
@@ -439,7 +439,7 @@ CreateWeapon :: proc(weapon: i32, x, y, z: f32) {
         bb.PositionEntity(weap[cyc], weapX[cyc], weapY[cyc], weapZ[cyc])
         bb.EntityType(weap[cyc], 3, 0)
         bb.EntityRadius(weap[cyc], 4, 1)
-        weapA[cyc] = bb.Rnd(0, 360.0)
+        weapA[cyc] = bb.Rnd(0.0, 360.0)
         weapFlightA[cyc] = weapA[cyc]
         weapGravity[cyc] = weapWeight[weapType[cyc]] * 5
         weapFlight[cyc] = 0
@@ -606,7 +606,7 @@ WeaponProximity :: proc(cyc, v, range: i32) -> i32 {
             checkX = bb.EntityX(pLimb[cyc][30], 1)
             checkZ = bb.EntityZ(pLimb[cyc][30], 1)
         }
-        if checkX > weapX[v]-f32(range) && checkX < weapX[v]+f32(range) && checkZ > weapZ[v]-f32(range) && checkZ < weapZ[v]+f32(range) {
+        if checkX > weapX[v]-range && checkX < weapX[v]+range && checkZ > weapZ[v]-range && checkZ < weapZ[v]+range {
             value = 1
         }
     }

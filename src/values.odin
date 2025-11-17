@@ -240,7 +240,7 @@ pFoodTim: [optPlayLim + 1]i32
 // physics
 pGround: [optPlayLim + 1]f32
 pHurtA: [optPlayLim + 1]f32
-pStagger: [optPlayLim + 1]i32
+pStagger: [optPlayLim + 1]f32
 pSpeed: [optPlayLim + 1]f32
 pGravity: [optPlayLim + 1]f32
 pCharge: [optPlayLim + 1]f32

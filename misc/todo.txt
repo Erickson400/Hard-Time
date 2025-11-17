@@ -89,8 +89,8 @@ Blitz API Implementations:
 - EntityYaw
 - PointEntity
 - ResetEntity
-
-
+- CollisionEntity
+- CountCollisions
 
 
 
