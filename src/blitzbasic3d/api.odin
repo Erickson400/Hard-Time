@@ -8,7 +8,6 @@ package blitzbasic3d
 
 import ray "vendor:raylib"
 import "core:os"
-import "core:math/rand"
 import "core:strings"
 
 
@@ -100,7 +99,7 @@ PositionEntity :: proc(entity: i32, x, y, z: f32) {}
 RotateEntity :: proc(entity: i32, x, y, z: f32) {}
 ScaleEntity :: proc(entity: i32, x, y, z: f32) {}
 EntityAlpha :: proc(entity: i32, alpha: f32) {}
-EntityColor :: proc(entity: i32, r, g, b: f32) {}
+EntityColor :: proc(entity: i32, r, g, b: i32) {}
 EntityYaw :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
 EntityPitch :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
 EntityRoll :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
