@@ -20,7 +20,7 @@ Terms:
 | World.bb        | Oct 19, 2025      | 5/10     | 1172         |
 | Weapons.bb      | Nov 16, 2025      | 8/10     | 625          |
 | Particles.bb    | Nov 17, 2025      | 8/10     | 367          |
-| Players.bb      |     .., 2025      | ./10     | 635          |
+| Players.bb      | Nov 18, 2025      | 8/10     | 635          |
 | Anims.bb        |     .., 2025      | ./10     | 2055         |
 | Moves.bb        |     .., 2025      | ./10     | 482          |
 | AI.bb           |     .., 2025      | ./10     | 1094         |

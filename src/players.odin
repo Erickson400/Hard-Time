@@ -330,7 +330,7 @@ DisplayPlayers :: proc() {
     }
 }
 
-FindChar :: proc(char: i32) {
+FindChar :: proc(char: i32) -> i32 {
     value: i32 = 0
     for v in 1..=no_plays {
         if pChar[v] == char do value = v
@@ -339,6 +339,7 @@ FindChar :: proc(char: i32) {
 }
 
 ScarLimb :: proc(cyc, limb, chance: i32) {
+    chance := chance
     if limb == 0 do chance *= 2
     randy := bb.Rnd(0, chance)
     if randy == 0 && pScar[cyc][limb] <= 4 {
@@ -496,8 +497,8 @@ LoseLimb :: proc(cyc, limb, chance: i32) {
 }
 
 ManageScars :: proc(cyc: i32) {
-    for limb in 0..=40 {
-        if pScar[cyc][limb] == 5 && MajorLimb(limb) && pInjured[cyc] < 1000 {
+    for limb in i32(0)..=40 {
+        if pScar[cyc][limb] == 5 && cast(bool)MajorLimb(limb) && pInjured[cyc] < 1000 {
             pInjured[cyc] = 1000
         }
         if pScar[cyc][limb] <= 4 && pLimb[cyc][limb] > 0 {

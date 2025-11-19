@@ -1097,7 +1097,7 @@ RelocateChars :: proc() {
                 charLocation[char] = 0
                 gamRelease[slot] = char
                 RuinMission(char)
-                // TODO: cyc is defined in Editor.bb
+                // TODO: cyc is undefined. This is probably a bug
                 for v in 1..=no_chars {
                     if v != gamChar[slot] && charPromo[v][gamChar[slot]] == 0 && charRelation[v][gamChar[slot]] >= 0 && charAngerTim[v][gamChar[slot]] == 0 {
                         if charRelation[gamChar[slot]][pChar[cyc]] > 0 && charRelation[v][pChar[cyc]] > 0 {
