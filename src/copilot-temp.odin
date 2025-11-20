@@ -118,7 +118,136 @@ Part1 :: proc(cyc: i32) {
             if cast(bool)cRight[cyc] do pA[cyc] -= 10
         }
         pA[cyc] = CleanAngle(pA[cyc])
+        if pAnimTim[cyc] > 5 {
+            if HorizontalPressed(cyc) == 0 || VerticalPressed(cyc) do ChangeAnim(cyc, 0)
+        }
+        pStepTim[cyc] += 1
     }
+    // kneeling turn
+    if pAnim[cyc] == 11 {
+        anim: i32 = 11
+        if pAnimTim[cyc] == 0 || anim != pState[cyc] {
+            randy: i32 = bb.Rnd(-1, 1)
+            if randy == -1 do bb.Animate(p[cyc], 1, -3.0, pSeq[cyc][anim], 5)
+            if randy >= 0 do bb.Animate(p[cyc], 1, 3.0, pSeq[cyc][anim], 5)
+            pState[cyc] = anim
+        }
+        if cast(bool)cLeft[cyc] do pA[cyc] += 5
+        if cast(bool)cRight[cyc] do pA[cyc] -= 5
+        pA[cyc] = CleanAngle(pA[cyc])
+        if pAnimTim[cyc] > 5 {
+            if HorizontalPressed(cyc) == 0 || VerticalPressed(cyc) || pDazed[cyc] > 0 {
+                ChangeAnim(cyc, 1)
+            }
+        }
+        pStepTim[cyc] += 1
+    }
+    // walking
+    if pAnim[cyc] == 12 {
+        anim: i32 = 12
+        transition: i32 = 5
+        speeder: f32 = pSpeed[cyc] * 2.0
+        if pWeapon[cyc] > 0 && weapStyle[weapType[pWeapon[cyc]]] == 4 do anim = 61
+        if pWeapon[cyc] > 0 && weapStyle[weapType[pWeapon[cyc]]] == 5 do anim = 17
+        if pHealth[cyc] < 10 {
+            anim = 14
+            speeder = pSpeed[cyc] * 3.0
+        }
+        if pInjured[cyc] > 0 {
+            anim = 14
+            speeder = pSpeed[cyc] * 4.0
+        }
+        if pDazed[cyc] > 0 {
+            anim = 15
+            speeder = pSpeed[cyc] * 5.0
+        }
+        if speeder < 3.0 do speeder = 3.0
+        if pOldAnim[cyc] == 1 || pOldAnim[cyc] == 11 do transition = 10
+        if pAnimTim[cyc] == 0 || anim != pState[cyc] {
+            bb.Animate(p[cyc], 1, speeder, pSeq[cyc][anim], transition)
+            pState[cyc] = anim
+        }
+        ApplyMovement(cyc, pSpeed[cyc])
+        if pAnimTim[cyc] > 5 {
+            if VerticalPressed(cyc) == 0 do ChangeAnim(cyc, 0)
+        }
+        if cast(bool)cDefend[cyc] && pInjured[cyc] == 0 && pDazed[cyc] == 0 do ChangeAnim(cyc, 13)
+        pStepTim[cyc] += 1
+    }
+    // running
+    if pAnim[cyc] == 13 {
+        anim: i32 = 13
+        transition: i32 = 5
+        speeder: f32 = pSpeed[cyc] * 3.0
+        if pWeapon[cyc] > 0 do anim = 16
+        if pWeapon[cyc] > 0 && weapStyle[weapType[pWeapon[cyc]]] == 4 do anim = 62
+        if pWeapon[cyc] > 0 && weapStyle[weapType[pWeapon[cyc]]] == 5 do anim = 18
+        if speeder < 3.0 do speeder = 3.0
+        if pOldAnim[cyc] == 1 || pOldAnim[cyc] == 11 do transition = 10
+        if pAnimTim[cyc] == 0 || anim != pState[cyc] {
+            bb.Animate(p[cyc], 1, speeder, pSeq[cyc][anim], transition)
+            pState[cyc] = anim
+        }
+        ApplyMovement(cyc, pSpeed[cyc] * 2)
+        if pAnimTim[cyc] > 5 {
+            if VerticalPressed(cyc) == 0 || cast(bool)cDefend[cyc] == false || pDazed[cyc] > 0 do ChangeAnim(cyc, 0)
+        }
+        pStepTim[cyc] += 2
+    }
+    //----------- 20-30: WEAPON INTERACTION ----------
+    // pick up weapon
+    if pAnim[cyc] == 20 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, 3.0, pSeq[cyc][20], 5)
+        if pAnimTim[cyc] <= 11 && WeaponProximity(cyc, v, 5) == 0 {
+            bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, 0.3)
+            pStepTim[cyc] += bb.Rnd(0, 1)
+        }
+        if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sSwing, 22050, 0.1)
+        if pAnimTim[cyc] == 11 && cast(bool)HandIntact(cyc, 17) {
+            for v in 1..=no_weaps {
+                range: f32 = weapSize[weapType[v]] + 5
+                if weapLocation[v] == gamLocation[slot] && weapState[v] > 0 && pWeapon[cyc] == 0 && pWeaponTim[cyc][v] == 0 && weapCarrier[v] == 0 && pY[cyc] >= weapY[v] - 15 && pY[cyc] <= weapY[v] + 15 {
+                    if cast(bool)LimbProximity(pLimb(cyc, 19), weapX[v], weapZ[v], range) || cast(bool)WeaponProximity(cyc, v, 5) {
+                        ProduceSound(p[cyc], sShuffle(bb.Rnd(1, 3)), 22050, 0)
+                        ProduceSound(p[cyc], weapSound[weapType[v]], 22050, 0.5)
+                        CreateSpurt(weapX[v], weapY[v] + 1, weapZ[v], 2, 10, 5)
+                        AttainWeapon(cyc, v)
+                    }
+                }
+            }
+        }
+        if pAnimTim[cyc] > 20 {
+            if pWeapon[cyc] > 0 && charWeapHistory[pChar[cyc]][weapType[pWeapon[cyc]]] == 0 {
+                ChangeAnim(cyc, 24)
+            } else {
+                ChangeAnim(cyc, 0)
+            }
+        }
+    }
+    // drop weapon
+    if pAnim[cyc] == 21 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, 2.0, pSeq[cyc][21], 10)
+        if pAnimTim[cyc] == 4 do DropWeapon(cyc, 0)
+        if pAnimTim[cyc] > 6 do ChangeAnim(cyc, 0)
+    }
+    // throw weapon
+    if pAnimTim[cyc] == 22 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 3, 3.5, pSeq[cyc][22], 5)
+            weapGravity[pWeapon[cyc]] = 1.0
+        }
+        if pAnimTim[cyc] == 6 do ProduceSound(p[cyc], sSwing, 22050, 0)
+        if pAnimTim[cyc] <= 11 {
+            if cast(bool)cThrow[cyc] || pControl[cyc] == 0 {
+                weapGravity[pWeapon[cyc]] += 0.25
+            }
+        }
+        if pAnimTim[cyc] == 11 do ThrowWeapon(cyc)
+        if pAnimTim[cyc] > 21 do ChangeAnim(cyc, 0)
+    }
+    // snatch weapon
+
 
 
 
