@@ -26,6 +26,7 @@ Make the game's source and assets readily available for fans and modders. Preser
 | Missions.bb     |     .., 2025      | ./10     | 941          |
 | Credits.bb      |     .., 2025      | ./10     | 752          |
 | Gameplay.bb     |     .., 2025      | ./10     | 899          |
+
 Copilot was used to help with the repetitive copy pasting.
 
 ### Blitz3D API status
