@@ -9,7 +9,7 @@ Terms:
 --- Accuracy goes from 0 to 10, 10 being I'm 100% confident the code matches the original blitz source. No matter if its runnable or not.
 
 
-| Script name     | Last time checked | Accuracy | BB Line Size |
+| Script name     | Last time checked | Accuracy | BB Line Count|
 |-----------------|-------------------|----------|--------------|
 | Text.bb         | Sep 28, 2025      | 10/10    | 460          |
 | Value.bb        | Sep 12, 2025      | 1/10     | 1157         |

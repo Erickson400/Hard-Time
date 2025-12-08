@@ -6,7 +6,7 @@ Ported using Odin + SDL3 to recreate the classic Blitz3D API.
 Make the game's source and assets readily available for fans and modders. Preserving it for decades to come. Ported to a simple low level language with a trivial build system (Odin), and a cross-platform graphical library (SDL3).
 
 ### Source Translation Checklist as of Dec 7, 2025
-| Script name     | Last time checked | Accuracy | BB Line Size |
+| Script name     | Last time checked | Accuracy | BB Line Count|
 |-----------------|-------------------|----------|--------------|
 | Text.bb         | Sep 28, 2025      | 10/10    | 460          |
 | Value.bb        | Sep 12, 2025      | 1/10     | 1157         |
