@@ -1113,7 +1113,504 @@ Animations :: proc(cyc: i32) {
         if pAnimTim[cyc] > 22 do ChangeAnim(cyc, 0)
     }
     //big swing
-    
+    if pAnim(cyc) == 43 {
+        anim = 43
+        if weapStyle[weapType[pWeapon[cyc]]] == 7 do anim = 53
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 3, 3.0, pSeq[cyc][anim], 10)
+            pSting[cyc] = 1
+        }
+        if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sSwing, 22050, 0)
+        if pAnimTim[cyc] <= 16 {
+            FaceEntity(cyc, p[pFoc[cyc]], 5)
+            bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, 0.4)
+            pStepTim[cyc] = pStepTim[cyc] + bb.Rnd(0, 1)
+        }
+        if pAnimTim[cyc] >= 10 && pAnimTim[cyc] <= 15 && pSting[cyc] == 1 {
+            for v in 1..=no_plays {
+                range = weapRange[weapType[pWeapon[cyc]]]
+                if cyc != v && (Friendly[cyc][v] == 0 || v == pFoc[cyc]) && cast(bool)InProximity(cyc, v, 20 + range) && pY[cyc] > pY[v] - 30 && pY[cyc] < pY[v] + 15 && AttackViable(v) >= 1 && AttackViable(v) <= 2 && pSting[cyc] == 1 {
+                    contact = InRange(cyc, v, range)
+                    if contact > 0 {
+                        charAttacker[pChar[v]] = pChar[cyc]
+                        blocked = 0
+                        randy = bb.Rnd(0, 10)
+                        if randy <= 3 + BlockPower(v) && pAnim[v] >= 74 && pAnim[v] <= 75 && cast(bool)InLine(v, p[cyc], 90) do blocked = 1
+                        if blocked == 0 {
+                            ProduceSound(p[v], weapSound[weapType[pWeapon[cyc]]], 22050, 1)
+                            if weapStyle[weapType[pWeapon[cyc]]] == 7 do ProduceSound(p[v], sStab, 22050, 1)
+                            ProduceSound(p[v], sImpact[3], 22050, 0)
+                            ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 1)
+                            impactY = pY[cyc] + 20
+                            if impactY > bb.EntityY(pLimb[v][1], 1) do impactY = bb.EntityY(pLimb[v][1], 1)
+                            CreateSpurt(pX[v], impactY, pZ[v], 2, 10, 99)
+                            ScarArea(v, pX[v], impactY, pZ[v], 2)
+                            if CountScars(v) >= 2 {
+                                ScarWeapon(pWeapon[cyc], 5)
+                                CreatePool(pX[v], pGround[v], pZ[v], bb.Rnd(2.0, 8.0), 1, 1)
+                            }
+                            ChangeAnim(v, 70)
+                            pDT[v] = (150 - pHealth[v]) * 2
+                            pHealth[v] -= GetPower(cyc)
+                            pHP[v] -= GetPower(cyc)
+                            pDT[v] += (weapDamage[weapType[pWeapon[cyc]]] * 10)
+                            pHealth[v] -= weapDamage[weapType[pWeapon[cyc]]]
+                            pHP[v] -= weapDamage[weapType[pWeapon[cyc]]]
+                            if weapName[weapType[pWeapon[cyc]]] == "Syringe" && pInjured[v] < 100 {
+                                pInjured[v] = bb.Rnd(100, 500)
+                            }
+                        }
+                        if blocked == 1 {
+                            if pWeapon[v] > 0 {
+                                ProduceSound(p[v], weapSound[weapType[pWeapon[v]]], 22050, 0)
+                                DropWeapon(v, 10)
+                            }
+                            ProduceSound(p[v], weapSound[weapType[pWeapon[cyc]]], 22050, 0)
+                            ProduceSound(p[v], sImpact[6], 22050, 0)
+                            impactY = pY[cyc] + 20
+                            if impactY > bb.EntityY(pLimb[v][1], 1) do impactY = bb.EntityY(pLimb[v][1], 1)
+                            CreateSpurt(pX[v], impactY, pZ[v], 2, 10, 4)
+                            for limb in 4..=29 {
+                                if pWeapon[v] == 0 do ScarLimb(v, limb, 10)
+                            }
+                            if pWeapon[v] == 0 do pHealth[v] -= 1
+                            pHP[v] -= 1
+                        }
+                        pHurtA[v] = pA[cyc]
+                        pStagger[v] = (range - contact) * 0.2
+                        if pStagger[v] < 0.2 do pStagger[v] = 0.2
+                        RiskAnger(cyc, v)
+                        GainStrength(cyc, 25)
+                        DamageRep(cyc, v, 2)
+                        pSting[cyc] = 0
+                    }
+                }
+            }
+        }
+        if pAnimTim[cyc] > 26 do ChangeAnim(cyc, 0)
+    }
+    // rear swing
+    if pAnim[cyc] == 44 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 3, 4.0, pSeq[cyc][44], 10)
+            for v in 1..=no_plays {
+                pMultiSting[cyc][v] = 1
+            }
+        }
+        if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sSwing, 22050, 0)
+        if pAnimTim[cyc] >= 5 && pAnimTim[cyc] <= 16 {
+            bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, -1.0)
+            pStepTim[cyc] += bb.Rnd(0, 1)
+        }
+        if pAnimTim[cyc] >= 7 && pAnimTim[cyc] <= 20 {
+            for v in 1..=no_plays {
+                if cyc != v && (Friendly[cyc][v] == 0 || v == pFoc[cyc]) && pY[cyc] > pY[v] - 30 && pY[cyc] < pY[v] + 5 && AttackViable(v) == 1 && pMultiSting[cyc][v] == 1 {
+                    if cast(bool)LimbProximity(bb.FindChild(p[cyc], weapFile[weapType[pWeapon[cyc]]]), pX[v], pZ[v], 8) || cast(bool)LimbProximity(pLimb[cyc][18], pX[v], pZ[v], 8) || cast(bool)LimbProximity(pLimb[cyc][19], pX[v], pZ[v], 8) {
+                        charAttacker[pChar[v]] = pChar[cyc]
+                        blocked = 0
+                        randy = bb.Rnd(0, 10)
+                        if randy <= 3 + BlockPower(v) && pAnim[v] >= 74 && pAnim[v] <= 75 && cast(bool)InLine(v, p[cyc], 90) do blocked = 1
+                        if blocked == 0 {
+                            ProduceSound(p[v], weapSound[weapType[pWeapon[cyc]]], 22050, 1)
+                            if weapStyle[weapType[pWeapon[cyc]]] == 7 do ProduceSound(p[v], sStab, 22050, 1)
+                            ProduceSound(p[v], sImpact[3], 22050, 0)
+                            ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 1)
+                            CreateSpurt(pX[v], pY[cyc] + 20, pZ[v], 2, 10, 99)
+                            ScarArea(v, pX[v], pY[cyc] + 20, pZ[v], 2)
+                            if CountScars(v) >= 2 {
+                                ScarWeapon(pWeapon[cyc], 5)
+                                CreatePool(pX[v], pGround[v], pZ[v], bb.Rnd(2.0, 8.0), 1, 1)
+                            }
+                            ChangeAnim(v, 70)
+                            pDT[v] = (150 - pHealth[v]) * 2
+                            pHealth[v] -= GetPower(cyc)
+                            pHP[v] -= GetPower(cyc)
+                            pDT[v] += (weapDamage[weapType[pWeapon[cyc]]] * 10)
+                            pHealth[v] -= weapDamage[weapType[pWeapon[cyc]]]
+                            pHP[v] -= weapDamage[weapType[pWeapon[cyc]]]
+                            if weapName[weapType[pWeapon[cyc]]] == "Syringe" && pInjured[v] < 100 {
+                                pInjured[v] = bb.Rnd(100, 500)
+                            }
+                        }
+                        if blocked == 1 {
+                            if pWeapon[v] > 0 {
+                                ProduceSound(p[v], weapSound[weapType[pWeapon[v]]], 22050, 0)
+                                DropWeapon(v, 10)
+                            }
+                            ProduceSound(p[v], weapSound[weapType[pWeapon[cyc]]], 22050, 1)
+                            ProduceSound(p[v], sImpact[6], 22050, 0)
+                            CreateSpurt(pX[v], pY[cyc] + 20, pZ[v], 2, 10, 4)
+                            for limb in 4..=29 {
+                                if pWeapon[v] == 0 do ScarLimb(v, limb, 10)
+                            }
+                            if pWeapon[v] == 0 do pHealth[v] -= 1
+                            pHP[v] -= 1
+                        }
+                        pHurtA[v] = pA[cyc] + 180
+                        pStagger[v] = 1.2
+                        RiskAnger(cyc, v)
+                        GainStrength(cyc, 25)
+                        DamageRep(cyc, v, 2)
+                        pMultiSting[cyc][v] = 0
+                    }
+                }
+            }
+        }
+        if pAnimTim[cyc] > 30 {
+            SharpTransition(cyc, 1, 180)
+            ChangeAnim(cyc, 0)
+        }
+    }
+    //----------- 60-70: GUN ATTACKS ----------
+    // fire machine gun
+    if pAnim[cyc] == 60 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 1, 1.5, pSeq(cyc, 63), 5)
+            pFireTim[cyc] = 0
+        }
+        if cDefend[cyc] == 0 || pControl[cyc] == 0 do FaceEntity(cyc, p(pFoc[cyc]), 5)
+        pFireTim[cyc] += 1
+        if pFireTim[cyc] == 5 {
+            ProduceSound(p[cyc], sShot(bb.Rnd(1, 2)), 22050, 0)
+            flame = bb.FindChild(p[cyc], "FlameA")
+            CreateParticle(bb.EntityX(flame, 1), bb.EntityY(flame, 1), bb.EntityZ(flame, 1), 2)
+        }
+        if pFireTim[cyc] == 6 do FireBullet[cyc]
+        if pFireTim[cyc] >= 7 do pFireTim[cyc] = 1
+        endTim = 10
+        if pControl[cyc] == 0 do endTim = 20
+        if pAnimTim[cyc] > endTim && (cAttack[cyc] == 0 || cast(bool)InProximity(cyc, pFoc[cyc], 20)) do ChangeAnim(cyc, 0)
+        if weapClip(pWeapon[cyc]) == 0 do ChangeAnim(cyc, 62)
+    }
+    // fire pistol
+    if pAnim[cyc] == 61 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 1, 1.5, pSeq(cyc, 64), 5)
+            pFireTim[cyc] = 0
+        }
+        if cDefend[cyc] == 0 || pControl[cyc] == 0 do FaceEntity(cyc, p(pFoc[cyc]), 5)
+        pFireTim[cyc] += 1
+        if pFireTim[cyc] == 5 {
+            ProduceSound(p[cyc], sShot(bb.Rnd(1, 2)), 22050, 1)
+            flame = bb.FindChild(p[cyc], "FlameB")
+            CreateParticle(bb.EntityX(flame, 1), bb.EntityY(flame, 1), bb.EntityZ(flame, 1), 2)
+        }
+        if pFireTim[cyc] == 6 do FireBullet[cyc]
+        if pFireTim[cyc] >= 7 do pFireTim[cyc] = -5
+        endTim = 10
+        if pControl[cyc] == 0 do endTim = 20
+        if pAnimTim[cyc] > endTim && (cAttack[cyc] == 0 || cast(bool)InProximity(cyc, pFoc[cyc], 20)) do ChangeAnim(cyc, 0)
+        if weapClip(pWeapon[cyc]) == 0 do ChangeAnim(cyc, 62)
+    }
+    // reload
+    if pAnim[cyc] == 62 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, 3.0, pSeq(cyc, 65), 5)
+        if pAnimTim[cyc] == 13 {
+            ProduceSound(p[cyc], sReload, 22050, 0)
+            weapClip(pWeapon[cyc]) = bb.Rnd(1, 10)
+            if weapClip(pWeapon[cyc]) > weapAmmo(pWeapon[cyc]) do weapClip(pWeapon[cyc]) = weapAmmo(pWeapon[cyc])
+        }
+        if pAnimTim[cyc] > 28 {
+            ChangeAnim(cyc, 0)
+            if pControl[cyc] == 0 && weapClip(pWeapon[cyc]) == 0 do ChangeAnim(cyc, 21)
+        }
+    }
+    //----------- 70-80: HURTING & BLOCKING ----------
+    //upper hurt
+    if pAnim[cyc] == 70 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, bb.Rnd(1.0, 2.0), pSeq(cyc, 70), 5)
+        pStagger[cyc] -= 0.04
+        if pAnimTim[cyc] <= 10 && pStagger[cyc] > 0 {
+            bb.RotateEntity(pPivot[cyc], 0, pHurtA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, pStagger[cyc])
+            pStepTim[cyc] += bb.Rnd(0, 1)
+        }
+        if pAnimTim[cyc] > 5 {
+            randy = bb.Rnd(0, 50)
+            if randy == 0 && DirPressed(cyc) do ChangeAnim(cyc, 0)
+            if randy <= 1 && ActionPressed(cyc) do ChangeAnim(cyc, 0)
+        }
+        if pAnimTim[cyc] > 25 do ChangeAnim(cyc, 0)
+        DropWeapon(cyc, 20)
+    }
+    //lower hurt
+    if pAnimTim[cyc] == 71 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, bb.Rnd(1.5, 2.5), pSeq(cyc, 71), 5)
+        pStagger[cyc] -= 0.04
+        if pAnimTim[cyc] <= 10 && pStagger[cyc] > 0 {
+            bb.RotateEntity(pPivot[cyc], 0, pHurtA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, pStagger[cyc])
+            pStepTim[cyc] += bb.Rnd(0, 1)
+        }
+        if pAnimTim[cyc] > 5 {
+            randy = bb.Rnd(0, 50)
+            if randy == 0 && cast(bool)DirPressed(cyc) do ChangeAnim(cyc, 0)
+            if randy <= 1 && cast(bool)ActionPressed(cyc) do ChangeAnim(cyc, 0)
+        }
+        if pAnimTim[cyc] > 25 do ChangeAnim(cyc, 0)
+        DropWeapon(cyc, 20)
+    }
+    //ground hurt (on back)
+    if pAnim[cyc] == 72 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, bb.Rnd(1.5, 2.5), pSeq(cyc, 72), 5)
+        randy = bb.Rnd(0, 100)
+        if randy == 0 && pAnimTim[cyc] > 5 do ChangeAnim(cyc, 81)
+        if pDT[cyc] <= 0 && (cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || pHealth[cyc] <= 0) do ChangeAnim(cyc, 81)
+        if pAnimTim[cyc] > 24 do ChangeAnim(cyc, 81)
+        DropWeapon(cyc, 5)
+    }
+    //ground hurt (on front)
+    if pAnim[cyc] == 73 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, bb.Rnd(1.5, 2.5), pSeq(cyc, 73), 5)
+        randy = bb.Rnd(0, 100)
+        if randy == 0 && pAnimTim[cyc] > 5 do ChangeAnim(cyc, 84)
+        if pDT[cyc] <= 0 && (cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || pHealth[cyc] <= 0) do ChangeAnim(cyc, 84)
+        if pAnimTim[cyc] > 28 do ChangeAnim(cyc, 84)
+        DropWeapon(cyc, 5)
+    }
+    //upper block
+    if pAnim[cyc] == 74 {
+        anim = 74
+        threat = FindThreat(cyc)
+        if pWeapon[cyc] > 0 do anim = 76
+        if pAnimTim[cyc] == 0 || anim != pState[cyc] {
+            bb.Animate(p[cyc], 1, bb.Rnd(0.2, 0.5), pSeq(cyc, anim), 6)
+            pState[cyc] = anim
+        }
+        FaceEntity(cyc, p(pFoc[cyc]), 5)
+        pStagger[cyc] -= 0.1
+        if pStagger[cyc] > 0 {
+            bb.RotateEntity(pPivot[cyc], 0, pHurtA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, pStagger[cyc])
+            pStepTim[cyc] += bb.Rnd(0, 1)
+        }
+        if pAnimTim[cyc] > 5 && pStagger[cyc] <= 0 {
+            if cDefend[cyc] == 0 || cAttack[cyc] == 1 do ChangeAnim(cyc, 0)
+        }
+        if cast(bool)DirPressed(cyc) do ChangeAnim(cyc, 0)
+        if threat == 2 do ChangeAnim(cyc, 75)
+    }
+    //lower block
+    if pAnim[cyc] == 75 {
+        anim = 75
+        threat = FindThreat(cyc)
+        if pWeapon[cyc] > 0 do anim = 77
+        if pAnimTim[cyc] == 0 || anim != pState[cyc] {
+            bb.Animate(p[cyc], 1, bb.Rnd(0.2, 0.5), pSeq(cyc, anim), 6)
+            pState[cyc] = anim
+        }
+        FaceEntity(cyc, p(pFoc[cyc]), 5)
+        pStagger[cyc] -= 0.1
+        if pStagger[cyc] > 0 {
+            bb.RotateEntity(pPivot[cyc], 0, pHurtA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, pStagger[cyc])
+            pStepTim[cyc] += bb.Rnd(0, 1)
+        }
+        if pAnimTim[cyc] > 5 && pStagger[cyc] <= 0 {
+            if cDefend[cyc] == 0 || cAttack[cyc] == 1 do ChangeAnim(cyc, 1)
+        }
+        if cast(bool)DirPressed(cyc) do ChangeAnim(cyc, 1)
+    }
+    //dying
+    if pAnim[cyc] == 76 || pAnim[cyc] == 77 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 3, 1.0, pSeq[cyc][pAnim[cyc] + 2], 5)
+        }
+        if pAnimTim[cyc] == 5 {
+            chDeath = bb.EmitSound(sDeath, p[cyc])
+            if charAttacker[pChar[cyc]] > 0 && charWitness[charAttacker[pChar[cyc]]] > 0 {
+                charReputation[charAttacker[pChar[cyc]]] += bb.Rnd(1, 5)
+            }
+            if gamMission[slot] == 14 && pChar[cyc] == gamTarget[slot] {
+                CompleteMission(1)
+            }
+            for v in 1..=no_plays {
+                pAgenda[v] = 2
+                pFollowFoc[v] = cyc
+                pSubX[v] = 9999
+                pSubZ[v] = 9999
+            }
+        }
+        randy = bb.Rnd(0, 200)
+        if randy > 1 && pControl[cyc] > 0 && pAnimTim[cyc] > 70 {
+            randy = bb.Rnd(0, 150)
+        }
+        if randy > 1 && pControl[cyc] > 0 && pAnimTim[cyc] > 100 {
+            randy = bb.Rnd(0, 100)
+        }
+        if (randy <= 1 || pHealth[cyc] > 0) && pAnimTim[cyc] > 30 && pAnimTim[cyc] < 130 {
+            if bb.ChannelPlaying(chDeath) {
+                bb.StopChannel(chDeath)
+            }
+            if pAnim[cyc] == 76 {
+                ChangeAnim(cyc, 82)
+            }
+            if pAnim[cyc] == 77 {
+                SharpTransition(cyc, 85, 180)
+                ChangeAnim(cyc, 85)
+            }
+            pHealth[cyc] = 25
+            if charAttacker[pChar[cyc]] == gamChar[slot] && charWitness(gamChar[slot]) > 0 && charHealth(charWitness(gamChar[slot])) > 0 {
+                if gamWarrant[slot] < 12 {
+                    gamWarrant[slot] = 12
+                    gamVictim[slot] = pChar[cyc]
+                }
+            }
+        }
+        if pAnimTim[cyc] == 150 {
+            if charAttacker[pChar[cyc]] > 0 {
+                for v in 1..=no_chars {
+                    if charRelation[v][pChar[cyc]] > 0 {
+                        charRelation[v][charAttacker[pChar[cyc]]] = -1
+                    }
+                    if charAttacker[pChar[cyc]] == gamChar[slot] && charPromo[v][gamChar[slot]] == 0 && v != gamClient[slot] {
+                        if charRelation[v][pChar[cyc]] > 0 {
+                            charPromo[v][gamChar[slot]] = 82
+                            charPromoRef[v] = pChar[cyc]
+                        }
+                        if charRelation[v][pChar[cyc]] < 0 && charRelation[v][gamChar[slot]] >= 0 {
+                            charPromo[v][gamChar[slot]] = 83
+                            charPromoRef[v] = pChar[cyc]
+                        }
+                    }
+                }
+                if charWitness[charAttacker[pChar[cyc]]] > 0 {
+                    charReputation[charAttacker[pChar[cyc]]] += bb.Rnd(1, 5)
+                    if charAttacker[pChar[cyc]] == gamChar[slot] && charHealth[charWitness[gamChar[slot]]] > 0 {
+                        if gamWarrant[slot] == 13 {
+                            gamWarrant[slot] = 14
+                        }
+                        if gamWarrant[slot] < 13 {
+                            gamWarrant[slot] = 13
+                        }
+                        gamVictim[slot] = pChar[cyc]
+                    }
+                }
+            }
+            if gamMission[slot] > 0 && pChar[cyc] == gamClient[slot] {
+                gamMission[slot] = 0
+            }
+            if gamMission[slot] >= 13 && gamMission[slot] <= 15 && pChar[cyc] == gamTarget[slot] {
+                CompleteMission(1)
+            }
+        }
+        if pAnimTim[cyc] > 150 {
+            if pChar[cyc] == gamChar[slot] do fadeTarget = 1.0
+            if pChar[cyc] == gamChar[slot] && pAnimTim[cyc] > 560 do go = 1
+        }
+        DropWeapon(cyc, 0)
+    }
+    //----------- 80-90: FALLING & RISING ----------
+    //fall onto back
+    if pAnim(cyc) == 80 {
+        if pAnimTim(cyc) == 0 {
+            bb.Animate(p[cyc], 3, 2.0, pSeq[cyc][80], 10)
+            pStagger[cyc] = 1.75
+            pStagger[cyc] -= 0.04
+            if pAnimTim[cyc] <= 30 && pStagger[cyc] > 0 {
+                pHurtA[cyc] = CleanAngle(pA[cyc] + 180)
+                bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+                bb.MoveEntity(pPivot[cyc], 0, 0, -pStagger[cyc])
+                pStepTim[cyc] += bb.Rnd(0, 1)
+            }
+            if pAnimTim[cyc] == 22 {
+                ProduceSound(p[cyc], sFall, 22050, 0)
+                ProduceSound(p[cyc], sPain[bb.Rnd(1, 8)], 22050, 0)
+                ScarArea(cyc, 0, 0, 0, 10)
+                FindSmashes(cyc)
+                RiskInjury(cyc, 200)
+                charHappiness[pChar[cyc]] -= 1
+                charReputation[pChar[cyc]] -= bb.Rnd(0, 1)
+            }
+            if pAnimTim[cyc] > 45 do ChangeAnim(cyc, 81)
+            DropWeapon(cyc, 20)
+        }
+        //lying on back
+        if pAnim(cyc) == 81 {
+            transition = 5
+            if pOldAnim(cyc) == 72 do transition = 10
+            if pAnimTim(cyc) == 0 || pHealth(cyc) <= 0 {
+                bb.Animate(p[cyc], 1, bb.Rnd(0.1, 0.4), pSeq[cyc][81], transition)
+            }
+            if pDT(cyc) <= 0 && pHealth(cyc) > 0 {
+                if cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)KeyDown(1) do ChangeAnim(cyc, 82)
+            }
+            if gotim > 0 && pHealth(cyc) <= 0 && (gamPromo == 0 || pChar(cyc) != gamChar(slot)) do ChangeAnim(cyc, 76)
+            if gamMission(slot) == 15 && pChar(cyc) == gamTarget(slot) && charAttacker(pChar(cyc)) == gamChar(slot) do CompleteMission(1)
+            if gamMission(slot) == 18 && pChar(cyc) == gamClient(slot) && gamPromo != 158 do CompleteMission(-1)
+        }
+        //get up off back
+        if pAnim(cyc) == 82 {
+            if pAnimTim(cyc) == 0 {
+                pAnimSpeed := bb.Rnd(2.0, 4.0)
+                if pInjured[cyc] > 0 do pAnimSpeed = 2.0
+                bb.Animate(p[cyc], 3, pAnimSpeed, pSeq[cyc][82], 5)
+            }
+            animSpd := pAnimSpeed[cyc]
+            if pAnimTim[cyc] == int(25 / animSpd) || pAnimTim[cyc] == int(55 / animSpd) {
+                ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 44100, 0.5)
+            }
+            if pAnimTim[cyc] == int(85 / animSpd) {
+                pStepTim[cyc] = 99
+                if cAttack[cyc] == 0 && pControl[cyc] == 0 && cast(bool)InProximity(cyc, pFoc[cyc], 20) && AttackViable(pFoc[cyc]) >= 1 && AttackViable(pFoc[cyc]) <= 2 {
+                    if charAngerTim[pChar[cyc]][pChar[pFoc[cyc]]] > 0 do cAttack[cyc] = bb.Rnd(0, 1)
+                }
+                if cAttack[cyc] == 1 || cDefend[cyc] == 1 {
+                    SharpTransition(cyc, 2, 90)
+                    if cAttack[cyc] == 1 do ChangeAnim(cyc, 35)
+                    if cDefend[cyc] == 1 do ChangeAnim(cyc, 75)
+                }
+            }
+            if pAnimTim[cyc] > int(115 / animSpd) do ChangeAnim(cyc, 0)
+            pHP[cyc] = bb.Rnd(1, charStrength[pChar[cyc]] / 5)
+        }
+        //fall onto front (turn)
+        if pAnim[cyc] == 83 {
+            if pAnimTim[cyc] == 0 {
+                bb.Animate(p[cyc], 3, 2.0, pSeq[cyc][83], 10)
+                pStagger[cyc] = 1.5
+            }
+            pStagger[cyc] -= 0.025
+            if pAnimTim[cyc] <= 35 && pStagger[cyc] > 0 {
+                pHurtA[cyc] = CleanAngle(pA[cyc] + 180)
+                bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+                bb.MoveEntity(pPivot[cyc], 0, 0, -pStagger[cyc])
+                pStepTim[cyc] += bb.Rnd(0, 1)
+            }
+            if pAnimTim[cyc] == 22 {
+                ProduceSound(p[cyc], sFall, 22050, 0)
+                ProduceSound(p[cyc], sPain[bb.Rnd(1, 8)], 22050, 0)
+                ScarArea(cyc, 0, 0, 0, 10)
+                FindSmashes[cyc]
+                RiskInjury(cyc, 200)
+                charHappiness[pChar[cyc]] -= 1
+                charReputation[pChar[cyc]] -= bb.Rnd(0, 1)
+            }
+            if pAnimTim[cyc] > 50 do ChangeAnim(cyc, 84)
+            DropWeapon(cyc, 20)
+        }
+        //lying on front
+        if pAnim[cyc] == 84 {
+            transition := 5
+            if pOldAnim[cyc] == 73 do transition = 10
+            if pAnimTim[cyc] == 0 || pHealth[cyc] <= 0 {
+                bb.Animate(p[cyc], 1, bb.Rnd(0.1, 0.4), pSeq[cyc][84], transition)
+            }
+            if pDT[cyc] <= 0 && pHealth[cyc] > 0 {
+                if cast(bool)DirPressed[cyc] || cast(bool)ActionPressed[cyc] || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)KeyDown(1) do ChangeAnim(cyc, 85)
+            }
+            if gotim > 0 && pHealth[cyc] <= 0 && (gamPromo == 0 || pChar[cyc] != gamChar[slot]) {
+                SharpTransition(cyc, 85, 180)
+                ChangeAnim(cyc, 85)
+            }
+        }
+        if gotim > 0 && pHealth[cyc] <= 0 && (gamPromo == 0 || pChar[cyc] != gamChar[slot]) do ChangeAnim(cyc, 77)
+        if gamMission[slot] == 15 && pChar[cyc] == gamTarget[slot] && charAttacker(pChar[cyc]) == gamChar[slot] do CompleteMission(1)
+        if gamMission[slot] == 18 && pChar[cyc] == gamClient[slot] && gamPromo != 158 do CompleteMission(-1)
+    }
+    //get up off front
 }
 
 
@@ -1124,6 +1621,6 @@ scope.
 1574 lines in function. 393 per part.
 Part 1: 123 - 516 Complete
 Part 2: 517 - 910 Complete
-Part 3: 911 - 1304
+Part 3: 911 - 1304 Complete
 Part 4: 1305 - 1574
 */

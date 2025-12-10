@@ -1,6 +1,8 @@
 Blitz API Implementations:
 - SoundPitch
 - SoundVolume
+- ChannelPlaying
+- StopChannel
 - EmitSound 
 - Color
 - SetFont

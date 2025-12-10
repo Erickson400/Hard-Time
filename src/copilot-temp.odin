@@ -3,10 +3,9 @@ package main
 import "core:fmt"
 import bb "blitzbasic3d"
 
-part_three :: proc() {
-
+part_four :: proc() {
+    
 }
-
 
 /*
 
