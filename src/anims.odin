@@ -1611,6 +1611,378 @@ Animations :: proc(cyc: i32) {
         if gamMission[slot] == 18 && pChar[cyc] == gamClient[slot] && gamPromo != 158 do CompleteMission(-1)
     }
     //get up off front
+    if pAnim[cyc] == 85 {
+        if pAnimTim[cyc] == 0 {
+            pAnimSpeed[cyc] = bb.Rnd(2.0, 4.0)
+            if pInjured[cyc] > 0 {
+                pAnimSpeed[cyc] = 2.0
+            }
+            bb.Animate(p[cyc], 3, pAnimSpeed[cyc], pSeq[cyc][85], 5)
+        }
+        if pAnimTim[cyc] == int(25 / pAnimSpeed[cyc]) {
+            ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 44100, 0.5)
+        }
+        if pAnimTim[cyc] == int(55 / pAnimSpeed[cyc]) {
+            pStepTim[cyc] = 99
+            if cAttack[cyc] == 0 && pControl[cyc] == 0 && cast(bool)InProximity(cyc, pFoc[cyc], 20) {
+                if AttackViable(pFoc[cyc]) >= 1 && AttackViable(pFoc[cyc]) <= 2 {
+                    cAttack[cyc] = bb.Rnd(0, 1)
+                }
+            }
+            if cAttack[cyc] == 1 do ChangeAnim(cyc, 35)
+            if cDefend[cyc] == 1 do ChangeAnim(cyc, 75)
+        }
+        if pAnimTim[cyc] > int(75 / pAnimSpeed[cyc]) {
+            ChangeAnim(cyc, 0)
+        }
+        pHP[cyc] = bb.Rnd(1, charStrength(pChar[cyc]) / 5)
+    }
+    //fall onto front (direct)
+    if pAnim[cyc] == 86 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 3, 2.5, pSeq[cyc][86], 10)
+            pStagger[cyc] = 1.0
+        }
+        pStagger[cyc] -= 0.01
+        if pAnimTim[cyc] <= 35 && pStagger[cyc] > 0 {
+            pHurtA[cyc] = pA[cyc]
+            bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, pStagger[cyc])
+            pStepTim[cyc] += int(bb.Rnd(0, 1))
+        }
+        if pAnimTim[cyc] == 21 {
+            ProduceSound(p[cyc], sFall, 22050, 0)
+            ProduceSound(p[cyc], sPain[bb.Rnd(1, 8)], 22050, 0)
+            ScarArea(cyc, 0, 0, 0, 10)
+            FindSmashes(cyc)
+            RiskInjury(cyc, 200)
+            charHappiness(pChar[cyc]) -= 1
+            charReputation(pChar[cyc]) -= int(bb.Rnd(0, 1))
+        }
+        if pAnimTim[cyc] > 45 {
+            SharpTransition(cyc, 84, 180)
+            ChangeAnim(cyc, 84)
+        }
+        DropWeapon(cyc, 20)
+    }
+    //falling from a height
+    if pAnim[cyc] == 87 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 1, bb.Rnd(0.5, 1.0), pSeq[cyc][87], 5)
+            if pGravity[cyc] < 0 {
+                pGravity[cyc] = 0
+            }
+        }
+        if cLeft[cyc] do pA[cyc] = CleanAngle(pA[cyc] + 5)
+        if cRight[cyc] do pA[cyc] = CleanAngle(pA[cyc] - 5)
+        bb.RotateEntity(pPivot[cyc], 0, pHurtA[cyc], 0)
+        if pAnimTim[cyc] > 100 do bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+        if gotim > 0 do bb.MoveEntity(pPivot[cyc], 0, 0, 1.0)
+        if pY[cyc] < pGround[cyc] + 5 {
+            ProduceSound(p[cyc], sThud, 22050, 0)
+            CreateSpurt(pX[cyc], pY[cyc], pZ[cyc], 5, 5, 4)
+            if gotim > 0 && pGravity[cyc] < -3.0 {
+                pHP[cyc] -= 1
+            }
+            if gotim > 0 && pGravity[cyc] <= -10.0 {
+                pHP[cyc] = 0
+                pHealth[cyc] -= 1
+            }
+            ChangeAnim(cyc, 88)
+        }
+    }
+    //landing from a fall
+    if pAnim[cyc] == 88 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 1, 3.0, pSeq[cyc][88], 5)
+        }
+        if pAnimTim[cyc] == 10 {
+            pStepTim[cyc] = 99
+        }
+        if (pAnimTim[cyc] > 10 && pHP[cyc] <= 0) || pAnimTim[cyc] > 20 {
+            ChangeAnim(cyc, 0)
+        }
+    }
+    //----------- 90-100: STANDING GESTURES ----------
+    //enter door
+    if pAnim[cyc] == 90 {
+        if pWeapon[cyc] > 0 {
+            speeder = -3.0
+        } else {
+            speeder = 3.0
+        }
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 3, speeder, pSeq[cyc][90], 5)
+        }
+        if SatisfiedAngle(pA[cyc], doorA[gamLocation[slot]][gamDoor], 10) == 0 {
+            pA[cyc] += ReachAngle(pA[cyc], doorA[gamLocation[slot]][gamDoor], 5)
+        }
+        if pAnimTim[cyc] == 5 do ProduceSound(cam, sDoor[1], 22050, 1)
+        if pAnimTim[cyc] > 10 do EnterDoor(cyc, gamDoor)
+    }
+    //friendly wave
+    if pAnim[cyc] == 91 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, 1.5, pSeq[cyc][91], 7)
+        if pAnimTim[cyc] == 10 do charHappiness(pChar[cyc]) += 1
+        if pAnimTim[cyc] == 20 do bb.Animate(p[cyc], 3, 1.0, pSeq[cyc][1], 10)
+        if pAnimTim[cyc] > 25 do ChangeAnim(cyc, 0)
+    }
+    //sweeping
+    if pAnim[cyc] == 92 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, 1.0, pSeq[cyc][92], 10)
+        if pAnimTim[cyc] > 10 {
+            randy = bb.Rnd(0, 50)
+            if randy == 0 {
+                ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
+            }
+            if randy == 1 {
+                ProduceSound(p[cyc], sSwing, 22050, bb.Rnd(0.0, 0.2))
+            }
+            if randy <= 10 {
+                CreateParticle(EntityX(FindChild(p[cyc], "Broom"), 1), pY[cyc], EntityZ(FindChild(p[cyc], "Broom"), 1), 5)
+            }
+            if pChar[cyc] == gamChar[slot] && LockDown() == 0 && pAnimTim[cyc] > 160 {
+                bb.PlaySound(sCash)
+                statTim[7] = 50
+                gamMoney[slot] += 5
+                pHealth[cyc] -= 1
+                //charHappiness(pChar[cyc]) += bb.Rnd(1, 5)
+                randy = bb.Rnd(0, 10)
+                if randy == 0 && charReputation[pChar[cyc]] > 50 {
+                    charReputation[pChar[cyc]] -= 1
+                }
+                if randy == 0 && charReputation[pChar[cyc]] < 50 {
+                    charReputation[pChar[cyc]] += 1
+                }
+                if randy == 1 {
+                    charStrength[pChar[cyc]] += 1
+                }
+                pAnimTim[cyc] = 10
+            }
+            if cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)KeyDown(1) {
+                ChangeAnim(cyc, 0)
+            }
+        }
+    }
+    //smoking
+    if pAnim[cyc] == 93 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, bb.Rnd(0.2, 0.4), pSeq[cyc][93], 10)
+        if pAnimTim[cyc] > 10 {
+            limb := bb.FindChild(p[cyc], "Cigar")
+            randy := bb.Rnd(0, 5)
+            if randy == 0 do CreateParticle(bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 2)
+            if randy == 1 do CreateParticle(bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 7)
+            randy = bb.Rnd(0, 100)
+            if randy == 0 do ProduceSound(p[cyc], sChoke, 22050, bb.Rnd(0.1, 0.5))
+            if randy <= 2 {
+                charHappiness(pChar[cyc]) += 1
+                pHealth[cyc] -= 1
+            }
+            randy = bb.Rnd(0, 1000)
+            if randy <= 1 && gamLocation[slot] != 11 do charReputation(pChar[cyc]) += 1
+            if randy == 2 do charStrength(pChar[cyc]) -= 1
+            if cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)KeyDown(1) do ChangeAnim(cyc, 0)
+            ExhaustDrug(cyc)
+        }
+    }
+    //injecting
+    if pAnim[cyc] == 94 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, bb.Rnd(0.1, 0.3), pSeq[cyc][94], 10)
+        if pAnimTim[cyc] > 10 {
+            randy := bb.Rnd(0, 100)
+            if randy == 0 do ProduceSound(p[cyc], sPain[bb.Rnd(1, 8)], 22050, 0)
+            if randy <= 2 {
+                charHappiness[pChar[cyc]] -= 1
+                pHealth[cyc] += 1
+            }
+            if pInjured[cyc] > 0 do pInjured[cyc] -= int(bb.Rnd(0, 1))
+            randy = bb.Rnd(0, 1000)
+            if randy <= 1 && gamLocation[slot] != 11 do charReputation[pChar[cyc]] += 1
+            if randy == 2 do charAgility[pChar[cyc]] -= 1
+            if cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)KeyDown(1) do ChangeAnim(cyc, 0)
+            ExhaustDrug(cyc)
+        }
+    }
+    //drinking
+    if pAnim[cyc] == 95 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, bb.Rnd(0.25, 0.5), pSeq[cyc][95], 10)
+        if pAnimTim[cyc] > 10 {
+            limb := bb.FindChild(p[cyc], "Bottle")
+            randy := bb.Rnd(0, 5)
+            if randy == 0 do CreateParticle(bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 14)
+            randy = bb.Rnd(0, 100)
+            if randy == 0 do ProduceSound(p[cyc], sDrink, 22050, 0)
+            if randy == 1 do ProduceSound(p[cyc], sBottle, 22050, bb.Rnd(0.1, 0.3))
+            if randy <= 2 {
+                charHappiness[pChar[cyc]] += 1
+                pHealth[cyc] -= 1
+            }
+            randy = bb.Rnd(0, 1000)
+            if randy <= 1 && gamLocation[slot] != 11 do charReputation[pChar[cyc]] += 1
+            if randy == 2 do charIntelligence[pChar[cyc]] -= 1
+            if cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)KeyDown(1) do ChangeAnim(cyc, 0)
+            ExhaustDrug(cyc)
+        }
+    }
+    //nervous breakdown
+    if pAnim[cyc] == 96 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 3, 1.0, pSeq[cyc][96], 20)
+            ProduceSound(p[cyc], sBreakdown, 22050, 1)
+            charReputation[pChar[cyc]] -= 1
+            if gamMission[slot] == 14 && pChar[cyc] == gamTarget[slot] {
+                CompleteMission(1)
+            }
+        }
+        if pAnimTim[cyc] == 35 || pAnimTim[cyc] == 150 {
+            ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
+        }
+        if pAnimTim[cyc] == 60 || pAnimTim[cyc] == 180 || pAnimTim[cyc] == 240 || pAnimTim[cyc] == 270 {
+            pStepTim[cyc] = 99
+        }
+        if pAnimTim[cyc] > 270 {
+            charIntelligence[pChar[cyc]] -= 1
+            if charHappiness[pChar[cyc]] < 50 {
+                charHappiness[pChar[cyc]] = 50
+            }
+            charBreakdown[pChar[cyc]] = 1000
+            ChangeAnim(cyc, 0)
+            pAgenda[cyc] = 2
+        }
+        DropWeapon(cyc, 20)
+    }
+    //comb hair
+    if pAnim[cyc] == 97 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, bb.Rnd(0.25, 0.5), pSeq[cyc][97], 10)
+        if pAnimTim[cyc] > 10 {
+            if pControl[cyc] > 0 {
+                oldStyle := charHairStyle[pChar[cyc]]
+                oldHair := charHair[pChar[cyc]]
+                if cLeft[cyc] == 1 && keyTim == 0 {
+                    charHairStyle[pChar[cyc]] -= 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if cRight[cyc] == 1 && keyTim == 0 {
+                    charHairStyle[pChar[cyc]] += 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if cUp[cyc] == 1 && keyTim == 0 {
+                    charHair[pChar[cyc]] -= 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if cDown[cyc] == 1 && keyTim == 0 {
+                    charHair[pChar[cyc]] += 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if charHairStyle[pChar[cyc]] < 0 do charHairStyle[pChar[cyc]] = no_hairstyles
+                if charHairStyle[pChar[cyc]] > no_hairstyles do charHairStyle[pChar[cyc]] = 0
+                if charHair[pChar[cyc]] < 1 do charHair[pChar[cyc]] = no_hairs
+                if charHair[pChar[cyc]] > no_hairs do charHair[pChar[cyc]] = 1
+                if charHairStyle[pChar[cyc]] != oldStyle || charHair[pChar[cyc]] != oldHair {
+                    ApplyCostume(cyc)
+                }
+            }
+            if (cast(bool)DirPressed(cyc) && pControl[cyc] == 0) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)bb.KeyDown(1) {
+                ChangeAnim(cyc, 0)
+            }
+        }
+    }
+    //admire reflection
+    if pAnim[cyc] == 98 {
+        if pAnimTim[cyc] == 0 {
+            bb.Animate(p[cyc], 1, bb.Rnd(0.25, 0.5), pSeq[cyc][98], 10)
+        }
+        if pAnimTim[cyc] > 10 {
+            if pControl[cyc] > 0 {
+                oldCostume := charCostume[pChar[cyc]]
+                oldSpecs := charSpecs[pChar[cyc]]
+                if cLeft[cyc] == 1 && keyTim == 0 {
+                    charCostume[pChar[cyc]] -= 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if cRight[cyc] == 1 && keyTim == 0 {
+                    charCostume[pChar[cyc]] += 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if cUp[cyc] == 1 && keyTim == 0 {
+                    charSpecs[pChar[cyc]] -= 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if cDown[cyc] == 1 && keyTim == 0 {
+                    charSpecs[pChar[cyc]] += 1
+                    bb.PlaySound(sMenuBrowse)
+                    keyTim = 6
+                }
+                if charCostume[pChar[cyc]] < 0 do charCostume[pChar[cyc]] = no_costumes
+                if charCostume[pChar[cyc]] > no_costumes do charCostume[pChar[cyc]] = 0
+                if charSpecs[pChar[cyc]] < 0 do charSpecs[pChar[cyc]] = no_specs
+                if charSpecs[pChar[cyc]] > no_specs do charSpecs[pChar[cyc]] = 0
+                if charCostume[pChar[cyc]] != oldCostume || charSpecs[pChar[cyc]] != oldSpecs {
+                    ApplyCostume(cyc)
+                }
+            }
+            if (cast(bool)DirPressed(cyc) && pControl[cyc] == 0) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)KeyDown(1) {
+                ChangeAnim(cyc, 0)
+            }
+        }
+    }
+    //mock handover (money)
+    if pAnim[cyc] == 99 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, 1.5, pSeq[cyc][99], 5)
+        if pAnimTim[cyc] > 26 do ChangeAnim(cyc, 0)
+    }
+    //----------- 100-110: SITTING GESTURES ----------
+    //sit down
+    if pAnim[cyc] == 100 && pSeat[cyc] > 0 {
+        bb.EntityType(pPivot[cyc], 0, 0)
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, 2.0, pSeq[cyc][10], 5)
+        if pAnimTim[cyc] == 5 do bb.Animate(p[cyc], 1, 1.0, pSeq[cyc][100], 10)
+        if pAnimTim[cyc] == 5 do pStepTim[cyc] = 99
+        if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
+        if pAnimTim[cyc] == 10 {
+            ProduceSound(p[cyc], sThud, 22050, 0.3)
+            ProduceSound(p[cyc], sGeneric, 22050, 0.3)
+        }
+        if pAnimTim[cyc] > 10 {
+            ChangeAnim(cyc, 102)
+            pAgenda[cyc] = 0
+        }
+        if weapType[pWeapon[cyc]] != 16 do DropWeapon(cyc, 0)
+    }
+    //lie down
+    if pAnim[cyc] == 100 && pBed[cyc] > 0 {
+        bb.EntityType(pPivot[cyc], 0, 0)
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, 2.0, pSeq[cyc][105], 1)
+        if pAnimTim[cyc] == 5 do bb.Animate(p[cyc], 1, 1.0, pSeq[cyc][106], 15)
+        if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
+        if pAnimTim[cyc] > 15 {
+            ChangeAnim(cyc, 103)
+            pAgenda[cyc] = 0
+        }
+        DropWeapon(cyc, 0)
+    }
+    //get off chair
+    if pAnim[cyc] == 101 && pSeat[cyc] > 0 {
+        if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 1, 2.0, pSeq[cyc][10], 5)
+        if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
+        if pAnimTim[cyc] == 5 do pStepTim[cyc] = 99
+        if pAnimTim[cyc] > 10 {
+            bb.ResetEntity(pPivot[cyc])
+            bb.PositionEntity(pPivot[cyc], pX[cyc], pY[cyc] + 18, pZ[cyc])
+            bb.EntityType(pPivot[cyc], 1, 0)
+            bb.EntityRadius(pPivot[cyc], 8, 18)
+            ChangeAnim(cyc, 0)
+            pSeat[cyc] = 0
+        }
+    }
+    //get off bed
 }
 
 
