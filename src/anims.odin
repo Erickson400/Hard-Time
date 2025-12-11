@@ -2142,15 +2142,407 @@ Animations :: proc(cyc: i32) {
     pAnimTim[cyc] += 1
 }
 
+//--------------------------------------------------------------
+//////////////////// RELATED FUNCTIONS /////////////////////////
+//--------------------------------------------------------------
 
-/*
-// TODO: Animations.bb will be divided into 4 parts. When one is done then paste it here.
-Since its all in one function I'll have to hope there are no errors when it comes to
-scope.
-1574 lines in function. 393 per part.
-Part 1: 123 - 516 Complete
-Part 2: 517 - 910 Complete
-Part 3: 911 - 1304 Complete
-Part 4: 1305 - 1574 Complete
-Part 5: 1575 - 1695 
-*/
+//CHANGE ANIMATION
+ChangeAnim :: proc(cyc, anim: i32) {
+    pOldAnim[cyc] = pAnim[cyc]
+    pAnim[cyc] = anim
+    if pOldAnim[cyc] > anim {
+        pAnimTim[cyc] = -1
+    } else {
+        pAnimTim[cyc] = 0
+    }
+}
+
+//IMMEDIATE TRANSITION
+SharpTransition :: proc(cyc, anim: i32, offset: f32) {
+    //honour current co-ords
+    pX[cyc] = bb.EntityX(pLimb[cyc][30], 1)
+    pZ[cyc] = bb.EntityZ(pLimb[cyc][30], 1)
+    pOldX[cyc] = pX[cyc]
+    pOldZ[cyc] = pZ[cyc]
+    //orientation
+    if offset < 0 {
+        pA[cyc] = bb.EntityYaw(pLimb[cyc][30], 1)
+    }
+    if offset >= 0 {
+        pA[cyc] = pA[cyc] + offset
+    }
+    pA[cyc] = CleanAngle(pA[cyc])
+    pTA[cyc] = pA[cyc]
+    //immediate transition
+    bb.PositionEntity(pPivot[cyc], pX[cyc], bb.EntityY(pPivot[cyc]), pZ[cyc])
+    bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+    bb.Animate(p[cyc], 1, 1.0, pSeq[cyc][anim], 0)
+}
+
+//POINT BODY
+PointBody :: proc(cyc, entity: i32) {
+    //identify limbs involved
+    limb := bb.FindChild(p[cyc], "Body")
+    source := bb.FindChild(p[cyc], "Hips")
+    //stabilize and point
+    bb.RotateEntity(limb, bb.EntityPitch(source), bb.EntityYaw(source), bb.EntityRoll(source))
+    bb.PointEntity(limb, entity)
+    if pAnim[cyc] == 60 { //machine gun
+        bb.RotateEntity(limb, bb.EntityPitch(limb)+5, bb.EntityYaw(limb)-40, bb.EntityRoll(limb))
+        if AttackViable(pFoc[cyc]) == 3 {
+            bb.RotateEntity(limb, bb.EntityPitch(limb)+10, bb.EntityYaw(limb), bb.EntityRoll(limb))
+        }
+    }
+    if pAnim[cyc] == 61 { //pistol
+        bb.RotateEntity(limb, bb.EntityPitch(limb)+10, bb.EntityYaw(limb)+36, bb.EntityRoll(limb))
+        if AttackViable(pFoc[cyc]) == 3 {
+            bb.RotateEntity(limb, bb.EntityPitch(limb)+15, bb.EntityYaw(limb), bb.EntityRoll(limb))
+        }
+    }
+    //X limitations
+    if bb.EntityPitch(limb) < bb.EntityPitch(source)-50 {
+        bb.RotateEntity(limb, bb.EntityPitch(source)-50, bb.EntityYaw(limb), bb.EntityRoll(limb))
+    }
+    if bb.EntityPitch(limb) > bb.EntityPitch(source)+60 {
+        bb.RotateEntity(limb, bb.EntityPitch(source)+60, bb.EntityYaw(limb), bb.EntityRoll(limb))
+    }
+    //Y limitations
+    if bb.EntityYaw(limb) < bb.EntityYaw(source)-30 {
+        bb.RotateEntity(limb, bb.EntityPitch(limb), bb.EntityYaw(source)-30, bb.EntityRoll(limb))
+    }
+    if bb.EntityYaw(limb) > bb.EntityYaw(source)+30 {
+        bb.RotateEntity(limb, bb.EntityPitch(limb), bb.EntityYaw(source)+30, bb.EntityRoll(limb))
+    }
+    //Z limitations
+    bb.RotateEntity(limb, bb.EntityPitch(limb), bb.EntityYaw(limb), 0)
+}
+
+//POINT HEAD
+PointHead :: proc(cyc, entity: i32) {
+    //identify limbs involved
+    limb := bb.FindChild(p[cyc], "Head")
+    source := bb.FindChild(p[cyc], "Body")
+    //stabilize and point
+    bb.RotateEntity(limb, bb.EntityPitch(source), bb.EntityYaw(source), bb.EntityRoll(source))
+    bb.PointEntity(limb, entity)
+    //X limitations
+    if bb.EntityPitch(limb) < bb.EntityPitch(source)-60 {
+        bb.RotateEntity(limb, bb.EntityPitch(source)-60, bb.EntityYaw(limb), bb.EntityRoll(limb))
+    }
+    if bb.EntityPitch(limb) > bb.EntityPitch(source)+10 {
+        bb.RotateEntity(limb, bb.EntityPitch(source)+10, bb.EntityYaw(limb), bb.EntityRoll(limb))
+    }
+    //Y limitations
+    if bb.EntityYaw(limb) < bb.EntityYaw(source)-45 {
+        bb.RotateEntity(limb, bb.EntityPitch(limb), bb.EntityYaw(source)-45, bb.EntityRoll(limb))
+    }
+    if bb.EntityYaw(limb) > bb.EntityYaw(source)+45 {
+        bb.RotateEntity(limb, bb.EntityPitch(limb), bb.EntityYaw(source)+45, bb.EntityRoll(limb))
+    }
+    //Z limitations
+    bb.RotateEntity(limb, bb.EntityPitch(limb), bb.EntityYaw(limb), 0)
+    //preserve long hair
+    if bb.FindChild(p[cyc], "Hair_Long") > 0 {
+        bb.RotateEntity(bb.FindChild(p[cyc], "Hair_Long"), -bb.EntityPitch(limb), -(bb.EntityYaw(limb)-(bb.EntityYaw(limb)/3)), -(bb.EntityRoll(limb)/2))
+        if bb.EntityPitch(bb.FindChild(p[cyc], "Hair_Long")) < bb.EntityPitch(source)-10 {
+            bb.RotateEntity(bb.FindChild(p[cyc], "Hair_Long"), bb.EntityPitch(source)-10, bb.EntityYaw(bb.FindChild(p[cyc], "Hair_Long")), bb.EntityRoll(bb.FindChild(p[cyc], "Hair_Long")))
+        }
+    }
+}
+
+//TURN TO FACE ENTITY
+FaceEntity :: proc(cyc, entity: i32, turner: f32) {
+    if entity > 0 {
+        bb.PositionEntity(dummy, pX[cyc], pY[cyc], pZ[cyc])
+        bb.PointEntity(dummy, entity)
+        tA := CleanAngle(bb.EntityYaw(dummy))
+        if SatisfiedAngle(pA[cyc], tA, i32(turner*2)) == 0 {
+            pA[cyc] = pA[cyc] + ReachAngle(pA[cyc], tA, turner)
+        }
+    }
+}
+
+//APPLY MOVEMENT
+ApplyMovement :: proc(cyc: i32, speed: f32) {
+    //turn
+    if pDazed[cyc] > 0 {
+        if cast(bool)cLeft[cyc] do pA[cyc] = CleanAngle(pA[cyc] - 5)
+        if cast(bool)cRight[cyc] do pA[cyc] = CleanAngle(pA[cyc] + 5)
+    } else {
+        if cast(bool)cLeft[cyc] do pA[cyc] = CleanAngle(pA[cyc] + 5)
+        if cast(bool)cRight[cyc] do pA[cyc] = CleanAngle(pA[cyc] - 5)
+    }
+    //advance
+    if cast(bool)VerticalPressed(cyc) {
+        if cast(bool)cUp[cyc] do pHurtA[cyc] = pA[cyc]
+        if cast(bool)cDown[cyc] do pHurtA[cyc] = CleanAngle(pA[cyc] + 180)
+        bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+        if pDazed[cyc] > 0 {
+            if cast(bool)cUp[cyc] do bb.MoveEntity(pPivot[cyc], 0, 0, -(speed / 2))
+            if cast(bool)cDown[cyc] do bb.MoveEntity(pPivot[cyc], 0, 0, speed)
+        } else {
+            if cast(bool)cUp[cyc] do bb.MoveEntity(pPivot[cyc], 0, 0, speed)
+            if cast(bool)cDown[cyc] do bb.MoveEntity(pPivot[cyc], 0, 0, -(speed / 2))
+        }
+    }
+}
+
+//GRIMACE VIABLE?
+GrimaceViable :: proc(cyc: i32) -> i32 {
+    viable: i32 = 1
+    if pAnim[cyc] < 20 do viable = 0 //movement
+    if pAnim[cyc] == 24 do viable = 0 //examining
+    if pAnim[cyc] >= 74 && pAnim[cyc] <= 75 do viable = 0 //blocking
+    if pAnim[cyc] >= 76 && pAnim[cyc] <= 77 && pAnimTim[cyc] > 130 do viable = 0 //dead
+    if pAnim[cyc] == 81 || pAnim[cyc] == 84 do viable = 0 //lying
+    if pAnim[cyc] == 92 || pAnim[cyc] == 97 || pAnim[cyc] == 98 do viable = 0 //sweeping/combing
+    if pAnim[cyc] == 102 || pAnim[cyc] == 103 do viable = 0 //sitting/sleeping
+    if pAnim[cyc] == 130 do viable = 0 //changed weight
+    if pAnim[cyc] == 205 || pAnim[cyc] == 206 do viable = 0 //grappling
+    return viable
+}
+
+//VIABLE TO TURN HEAD?
+HeadViable :: proc(cyc: i32) -> i32 {
+    viable: i32 = 0
+    if pDazed[cyc] == 0 {
+        //guaranteed states
+        if pAnim[cyc] < 20 && pPhone[cyc] == 0 do viable = 1 //movement
+        if pAnim[cyc] == 91 do viable = 1 //waving
+        if pAnim[cyc] == 102 {
+            if pState[cyc] == 101 do viable = 1 //slouching
+            if cast(bool)OnComputer(cyc) do viable = 1 //working at computer
+            if cyc == promoActor[1] || cyc == promoActor[2] do viable = 1 //talking while sitting
+        }
+        if pAnim[cyc] == 205 && (cyc == promoActor[1] || cyc == promoActor[2]) do viable = 1 //grappling
+        //close speech override
+        if pAnim[cyc] == 0 && cast(bool)pSpeaking[cyc] && pState[cyc] != 3 && pAnim[pFoc[cyc]] == 0 && pY[cyc] >= pY[pFoc[cyc]]-1 && pY[cyc] <= pY[pFoc[cyc]]+1 {
+            if cast(bool)InLine(cyc, p[pFoc[cyc]], 5) do viable = 0
+        }
+        //monologue override
+        if cyc == promoActor[1] && promoActor[2] == 0 do viable = 0
+    }
+    return viable
+}
+
+//VIABLE TO TURN BODY?
+BodyViable :: proc(cyc: i32) -> i32 {
+    viable: i32 = 0
+    if pAnim[cyc] >= 60 && pAnim[cyc] <= 61 {
+        if cDefend[cyc] == 0 || pControl[cyc] == 0 do viable = 1 //shooting
+    }
+    if pAnim[cyc] == 91 do viable = 1 //waving
+    return viable
+}
+
+//VIABLE TO UPDATE FOC?
+FocViable :: proc(cyc: i32) -> i32 {
+    viable: i32 = 1
+    if pAnim[cyc] == 25 || pAnim[cyc] == 26 do viable = 0 //handing over
+    if pAnim[cyc] == 60 || pAnim[cyc] == 61 do viable = 0 //shooting
+    if pAnim[cyc] == 91 do viable = 0 //waving
+    if cyc == promoActor[1] || cyc == promoActor[2] do viable = 0 //speaking
+    return viable
+}
+
+//VIABLE TO COLLAPSE?
+CollapseViable :: proc(cyc: i32) -> i32 {
+    viable: i32 = 1
+    if pAnim[cyc] >= 72 && pAnim[cyc] <= 73 do viable = 0 //ground hurt
+    if pAnim[cyc] >= 76 && pAnim[cyc] <= 77 do viable = 0 //dying
+    if pAnim[cyc] >= 80 && pAnim[cyc] <= 89 do viable = 0 //lying
+    if pAnim[cyc] == 96 do viable = 0 //breaking down 
+    if pAnim[cyc] >= 100 && pAnim[cyc] <= 101 do viable = 0 //sitting
+    if pAnim[cyc] >= 201 do viable = 0 //grappling
+    return viable
+}
+
+//VIABLE TO ATTACK?
+AttackViable :: proc(cyc: i32) -> i32 { //1=upper, 2=lower, 3=ground
+    viable: i32 = 1
+    //upper as standard
+    //lower variations
+    if pAnim[cyc] == 1 || pAnim[cyc] == 11 do viable = 2 //kneeling
+    if pAnim[cyc] == 75 do viable = 2 //lower block
+    //ground variations
+    if pAnim[cyc] == 72 || pAnim[cyc] == 73 do viable = 3 //lying hurt
+    if pAnim[cyc] >= 76 && pAnim[cyc] <= 77 && pAnimTim[cyc] > 150 do viable = 3 //lying dead
+    if pAnim[cyc] == 81 || pAnim[cyc] == 84 do viable = 3 //lying
+    //exceptions
+    if pAnim[cyc] == 80 || pAnim[cyc] == 83 || pAnim[cyc] == 86 do viable = 0 //falling
+    if pAnim[cyc] == 35 || pAnim[cyc] == 82 || pAnim[cyc] == 85 do viable = 0 //getting up
+    if pAnim[cyc] == 90 do viable = 0 //opening door
+    if pAnim[cyc] == 96 do viable = 0 //breaking down 
+    if pAnim[cyc] >= 100 && pAnim[cyc] <= 101 do viable = 0 //sitting
+    if pAnim[cyc] == 202 || pAnim[cyc] == 203 || pAnim[cyc] == 204 || pAnim[cyc] >= 210 do viable = 0 //grappling 
+    //unavailable
+    if pAnim[cyc] >= 76 && pAnim[cyc] <= 77 && pAnimTim[cyc] < 150 do viable = 0 //dying
+    //if charState[pChar[cyc]] == 0 do viable = 0
+    return viable
+}
+
+//GROUND HURT REACTION
+GroundReaction :: proc(cyc: i32) {
+    if pHealth[cyc] > 0 {
+        //lying on back
+        if pAnim[cyc] == 72 || pAnim[cyc] == 81 do ChangeAnim(cyc, 72)
+        //lying on front
+        if pAnim[cyc] == 73 || pAnim[cyc] == 84 do ChangeAnim(cyc, 73)
+    }
+}
+
+//SEATED TASKS
+SittingEffects :: proc(cyc: i32) {
+    //watching TV
+    if gamLocation[slot] == 9 && pSeat[cyc] >= 1 && pSeat[cyc] <= 6 && pState[cyc] == 101 {
+        randy := bb.Rnd(0, 7500)
+        if randy == 1 && pChar[cyc] == gamChar[slot] {
+            charStrength[pChar[cyc]] = charStrength[pChar[cyc]] - 1
+        }
+        if randy == 2 && pChar[cyc] == gamChar[slot] {
+            charAgility[pChar[cyc]] = charAgility[pChar[cyc]] - 1
+        }
+        if randy == 3 && pChar[cyc] == gamChar[slot] {
+            charIntelligence[pChar[cyc]] = charIntelligence[pChar[cyc]] - 1
+        }
+        randy = bb.Rnd(0, 15000)
+        if randy == 0 && gamGrowth[slot] <= 0 do gamGrowth[slot] = gamGrowth[slot] + 1
+        randy = bb.Rnd(0, 100)
+        if randy <= 2 do charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + 1
+    }
+    //studying
+    if gamLocation[slot] == 4 && pState[cyc] == 102 {
+        randy := bb.Rnd(0, 200)
+        if randy == 0 {
+            charIntelligence[pChar[cyc]] = charIntelligence[pChar[cyc]] + 1
+            charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + bb.Rnd(1, 5)
+            randy = bb.Rnd(0, 5)
+            if randy == 0 && charReputation[pChar[cyc]] > 50 do charReputation[pChar[cyc]] = charReputation[pChar[cyc]] - 1
+            if randy == 0 && charReputation[pChar[cyc]] < 50 do charReputation[pChar[cyc]] = charReputation[pChar[cyc]] + 1
+        }
+    }
+    //searching computer
+    if pChar[cyc] == gamChar[slot] && cast(bool)OnComputer(cyc) && pState[cyc] == 109 {
+        if cLeft[cyc] == 1 && pAnimTim[cyc] > 10 && keytim == 0 {
+            gamFile = gamFile - 1
+            bb.PlaySound(sComputer)
+            keytim = 5
+        }
+        if cRight[cyc] == 1 && pAnimTim[cyc] > 10 && keytim == 0 {
+            gamFile = gamFile + 1
+            bb.PlaySound(sComputer)
+            keytim = 5
+        }
+        if gamFile < 1 do gamFile = no_chars
+        if gamFile > no_chars do gamFile = 1
+    }
+    //weight-lifting
+    if pState[cyc] == 108 {
+        randy := bb.Rnd(0, 200)
+        if randy <= 2 do ProduceSound(p[cyc], sPain[bb.Rnd(1, 8)], 22050, bb.Rnd(0.1, 0.5))
+        if randy == 0 {
+            charStrength[pChar[cyc]] = charStrength[pChar[cyc]] + 1
+            charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + bb.Rnd(1, 5)
+            randy = bb.Rnd(0, 5)
+            if randy == 0 do charReputation[pChar[cyc]] = charReputation[pChar[cyc]] + 1
+            pHealth[cyc] = pHealth[cyc] - 1
+            randy = bb.Rnd(0, 50)
+            if randy == 0 && gamGrowth[slot] <= 0 do gamGrowth[slot] = gamGrowth[slot] + 1
+        } 
+        if pAnimTim[cyc] == 10 do ProduceSound(p[cyc], sAxe, 22050, 0)
+    }
+    //canteen food
+    if pState[cyc] == 103 {
+        pFoodTim[cyc] = pFoodTim[cyc] - 1
+        if pFoodTim[cyc] < 0 do pFoodTim[cyc] = 0
+        if pAnimTim[cyc] == 30 || pAnimTim[cyc] == 40 do limb = bb.FindChild(p[cyc], "R_Finger04")
+        if pAnimTim[cyc] == 85 || pAnimTim[cyc] == 95 do limb = bb.FindChild(p[cyc], "L_Finger04")
+        if pAnimTim[cyc] == 30 || pAnimTim[cyc] == 85 {
+            ProduceSound(p[cyc], sEat, 22050, 0)
+            CreateSpurt(EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 1, 5, 5) 
+            trayState[pSeat[cyc]] = trayState[pSeat[cyc]] - 1
+            pFoodTim[cyc] = 15
+            if pChar[cyc] == gamChar[slot] {
+                for tray: i32 = 1; tray <= 50; tray += 1 {
+                    if tray != pSeat[gamPlayer[slot]] && trayState[tray] > 0 do trayState[tray] = trayState[tray] - bb.Rnd(0, 1)
+                }
+            }
+        }
+        if pAnimTim[cyc] == 40 || pAnimTim[cyc] == 95 {
+            CreateSpurt(bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 1, 5, 5) 
+            charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + bb.Rnd(1, 5)
+            pHealth[cyc] = pHealth[cyc] + 5
+            randy = bb.Rnd(0, 50)
+            if randy == 0 && gamGrowth[slot] <= 0 do gamGrowth[slot] = gamGrowth[slot] + 1 
+        } 
+        if pAnimTim[cyc] > 120 do pAnimTim[cyc] = 10
+    }
+    //workshop kits
+    if gamLocation[slot] == 10 && pState[cyc] == 104 {
+        randy := bb.Rnd(0, 30)
+        if randy == 0  {
+            charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + bb.Rnd(0, 1)
+            ProduceSound(p[cyc], weapSound[kitType[pSeat[cyc]]], 22050, bb.Rnd(0.1, 0.3))
+            //limb = bb.FindChild(world, "Table" + bb.Dig$(pSeat[cyc], 10))
+            //bb.PositionEntity(kit[pSeat[cyc]], bb.EntityX(limb, 1) + bb.Rnd(-0.10, 0.10), bb.EntityY(limb, 1), bb.EntityZ(limb, 1) + bb.Rnd(-0.10, 0.10))
+        }
+        chance := (150 - charStrength[pChar[cyc]]) + (150 - charIntelligence[pChar[cyc]])
+        chance = chance * 4
+        randy = bb.Rnd(0, chance)
+        if randy == 0 && pAnimTim[cyc] > 50 && kitState[pSeat[cyc]] > 0 {
+            if pChar[cyc] == gamChar[slot] && cast(bool)LockDown() == false {
+                bb.PlaySound(sCash)
+                statTim[7] = 50
+                gamMoney[slot] = gamMoney[slot] + 25 //weapValue[kitType[pSeat[cyc]]]
+            }
+            charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + 5
+            charReputation[pChar[cyc]] = charReputation[pChar[cyc]] + bb.Rnd(0, 1)
+            CreateWeapon(kitType[pSeat[cyc]], bb.EntityX(kit[pSeat[cyc]], 1), bb.EntityY(kit[pSeat[cyc]], 1) + 5, bb.EntityZ(kit[pSeat[cyc]], 1))
+            bb.HideEntity(kit[pSeat[cyc]])
+            kitState[pSeat[cyc]] = 0
+        }
+    }
+    //working
+    if gamLocation[slot] == 4 || gamLocation[slot] == 6 || gamLocation[slot] == 8  {
+        if pChar[cyc] == gamChar[slot] && cast(bool)LockDown() == false && pState[cyc] == 104 && pAnimTim[cyc] > 160 {
+            bb.PlaySound(sCash)
+            statTim[7] = 50
+            if gamLocation[slot] == 8 do gamMoney[slot] = gamMoney[slot] + 5
+            if gamLocation[slot] == 4 do gamMoney[slot] = gamMoney[slot] + 10
+            if gamLocation[slot] == 6 do gamMoney[slot] = gamMoney[slot] + 15
+            charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + bb.Rnd(1, 5)
+            randy := bb.Rnd(0, 10)
+            if randy == 0 && charReputation[pChar[cyc]] > 50 do charReputation[pChar[cyc]] = charReputation[pChar[cyc]] - 1
+            if randy == 0 && charReputation[pChar[cyc]] < 50 do charReputation[pChar[cyc]] = charReputation[pChar[cyc]] + 1
+            if randy == 1 do charIntelligence[pChar[cyc]] = charIntelligence[pChar[cyc]] + 1
+            pAnimTim[cyc] = 10 
+        }
+    }
+}
+
+//  GET POWER
+GetPower :: proc(cyc: i32) -> i32{
+    power: i32 = 1
+    if charStrength[pChar[cyc]] >= 60 do power = bb.Rnd(1, 2)
+    if charStrength[pChar[cyc]] >= 70 do power = 2
+    if charStrength[pChar[cyc]] >= 80 do power = bb.Rnd(2, 3)
+    if charStrength[pChar[cyc]] >= 90 do power = 3
+    return power
+}
+
+//  GET BLOCKING POTENTIAL
+BlockPower :: proc(cyc: i32) -> i32{
+    block: i32 = GetPower(cyc)
+    if pWeapon[cyc] > 0 && weapStyle[weapType[pWeapon[cyc]]] == 1 do block = block + 1
+    return block
+}
+
+//  ANSWER/HANG-UP PHONE
+AnswerPhone :: proc(cyc, phone, anim: i32){
+    if phone > 0 {
+        bb.PointEntity(pPivot[cyc], bb.FindChild(world, fmt.tprintf("Pad%d", phone)))
+        pA[cyc] = bb.EntityYaw(pPivot[cyc])
+        ChangeAnim(cyc, anim)
+    }
+}
+
