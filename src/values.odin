@@ -302,17 +302,17 @@ pOldEyes: [optPlayLim + 1]i32
 pMouth: [optPlayLim + 1]i32
 pSpeaking: [optPlayLim + 1]i32
 pShadow: [optPlayLim + 1][41]i32
-pControlTim: [optPlayLim + 1]i32
-pTag: [3]string
-pHighlight: [3]string
+pControlTim: [optPlayLim + 1]i32 // Unused
+pTag: [3]i32 // Unused
+pHighlight: [3]i32 // Unused
 
 /////////////////////////////////////////////////////////
 //----------------------- LIMBS -------------------------
 /////////////////////////////////////////////////////////
 // status
-pLimb: [optPlayLim][41]i32
-pScar: [optPlayLim][41]i32
-pOldScar: [optPlayLim][41]i32
+pLimb: [optPlayLim + 1][41]i32
+pScar: [optPlayLim + 1][41]i32
+pOldScar: [optPlayLim + 1][41]i32
 // heirarchy
 limbPrecede: [41]i32
 limbSource: [41]i32
@@ -479,7 +479,7 @@ weapA: [optWeapLim + 1]f32
 weapFlight: [optWeapLim + 1]f32
 weapFlightA: [optWeapLim + 1]f32
 weapGravity: [optWeapLim + 1]f32
-weapBounce: [optWeapLim + 1]i32
+weapBounce: [optWeapLim + 1]f32
 // type
 weapName: [weapList + 1]string
 weapFile: [weapList + 1]string
@@ -522,7 +522,7 @@ camMouseX, camMouseY: f32
 // Smooth co-ordination
 speedX, speedY, speedZ: f32
 // Camera presets
-camShortcut := [11]i32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0}
+camShortcut := [11]i32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0} // Unused
 // Lighting
 light: [11]i32
 no_lights: i32
@@ -978,21 +978,21 @@ LoadTextures :: proc() {
 	Loader("Please Wait", "Loading Numbers")
 	// signs
 	for count in i32(1)..=11 {
-		tSign[count - 1] = bb.LoadTexture(fmt.tprintf("World/Signs/Sign%s.png", Dig(count, 10)))
+		tSign[count] = bb.LoadTexture(fmt.tprintf("World/Signs/Sign%s.png", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=4 {
-		tBlock[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Block%s.png", Dig(count, 10)))
+		tBlock[count] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Block%s.png", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=20 {
-		tCell[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Cell%s.png", Dig(count, 10)))
+		tCell[count] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Cell%s.png", Dig(count, 10, context.temp_allocator)))
 	}
 	// video screens
 	for count in i32(0)..=10 {
-		tScreen[count] = bb.LoadTexture(fmt.tprintf("World/Screens/Screen%s.JPG", Dig(count, 10)))
+		tScreen[count] = bb.LoadTexture(fmt.tprintf("World/Screens/Screen%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	// food trays
 	for count in i32(0)..=7 {
-		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.JPG", Dig(count, 10)))
+		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	// world
 	tFence = bb.LoadTexture("World/Sprites/Fence.png", 4)
@@ -1005,76 +1005,76 @@ LoadTextures :: proc() {
 	// facial expressions
 	Loader("Please Wait", "Loading Expressions")
 	tEars = bb.LoadTexture("Characters/Expressions/Ears.JPG")
-	for count in i32(1)..=3 {
+	for count in 1..=3 {
 		tEyes[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Eyes0%d.JPG", count))
 	}
-	for count in i32(0)..=5 {
+	for count in 0..=5 {
 		tMouth[count] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Mouth0%d.JPG", count))
 	}
 	// costume variations
 	tShaved = bb.LoadTexture("Characters/Hair/Shaved.JPG")
 	for count in i32(1)..=3 {
-		tSpecs[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.JPG", Dig(count, 10)))
+		tSpecs[count] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=no_hairs {
-		tHair[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10)), 4)
+		tHair[count] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10, context.temp_allocator)), 4)
 	}
 	for count in i32(1)..=no_faces {
 		Loader("Please Wait", fmt.tprintf("Loading Face %s of %s", Dig(count, 10), no_faces))
-		tFace[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Faces/Face%s.JPG", Dig(count, 10)))
+		tFace[count] = bb.LoadTexture(fmt.tprintf("Characters/Faces/Face%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=no_bodies {
 		Loader("Please Wait", fmt.tprintf("Loading Body %s of %s", Dig(count, 10), no_bodies))
-		tBody[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Bodies/Body%s.JPG", Dig(count, 10)))
+		tBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Bodies/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=no_arms {
 		Loader("Please Wait", fmt.tprintf("Loading Arm %s of %s", Dig(count, 10), no_arms))
-		tArm[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Arms/Arm%s.JPG", Dig(count, 10)))
+		tArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Arms/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=no_legs {
 		Loader("Please Wait", fmt.tprintf("Loading Legs %s of %s", Dig(count, 10), no_legs))
-		tLegs[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Legs/Legs%s.JPG", Dig(count, 10)))
+		tLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Legs/Legs%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	// racial shades
 	Loader("Please Wait", "Loading Shades")
 	for count in i32(1)..=4 {
-		tBodyShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Body%s.png", Dig(count, 10)))
+		tBodyShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Body%s.png", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=8 {
-		tArmShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Arm%s.png", Dig(count, 10)))
+		tArmShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Arm%s.png", Dig(count, 10, context.temp_allocator)))
 	}
 	// scarring
 	Loader("Please Wait", "Loading Scars")
 	for count in i32(0)..=5 {
-		tFaceScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Face%s.JPG", Dig(count, 10)))
+		tFaceScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Face%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(0)..=4 {
-		tBodyScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Body%s.JPG", Dig(count, 10)))
+		tBodyScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(0)..=4 {
-		tArmScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Arm%s.JPG", Dig(count, 10)))
+		tArmScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(0)..=4 {
-		tLegScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Legs%s.JPG", Dig(count, 10)))
+		tLegScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Legs%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	// wounds
 	tSeverEars = bb.LoadTexture("Characters/Scarring/Wounds/Ears.JPG")
 	for count in i32(1)..=3 {
-		tSeverBody[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Body%s.JPG", Dig(count, 10)))
+		tSeverBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=3 {
-		tSeverArm[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Arm%s.JPG", Dig(count, 10)))
+		tSeverArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	for count in i32(1)..=3 {
-		tSeverLegs[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Legs%s.JPG", Dig(count, 10)))
+		tSeverLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Legs%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 	// tattoos
 	for count in i32(1)..=6 {
-		tTattooBody[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Body%s.JPG", Dig(count, 10)))
-		tTattooVest[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Vest%s.JPG", Dig(count, 10)))
-		tTattooArm[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Arm%s.JPG", Dig(count, 10)))
-		tTattooTee[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Tee%s.JPG", Dig(count, 10)))
-		tTattooSleeve[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Sleeve%s.JPG", Dig(count, 10)))
+		tTattooBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tTattooVest[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Vest%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tTattooArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tTattooTee[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Tee%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tTattooSleeve[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Sleeve%s.JPG", Dig(count, 10, context.temp_allocator)))
 	}
 }
 
@@ -1121,8 +1121,8 @@ LoadWeaponData :: proc() {
 	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
 	weapSize[n] = 6 ; weapWeight[n] = 0.25
 	weapRange[n] = 6 ; weapDamage[n] = 4
-	weapStyle[n] = 7 ; weapHabitat[n] = 2
-	weapCreate[n] = 1 ; weapValue[n] = 30
+	weapStyle[n] = 7 ; weapHabitat[n] = 8
+	weapCreate[n] = 1 ; weapValue[n] = 20
 	// pistol
 	n = 7 ; weapName[n] = "Pistol" ; weapFile[n] = "Pistol"
 	weapSound[n] = sGun ; weapTex[n] = tPistol ; weapShiny[n] = 0.5
@@ -1191,28 +1191,28 @@ LoadWeaponData :: proc() {
 	weapSound[n] = sCigar ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 4 ; weapWeight[n] = 0.15
 	weapRange[n] = 6 ; weapDamage[n] = 1
-	weapStyle[n] = 5 ; weapHabitat[n] = 99
-	weapCreate[n] = 1 ; weapValue[n] = 5
+	weapStyle[n] = 0 ; weapHabitat[n] = 2
+	weapCreate[n] = 0 ; weapValue[n] = 10
 	// syringe
 	n = 17 ; weapName[n] = "Syringe" ; weapFile[n] = "Syringe"
 	weapSound[n] = sSyringe ; weapTex[n] = 0 ; weapShiny[n] = 0.5
-	weapSize[n] = 4 ; weapWeight[n] = 0.1
-	weapRange[n] = 5 ; weapDamage[n] = 1
-	weapStyle[n] = 5 ; weapHabitat[n] = 99
-	weapCreate[n] = 1 ; weapValue[n] = 5
+	weapSize[n] = 5 ; weapWeight[n] = 0.2
+	weapRange[n] = 6 ; weapDamage[n] = 2
+	weapStyle[n] = 7 ; weapHabitat[n] = 6
+	weapCreate[n] = 0 ; weapValue[n] = 20
 	// beer bottle
 	n = 18 ; weapName[n] = "Bottle" ; weapFile[n] = "Bottle"
-	weapSound[n] = sBottle ; weapTex[n] = 0 ; weapShiny[n] = 0.5
-	weapSize[n] = 6 ; weapWeight[n] = 0.3
-	weapRange[n] = 6 ; weapDamage[n] = 2
-	weapStyle[n] = 0 ; weapHabitat[n] = 99
-	weapCreate[n] = 1 ; weapValue[n] = 10
+	weapSound[n] = sBottle ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSize[n] = 5 ; weapWeight[n] = 0.25
+	weapRange[n] = 5 ; weapDamage[n] = 2
+	weapStyle[n] = 6 ; weapHabitat[n] = 8
+	weapCreate[n] = 0 ; weapValue[n] = 10
 	// fire extinguisher
 	n = 19 ; weapName[n] = "Extinguisher" ; weapFile[n] = "Extinguisher"
-	weapSound[n] = sMetal ; weapTex[n] = 0 ; weapShiny[n] = 1.0
-	weapSize[n] = 10 ; weapWeight[n] = 0.5
-	weapRange[n] = 8 ; weapDamage[n] = 2
-	weapStyle[n] = 1 ; weapHabitat[n] = 10
+	weapSound[n] = sMetal ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSize[n] = 6 ; weapWeight[n] = 0.3
+	weapRange[n] = 5 ; weapDamage[n] = 3
+	weapStyle[n] = 6 ; weapHabitat[n] = 99
 	weapCreate[n] = 1 ; weapValue[n] = 50
 	// screwdriver
 	n = 20 ; weapName[n] = "Screwdriver" ; weapFile[n] = "Screw"

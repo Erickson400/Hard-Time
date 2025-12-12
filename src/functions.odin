@@ -157,17 +157,17 @@ GetFigure :: proc(value: i32) -> string {
 
 
 // FORMAT DIGITS (to 2 or 3 digits with leading zeros)
-Dig :: proc(value, degree: i32) -> string {
+Dig :: proc(value, degree: i32, allocator := context.allocator) -> string {
 	if value == 0 && degree == 10 do return "00"
 	if value == 0 && degree == 100 do return "000"
 	if value < degree {
 		if value < degree / 10 {
-			return fmt.aprintf("00%s", value)
+			return fmt.aprintf("00%s", value, allocator)
 		} else {
-			return fmt.aprintf("0%s", value)
+			return fmt.aprintf("0%s", value, allocator)
 		}
 	}
-	return fmt.aprintf("%s", value)
+	return fmt.aprintf("%s", value, allocator)
 }
 
 
