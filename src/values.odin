@@ -14,9 +14,9 @@ import "core:os"
 ////////////////////////////////////////////////////////
 version :: 4
 screen: i32
-oldScreen :: 0 // Unused
-screenSource: i32
-screenAgenda: i32
+oldScreen: i32 // Unused
+screenSource: i32 // Unused
+screenAgenda: i32 // Unused
 screenCall: i32
 callX: i32
 callY: i32
@@ -321,10 +321,10 @@ limbSource: [41]i32
 //--------------------- CHARACTERS ----------------------
 /////////////////////////////////////////////////////////
 no_chars: i32
-no_costumes: i32 = 8
-no_models: i32 = 5
-no_hairstyles: i32 = 31
-no_specs: i32 = 4
+no_costumes :: 8
+no_models :: 5
+no_hairstyles :: 31
+no_specs :: 4
 // appearance
 charModel: [optCharLim + 1]i32
 charHeight: [optCharLim + 1]i32
@@ -633,7 +633,7 @@ init_values :: proc() {
 	sJury[1] = bb.LoadSound("Sound/Cheer.wav")
 	sJury[2] = bb.LoadSound("Sound/Jeer.wav")
 	// world
-	for count in i32(1)..=3 {
+	for count in 1..=3 {
 		sDoor[count] = bb.Load3DSound(fmt.tprintf("Sound/World/Door0%d.wav", count))
 	}
 	sBuzzer = bb.Load3DSound("Sound/World/Buzzer.wav")
@@ -645,10 +645,10 @@ init_values :: proc() {
 	// movements
 	sFall = bb.Load3DSound("Sound/Movement/Fall.wav")
 	sThud = bb.Load3DSound("Sound/Movement/Thud.wav")
-	for count in i32(1)..=3 {
+	for count in 1..=3 {
 		sShuffle[count] = bb.Load3DSound(fmt.tprintf("Sound/Movement/Shuffle0%d.wav", count))
 	}
-	for count in i32(1)..=4 {
+	for count in 1..=4 {
 		sStep[count] = bb.Load3DSound(fmt.tprintf("Sound/Movement/Step0%d.wav", count))
 	}
 	// pain
@@ -656,10 +656,10 @@ init_values :: proc() {
 	sChoke = bb.Load3DSound("Sound/Pain/Choke.wav")
 	sSnore = bb.Load3DSound("Sound/Pain/Snoring.wav")
 	sBreakdown = bb.Load3DSound("Sound/Pain/Breakdown.wav")
-	for count in i32(1)..=8 {
+	for count in 1..=8 {
 		sPain[count] = bb.Load3DSound(fmt.tprintf("Sound/Pain/Pain0%d.wav", count))
 	}
-	for count in i32(1)..=3 {
+	for count in 1..=3 {
 		sAgony[count] = bb.Load3DSound(fmt.tprintf("Sound/Pain/Agony0%d.wav", count))
 	}
 	// impacts
@@ -668,7 +668,7 @@ init_values :: proc() {
 	sStab = bb.Load3DSound("Sound/Props/Stab.wav")
 	sEat = bb.Load3DSound("Sound/Props/Eat.wav")
 	sDrink = bb.Load3DSound("Sound/Props/Drink.wav")
-	for count in i32(1)..=6 {
+	for count in 1..=6 {
 		sImpact[count] = bb.Load3DSound(fmt.tprintf("Sound/Movement/Impact0%d.wav", count))
 	}
 	// weapons
@@ -677,7 +677,7 @@ init_values :: proc() {
 	sMetal = bb.Load3DSound("Sound/Props/Metal.wav")
 	sWood = bb.Load3DSound("Sound/Props/Wood.wav")
 	sCane = bb.Load3DSound("Sound/Props/Cane.wav")
-	// sString = bb.Load3DSound("Sound/Props/String.wav") // Missing & Unused asset
+	// sString = bb.Load3DSound("Sound/Props/String.wav") // Missing file & Unused
 	sRock = bb.Load3DSound("Sound/Props/Rock.wav")
 	sAxe = bb.Load3DSound("Sound/Props/Axe.wav")
 	sBall = bb.Load3DSound("Sound/Props/Ball.wav")
@@ -687,10 +687,10 @@ init_values :: proc() {
 	sBottle = bb.Load3DSound("Sound/Props/Bottle.wav")
 	sSplash = bb.Load3DSound("Sound/Props/Splash.wav")
 	// technology
-	for count in i32(1)..=2 {
+	for count in 1..=2 {
 		sShot[count] = bb.Load3DSound(fmt.tprintf("Sound/Props/Shot0%d.wav", count))
 	}
-	for count in i32(1)..=3 {
+	for count in 1..=3 {
 		sRicochet[count] = bb.Load3DSound(fmt.tprintf("Sound/Props/Ricochet0%d.wav", count))
 	}
 	sReload = bb.Load3DSound("Sound/Props/Reload.wav")
@@ -744,7 +744,7 @@ init_values :: proc() {
 	texture_loading() // Turned into a function for a cleaner scope
 
 	// Blocks
-	for b in i32(1)..=8 {
+	for b in 1..=8 {
 		if b == 1 || b == 3 || b == 7 {
 			d := 1;
 			doorA[b][d] = 180
@@ -893,33 +893,30 @@ init_values :: proc() {
 
 LoadImages :: proc() {
 	// main fonts
-	font[0] = bb.LoadFont("Kristen ITC.ttf", 13, false, false, false)
-	font[1] = bb.LoadFont("Kristen ITC.ttf", 16, false, false, false)
-	font[2] = bb.LoadFont("Kristen ITC.ttf", 20, false, false, false)
-	font[3] = bb.LoadFont("Kristen ITC.ttf", 24, false, false, false)
-	font[4] = bb.LoadFont("Kristen ITC.ttf", 36, false, false, false)
-	font[5] = bb.LoadFont("Kristen ITC.ttf", 42, false, false, false)
-	font[6] = bb.LoadFont("Kristen ITC.ttf", 48, false, false, false)
+	font[0] = bb.LoadFont("Kristen ITC.ttf", 13, 0, 0, 0)
+	font[1] = bb.LoadFont("Kristen ITC.ttf", 16, 0, 0, 0)
+	font[2] = bb.LoadFont("Kristen ITC.ttf", 20, 0, 0, 0)
+	font[3] = bb.LoadFont("Kristen ITC.ttf", 24, 0, 0, 0)
+	font[4] = bb.LoadFont("Kristen ITC.ttf", 36, 0, 0, 0)
+	font[5] = bb.LoadFont("Kristen ITC.ttf", 42, 0, 0, 0)
+	font[6] = bb.LoadFont("Kristen ITC.ttf", 48, 0, 0, 0)
 	// novelty fonts
-	fontNumber = bb.LoadFont("Verdana.ttf", 15, true, false, false)
-	fontComputer = bb.LoadFont("Small Fonts.ttf", 16, false, false, false)
-	fontMoney = bb.LoadFont("Times New Roman.ttf", 32, true, false, false)
-	fontClock = bb.LoadFont("Digital Readout Upright.ttf", 26, true, false, false)
-
+	fontNumber = bb.LoadFont("Verdana.ttf", 15, 1, 0, 0)
+	fontComputer = bb.LoadFont("Small Fonts.ttf", 16, 0, 0, 0)
+	fontMoney = bb.LoadFont("Times New Roman.ttf", 32, 1, 0, 0)
+	fontClock = bb.LoadFont("Digital Readout Upright.ttf", 26, 1, 0, 0)
 	// tile
 	gTile = bb.LoadImage("Graphics/Tile.png")
 	bb.MaskImage(gTile, 255, 0, 255)
-
 	// logos
-	for count in i32(1)..=3 {
+	for count in 1..=3 {
 		gLogo[count] = bb.LoadImage(fmt.tprintf("Graphics/Logo0%d.png", count))
 		bb.MaskImage(gLogo[count], 255, 0, 255)
 	}
 	gMDickie = bb.LoadImage("Graphics/MDickie.png")
 	bb.MaskImage(gMDickie, 255, 0, 255)
-
 	// menu boxes
-	for count in i32(1)..=4 {
+	for count in 1..=4 {
 		gMenu[count] = bb.LoadImage(fmt.tprintf("Graphics/Menu0%d.png", count))
 		bb.MaskImage(gMenu[count], 255, 0, 255)
 	}
@@ -939,7 +936,7 @@ LoadImages :: proc() {
 	gPhoto = bb.LoadImage("Graphics/Photo.png")
 	bb.MaskImage(gPhoto, 255, 0, 255)
 	// game previews
-	for count in i32(1)..=3 {
+	for count in 1..=3 {
 		gamPhoto[count] = bb.LoadImage(fmt.tprintf("Data/Slot0%d/Photos/Game.bmp", count))
 		if gamPhoto[count] > 0 {
 			bb.MaskImage(gamPhoto[count], 255, 0, 255)
@@ -950,18 +947,21 @@ LoadImages :: proc() {
 
 @(private="file")
 texture_loading :: proc() {
-	count_texture_files :: proc(path, all_caps_prefix: string, counter: ^i32) {
+	count_texture_files :: proc(path, prefix: string, counter: ^i32) {
 		folder, err := os.open(path, os.O_RDONLY, 0o600); assert(err==nil)
-		defer os.close(folder)
 		files: []os.File_Info
 		files, err = os.read_dir(folder, 1000); assert(err==nil)
-		defer os.file_info_slice_delete(files)
 		for i in files{
 			upper := strings.to_upper(i.name, context.temp_allocator)
+			all_caps_prefix := strings.to_upper(prefix, context.temp_allocator)
 			if strings.has_prefix(upper, all_caps_prefix) {
 				counter^ += 1
 			}
+			delete(upper)
+			delete(all_caps_prefix)
 		}
+		os.file_info_slice_delete(files)
+		os.close(folder)
 	}
 
 	character_folder :: "assets/Characters/"

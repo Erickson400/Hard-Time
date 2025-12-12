@@ -1,6 +1,7 @@
 package main
 
 import bb "blitzbasic3d"
+import "core:fmt"
 
 ////////////////////////////////////////////////////////////////////////////////
 //---------------------------- HARD TIME: ANIMATIONS ---------------------------
@@ -211,7 +212,7 @@ Animations :: proc(cyc: i32) {
             pState[cyc] = anim
         }
         if pAnimTim[cyc] > 5 {
-            if DirPressed(cyc) || pDazed[cyc] > 0 || cyc == promoActor[1] || cyc == promoActor[2] {
+            if cast(bool)DirPressed(cyc) || pDazed[cyc] > 0 || cyc == promoActor[1] || cyc == promoActor[2] {
                 ChangeAnim(cyc, 0)
             }
         }
@@ -239,7 +240,7 @@ Animations :: proc(cyc: i32) {
         }
         pA[cyc] = CleanAngle(pA[cyc])
         if pAnimTim[cyc] > 5 {
-            if HorizontalPressed(cyc) == 0 || VerticalPressed(cyc) do ChangeAnim(cyc, 0)
+            if HorizontalPressed(cyc) == 0 || cast(bool)VerticalPressed(cyc) do ChangeAnim(cyc, 0)
         }
         pStepTim[cyc] += 1
     }
@@ -256,7 +257,7 @@ Animations :: proc(cyc: i32) {
         if cast(bool)cRight[cyc] do pA[cyc] -= 5
         pA[cyc] = CleanAngle(pA[cyc])
         if pAnimTim[cyc] > 5 {
-            if HorizontalPressed(cyc) == 0 || VerticalPressed(cyc) || pDazed[cyc] > 0 {
+            if HorizontalPressed(cyc) == 0 || cast(bool)VerticalPressed(cyc) || pDazed[cyc] > 0 {
                 ChangeAnim(cyc, 1)
             }
         }
@@ -328,7 +329,7 @@ Animations :: proc(cyc: i32) {
         if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sSwing, 22050, 0.1)
         if pAnimTim[cyc] == 11 && cast(bool)HandIntact(cyc, 17) {
             for v in 1..=no_weaps {
-                range: f32 = weapSize[weapType[v]] + 5
+                range: i32 = cast(i32)weapSize[weapType[v]] + 5
                 if weapLocation[v] == gamLocation[slot] && weapState[v] > 0 && pWeapon[cyc] == 0 && pWeaponTim[cyc][v] == 0 && weapCarrier[v] == 0 && pY[cyc] >= weapY[v] - 15 && pY[cyc] <= weapY[v] + 15 {
                     if cast(bool)LimbProximity(pLimb[cyc][19], weapX[v], weapZ[v], range) || cast(bool)WeaponProximity(cyc, v, 5) {
                         ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
@@ -385,7 +386,7 @@ Animations :: proc(cyc: i32) {
             for v in 1..=no_plays {
                 w: i32 = pWeapon[v]
                 if w > 0 && cyc != v && pWeapon[cyc] == 0 && AttackViable(v) >= 1 && AttackViable(v) <= 2 && pY[cyc] > pY[v] - 15 && pY[cyc] < pY[v] + 15 && pSting[cyc] == 1 {
-                    if cast(bool)LimbProximity(pLimb[cyc][19], bb.EntityX(pLimb[v][19], 1), bb.EntityZ(pLimb[v][19], 1), 10) || cast(bool)InRange(cyc, v, 4) > 0 {
+                    if cast(bool)LimbProximity(pLimb[cyc][19], bb.EntityX(pLimb[v][19], 1), bb.EntityZ(pLimb[v][19], 1), 10) || InRange(cyc, v, 4) > 0 {
                         charAttacker[pChar[v]] = pChar[cyc]
                         ProduceSound(p[v], sImpact[bb.Rnd(4, 5)], 22050, 0)
                         ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 0)
@@ -413,10 +414,10 @@ Animations :: proc(cyc: i32) {
                 }
             }
             for v in 1..=no_weaps {
-                range: f32 = weapSize[weapType[v]] + 5
+                range: i32 = cast(i32)weapSize[weapType[v]] + 5
                 if weapLocation[v] == gamLocation[slot] && weapState[v] > 0 && pWeapon[cyc] == 0 && pWeaponTim[cyc][v] == 0 && weapCarrier[v] == 0 && pY[cyc] >= weapY[v] - 40 && pY[cyc] < weapY[v] - 10 {
-                    if cast(bool)LimbProximity(pLimb(cyc, 19), weapX[v], weapZ[v], range) || cast(bool)WeaponProximity(cyc, v, 5) {
-                        ProduceSound(p[cyc], sShuffle(bb.Rnd(1, 3)), 22050, 0)
+                    if cast(bool)LimbProximity(pLimb[cyc][19], weapX[v], weapZ[v], range) || cast(bool)WeaponProximity(cyc, v, 5) {
+                        ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
                         ProduceSound(p[cyc], weapSound[weapType[v]], 22050, 0.5)
                         CreateSpurt(weapX[v], weapY[v] + 1, weapZ[v], 2, 10, 5)
                         AttainWeapon(cyc, v)
@@ -453,7 +454,7 @@ Animations :: proc(cyc: i32) {
         if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, 1.5, pSeq[cyc][25], 5)
         if pAnimTim[cyc] == 13 && pWeapon[cyc] > 0 {
             w: i32 = pWeapon[cyc]
-            ProduceSound(p[cyc], sShuffle(bb.Rnd(1, 3)), 22050, 0)
+            ProduceSound(p[cyc], sShuffle[bb.Rnd(1, 3)], 22050, 0)
             ProduceSound(p[cyc], weapSound[weapType[w]], 22050, 0.5)
             DropWeapon(cyc, 0)
             if pWeapon[pFoc[cyc]] == 0 do AttainWeapon(pFoc[cyc], w)
@@ -492,7 +493,7 @@ Animations :: proc(cyc: i32) {
         if pAnimTim[cyc] == 20 {
             ProduceSound(p[cyc], sThud, 22050, 0.5)
             pStepTim[cyc] = 99
-            pHealth[cyc] -= bb.Rnd(0, 1)
+            pHealth[cyc] -= bb.Rnd(0.0, 1.0)
             randy: i32 = bb.Rnd(0, 100)
             if randy == 0 && gamGrowth[slot] >= 0 do gamGrowth[slot] -= 1
         }
@@ -512,7 +513,7 @@ Animations :: proc(cyc: i32) {
                     bb.PositionEntity(bb.FindChild(world, fmt.tprint("Phone", Dig(phoneRing, 10))), phoneX[phoneRing], phoneY[phoneRing], phoneZ[phoneRing])
                     bb.EntityColor(bb.FindChild(world, fmt.tprint("Alarm", Dig(phoneRing, 10))), 5, 0, 0)
                     bb.EntityFX(bb.FindChild(world, fmt.tprint("Alarm", Dig(phoneRing, 10))), 0)
-                    StopChannel(chPhone)
+                    bb.StopChannel(chPhone)
                     phoneRing = 0
                     phoneTim = 0
                     if pChar[cyc] == gamChar[slot] && phonePromo > 0 {
@@ -558,21 +559,21 @@ Animations :: proc(cyc: i32) {
         if pAnimTim[cyc] >= 4 && pAnimTim[cyc] <= 10 && pScar[cyc][18] <= 4 && pSting[cyc] == 1 {
             for v in 1..=no_plays {
                 range: i32 = pAnimTim[cyc] - 3
-                if cyc != v && (Friendly(cyc, v) == 0 || v == pFoc[cyc]) && InProximity(cyc, v, 15 + range) && pY[cyc] > pY[v] - 30 && pY[cyc] < pY[v] + 5 && AttackViable(v) >= 1 && AttackViable(v) <= 2 && pSting[cyc] == 1 {
+                if cyc != v && (Friendly(cyc, v) == 0 || v == pFoc[cyc]) && cast(bool)InProximity(cyc, v, 15 + range) && pY[cyc] > pY[v] - 30 && pY[cyc] < pY[v] + 5 && AttackViable(v) >= 1 && AttackViable(v) <= 2 && pSting[cyc] == 1 {
                     contact: i32 = InRange(cyc, v, range)
                     if contact > 0 {
                         charAttacker[pChar[v]] = pChar[cyc]
                         blocked: i32 = 0
                         randy: i32 = bb.Rnd(0, 10)
-                        if randy <= 5 + BlockPower(v) && pAnim[v] >= 74 && pAnim[v] <= 75 && InLine(v, p[cyc], 90) do blocked = 1
+                        if randy <= 5 + BlockPower(v) && pAnim[v] >= 74 && pAnim[v] <= 75 && cast(bool)InLine(v, p[cyc], 90) do blocked = 1
                         if blocked == 0 {
-                            ProduceSound(p[v], sImpact(bb.Rnd(1, 2)), 22050, 0)
-                            ProduceSound(p[v], sPain(bb.Rnd(1, 8)), 22050, 0)
+                            ProduceSound(p[v], sImpact[bb.Rnd(1, 2)], 22050, 0)
+                            ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 0)
                             CreateSpurt(pX[v], pY[cyc] + 22, pZ[v], 2, 10, 99)
                             ScarLimb(v, 1, 10)
                             ChangeAnim(v, 70)
-                            pDT[v] = (110 - pHealth[v]) * 2
-                            pHealth[v] -= GetPower(cyc)
+                            pDT[v] = cast(i32)((110.0 - pHealth[v]) * 2)
+                            pHealth[v] -= cast(f32)GetPower(cyc)
                             pHP[v] -= GetPower(cyc)
                         }
                         if blocked == 1 {
@@ -580,9 +581,9 @@ Animations :: proc(cyc: i32) {
                                 ProduceSound(p[v], weapSound[weapType[pWeapon[v]]], 22050, 0)
                                 DropWeapon(v, 10)
                             }
-                            ProduceSound(p[v], sImpact(bb.Rnd(4, 5)), 22050, 0)
+                            ProduceSound(p[v], sImpact[bb.Rnd(4, 5)], 22050, 0)
                             CreateSpurt(pX[v], pY[cyc] + 22, pZ[v], 2, 10, 4)
-                            for limb in 4..=29 {
+                            for limb in i32(4)..=29 {
                                 if pWeapon[v] == 0 do ScarLimb(v, limb, 10)
                             }
                             pHP[v] -= bb.Rnd(0, 1)
@@ -634,9 +635,9 @@ Animations :: proc(cyc: i32) {
                             CreateSpurt(pX[v], pY[cyc] + 15, pZ[v], 2, 10, 99)
                             ScarArea(v, pX[v], pY[cyc] + 15, pZ[v], 10)
                             ChangeAnim(v, 71)
-                            pDT[v] = (110 - pHealth[v]) * 2
-                            pHealth[v] = pHealth[v] - GetPower(cyc)
-                            pHP[v] = pHP[v] - GetPower(cyc)
+                            pDT[v] = cast(i32)((110 - pHealth[v]) * 2)
+                            pHealth[v] -= cast(f32)GetPower(cyc)
+                            pHP[v] -= GetPower(cyc)
                         }
                         if blocked == 1 {
                             if pWeapon[v] > 0 {
@@ -645,15 +646,15 @@ Animations :: proc(cyc: i32) {
                             }
                             ProduceSound(p[v], sImpact[bb.Rnd(4, 5)], 22050, 0)
                             CreateSpurt(pX[v], pY[cyc] + 15, pZ[v], 2, 10, 4)
-                            for limb in 4..=29 {
+                            for limb in i32(4)..=29 {
                                 if pWeapon[v] == 0 {
                                     ScarLimb(v, limb, 10)
                                 }
                             }
-                            pHP[v] = pHP[v] - bb.Rnd(0, 1)
+                            pHP[v] -= bb.Rnd(0, 1)
                         }
                         pHurtA[v] = pA[cyc]
-                        pStagger[v] = (8 - contact) * 0.3
+                        pStagger[v] = cast(f32)(8 - contact) * 0.3
                         if pStagger[v] < 0.3 { pStagger[v] = 0.3  }
                         RiskAnger(cyc, v)
                         GainStrength(cyc, 50)
@@ -664,14 +665,14 @@ Animations :: proc(cyc: i32) {
             }
         }
         if pAnimTim[cyc] > 22 do ChangeAnim(cyc, 1)
-        if pWeapon[cyc] > 0 && (weapStyle(weapType[pWeapon[cyc]]) == 1 || weapStyle[weapType[pWeapon[cyc]]] == 7) {
+        if pWeapon[cyc] > 0 && (weapStyle[weapType[pWeapon[cyc]]] == 1 || weapStyle[weapType[pWeapon[cyc]]] == 7) {
             ChangeAnim(cyc, 41)
         }
     }
     //stomp
     if pAnim[cyc] == 32 {
         if pAnimTim[cyc] == 0 {
-            Animate(p[cyc], 3, 3.0, pSeq[cyc][32], 5)
+            bb.Animate(p[cyc], 3, 3.0, pSeq[cyc][32], 5)
             pSting[cyc] = 1
         }
         if pAnimTim[cyc] == 3 {
@@ -680,8 +681,8 @@ Animations :: proc(cyc: i32) {
         if pAnimTim[cyc] <= 12 {
             FaceEntity(cyc, p[pFoc[cyc]], 5)
             if InProximity(cyc, pFoc[cyc], 10) == 0 {
-                RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
-                MoveEntity(pPivot[cyc], 0, 0, 0.5)
+                bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+                bb.MoveEntity(pPivot[cyc], 0, 0, 0.5)
             }
         }
         if pAnimTim[cyc] >= 7 && pAnimTim[cyc] <= 11 && pScar[cyc][35] <= 4 && pSting[cyc] == 1 {
@@ -692,12 +693,12 @@ Animations :: proc(cyc: i32) {
                     charAttacker[pChar[v]] = pChar[cyc]
                     ProduceSound(p[v], sImpact[bb.Rnd(4, 5)], 22050, 0)
                     if pHealth[v] > 0 do ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 0)
-                    limb := pLimb(cyc, 36)
-                    CreateSpurt(EntityX(limb, 1), pY[v], EntityZ(limb, 1), 2, 10, 99)
-                    ScarArea(v, EntityX(limb, 1), pY[v], EntityZ(limb, 1), 10)
+                    limb := pLimb[cyc][36]
+                    CreateSpurt(bb.EntityX(limb, 1), pY[v], bb.EntityZ(limb, 1), 2, 10, 99)
+                    ScarArea(v, bb.EntityX(limb, 1), pY[v], bb.EntityZ(limb, 1), 10)
                     GroundReaction(v)
                     pDT[v] -= 10
-                    pHealth[v] -= GetPower(cyc)
+                    pHealth[v] -= cast(f32)GetPower(cyc)
                     RiskAnger(cyc, v)
                     GainStrength(cyc, 100)
                     DamageRep(cyc, v, 0)
@@ -706,21 +707,21 @@ Animations :: proc(cyc: i32) {
             }
         }
         if pAnimTim[cyc] > 18 do ChangeAnim(cyc, 0)
-        if pWeapon[cyc] > 0 && (weapStyle(weapType[pWeapon[cyc]]) <= 1 || weapStyle[weapType[pWeapon[cyc]]] == 7) {
+        if pWeapon[cyc] > 0 && (weapStyle[weapType[pWeapon[cyc]]] <= 1 || weapStyle[weapType[pWeapon[cyc]]] == 7) {
             ChangeAnim(cyc, 42)
         }
     }
     //big attack
     if pAnim[cyc] == 33 {
         if pAnimTim[cyc] == 0 {
-            Animate(p[cyc], 3, 3.0, pSeq[cyc][33], 10)
+            bb.Animate(p[cyc], 3, 3.0, pSeq[cyc][33], 10)
             pSting[cyc] = 1
         }
         if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sSwing, 22050, bb.Rnd(0.3, 0.5))
         if pAnimTim[cyc] <= 16 {
             FaceEntity(cyc, p[pFoc[cyc]], 5)
-            RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
-            MoveEntity(pPivot[cyc], 0, 0, 0.5)
+            bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, 0.5)
             pStepTim[cyc] = pStepTim[cyc] + bb.Rnd(0, 1)
         }
         if pAnimTim[cyc] >= 10 && pAnimTim[cyc] <= 14 && (pScar[cyc][18] <= 4 || pScar[cyc][5] <= 4) && pSting[cyc] == 1 {
@@ -732,7 +733,7 @@ Animations :: proc(cyc: i32) {
                     contact := InRange(cyc, v, range)
                     if contact > 0 {
                         charAttacker[pChar[v]] = pChar[cyc]
-                        blocked := 0
+                        blocked: i32 = 0
                         randy := bb.Rnd(0, 10)
                         if randy <= 3 + BlockPower(v) && pAnim[v] >= 74 && pAnim[v] <= 75 && cast(bool)InLine(v, p[cyc], 90) {
                             blocked = 1
@@ -741,12 +742,12 @@ Animations :: proc(cyc: i32) {
                             ProduceSound(p[v], sImpact[3], 22050, 0)
                             ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 1)
                             impactY := pY[cyc] + 20
-                            if impactY > bb.EntityY(pLimb[v, 1], 1) do impactY = bb.EntityY(pLimb[v, 1], 1)
+                            if impactY > bb.EntityY(pLimb[v][1], 1) do impactY = bb.EntityY(pLimb[v][1], 1)
                             CreateSpurt(pX[v], impactY, pZ[v], 2, 10, 99)
                             ScarLimb(v, 1, 10)
                             ChangeAnim(v, 70)
-                            pDT[v] = (150 - pHealth[v]) * 2
-                            pHealth[v] -= GetPower(cyc) * 2
+                            pDT[v] = cast(i32)((150 - pHealth[v]) * 2)
+                            pHealth[v] -= cast(f32)GetPower(cyc) * 2
                             pHP[v] -= GetPower(cyc) * 2
                         }
                         if blocked == 1 {
@@ -756,9 +757,9 @@ Animations :: proc(cyc: i32) {
                             }
                             ProduceSound(p[v], sImpact[6], 22050, 0)
                             impactY := pY[cyc] + 20
-                            if impactY > bb.EntityY(pLimb[v, 1], 1) do impactY = bb.EntityY(pLimb[v, 1], 1)
+                            if impactY > bb.EntityY(pLimb[v][1], 1) do impactY = bb.EntityY(pLimb[v][1], 1)
                             CreateSpurt(pX[v], impactY, pZ[v], 2, 10, 4)
-                            for limb in 4..=29 {
+                            for limb in i32(4)..=29 {
                                 if pWeapon[v] == 0 do ScarLimb(v, limb, 10)
                             }
                             if pWeapon[v] == 0 do pHealth[v] -= 1
@@ -766,7 +767,7 @@ Animations :: proc(cyc: i32) {
                         }
                         WeaponImpact(cyc, v, blocked)
                         pHurtA[v] = pA[cyc]
-                        pStagger[v] = (8 - contact) * 0.2
+                        pStagger[v] = cast(f32)(8 - contact) * 0.2
                         if pStagger[v] < 0.2 do pStagger[v] = 0.2
                         RiskAnger(cyc, v)
                         GainStrength(cyc, 25)
@@ -784,15 +785,15 @@ Animations :: proc(cyc: i32) {
     //rear attack
     if pAnim[cyc] == 34 {
         if pAnimTim[cyc] == 0 {
-            Animate(p[cyc], 3, 4.0, pSeq[cyc][34], 10)
+            bb.Animate(p[cyc], 3, 4.0, pSeq[cyc][34], 10)
             for v in 1..=no_plays {
                 pMultiSting[cyc][v] = 1
             }
         }
         if pAnimTim[cyc] == 5 do ProduceSound(p[cyc], sSwing, 22050, bb.Rnd(0.3, 0.5))
         if pAnimTim[cyc] >= 5 && pAnimTim[cyc] <= 16 {
-            RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
-            MoveEntity(pPivot[cyc], 0, 0, -1.0)
+            bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)
+            bb.MoveEntity(pPivot[cyc], 0, 0, -1.0)
             pStepTim[cyc] = pStepTim[cyc] + bb.Rnd(0, 1)
         }
         if pAnimTim[cyc] >= 7 && pAnimTim[cyc] <= 17 && pScar[cyc][18] <= 4 {
@@ -2459,7 +2460,7 @@ SittingEffects :: proc(cyc: i32) {
         if pAnimTim[cyc] == 85 || pAnimTim[cyc] == 95 do limb = bb.FindChild(p[cyc], "L_Finger04")
         if pAnimTim[cyc] == 30 || pAnimTim[cyc] == 85 {
             ProduceSound(p[cyc], sEat, 22050, 0)
-            CreateSpurt(EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 1, 5, 5) 
+            CreateSpurt(bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 1, 5, 5) 
             trayState[pSeat[cyc]] = trayState[pSeat[cyc]] - 1
             pFoodTim[cyc] = 15
             if pChar[cyc] == gamChar[slot] {
@@ -2472,7 +2473,7 @@ SittingEffects :: proc(cyc: i32) {
             CreateSpurt(bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 1, 5, 5) 
             charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + bb.Rnd(1, 5)
             pHealth[cyc] = pHealth[cyc] + 5
-            randy = bb.Rnd(0, 50)
+            randy := bb.Rnd(0, 50)
             if randy == 0 && gamGrowth[slot] <= 0 do gamGrowth[slot] = gamGrowth[slot] + 1 
         } 
         if pAnimTim[cyc] > 120 do pAnimTim[cyc] = 10

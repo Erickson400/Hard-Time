@@ -43,7 +43,7 @@ main :: proc() {
 	// Includes
 	// Note: Make sure its in the same order as the include commands in Gameplay.bb.
 	// If the ported file has no init function then its because there is no global code execution,
-	// they only defines constants & functions.
+	// they only define constants & functions.
 	init_values()
 	free_all(context.temp_allocator) // Cleanup tprints
 

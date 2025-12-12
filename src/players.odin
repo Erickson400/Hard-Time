@@ -714,7 +714,7 @@ MonitorStatus :: proc(cyc: i32) {
     if pWeapon[cyc] > 0 do pWeaponTim[cyc][pWeapon[cyc]] = 20
 }
 
-GrainStrength :: proc(cyc, chance: i32) {
+GainStrength :: proc(cyc, chance: i32) {
     randy: i32 = bb.Rnd(0, chance)
     if randy <= 1 {
         charStrength[pChar[cyc]] += 1

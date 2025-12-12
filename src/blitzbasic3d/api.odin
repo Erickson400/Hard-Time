@@ -59,7 +59,7 @@ ScaleSprite :: proc(sprite: i32, scalex, scaley: f32) {}
 SpriteViewMode :: proc(mode, other: i32) {}
 
 // -------Text--------
-LoadFont :: proc(filename: string, height: i32, bold: bool, italic: bool, underline: bool) -> i32 { return load_font(filename, height, bold, italic, underline) }
+LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> i32 { return 0}
 
 // -------File--------
 WriteFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, false, loc) }

@@ -21,7 +21,7 @@ Terms:
 | Weapons.bb      | Nov 16, 2025      | 8/10     | 625          |
 | Particles.bb    | Nov 17, 2025      | 8/10     | 367          |
 | Players.bb      | Nov 18, 2025      | 8/10     | 635          |
-| Anims.bb        |     .., 2025      | ./10     | 2055         |
+| Anims.bb        | Dec 11, 2025      | 8/10     | 2055         |
 | Moves.bb        |     .., 2025      | ./10     | 482          |
 | AI.bb           |     .., 2025      | ./10     | 1094         |
 | Promos.bb       |     .., 2025      | ./10     | 4890         |
