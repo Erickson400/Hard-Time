@@ -293,7 +293,7 @@ ExplosionCycle :: proc() {
                             if i32(exSource[cyc]) == gamPlayer[slot] && gamMission[slot] != 11 && gamMission[slot] != 12 {
                                 for count in 1..=no_plays {
                                     if charRole[pChar[count]] == 1 && Friendly(count, gamPlayer[slot]) == 0 && charBribeTim[pChar[count]] == 0 && AttackViable(count) >= 1 && AttackViable(count) <= 2 {
-                                        if InLine(count, p[gamPlayer[slot]], 60.0) || InLine(count, p[v], 60.0) {
+                                        if cast(bool)InLine(count, p[gamPlayer[slot]], 60.0) || cast(bool)InLine(count, p[v], 60.0) {
                                             randy := bb.Rnd(0, 20)
                                             if exType[cyc] == 10 do randy = bb.Rnd(0, 5)
                                             if randy == 0 && gamWarrant[slot] < 4 {

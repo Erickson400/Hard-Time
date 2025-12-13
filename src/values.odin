@@ -1,13 +1,13 @@
 package main
-////////////////////////////////////////////////////////////////////////////////
-//--------------------------- HARD TIME: VARIABLES -----------------------------
-////////////////////////////////////////////////////////////////////////////////
 
 import bb "blitzbasic3d"
 import "core:strings"
 import "core:fmt"
 import "core:os"
 
+////////////////////////////////////////////////////////////////////////////////
+//--------------------------- HARD TIME: VARIABLES -----------------------------
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////
 //------------------ STRUCTURE -------------------------
@@ -882,11 +882,11 @@ init_values :: proc() {
 	cellZ1[n] = -140; cellZ2[n] = -55
 	cellDoorX[n] = 195; cellDoorZ[n] = -100
 	// Upper translations
-	for _ in 11..=20 {
-		cellX1[n] = cellX1[n - 10]; cellX2[n] = cellX2[n - 10]
-		cellY1[n] = cellY1[n - 10]; cellY2[n] = cellY2[n - 10]
-		cellZ1[n] = cellZ1[n - 10]; cellZ2[n] = cellZ2[n - 10]
-		cellDoorX[n] = cellDoorX[n - 10]; cellDoorZ[n] = cellDoorZ[n - 10]
+	for m in 11..=20 { // Used m instead of n to distinguish it
+		cellX1[m] = cellX1[m - 10]; cellX2[m] = cellX2[m - 10]
+		cellY1[m] = cellY1[m - 10]; cellY2[m] = cellY2[m - 10]
+		cellZ1[m] = cellZ1[m - 10]; cellZ2[m] = cellZ2[m - 10]
+		cellDoorX[m] = cellDoorX[m - 10]; cellDoorZ[m] = cellDoorZ[m - 10]
 	}
 }
 

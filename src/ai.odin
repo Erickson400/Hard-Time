@@ -47,3 +47,11 @@ TradingRisk :: proc(cyc, weapon: i32) {
 Friendly :: proc(cyc, v: i32) -> i32 {
     return 0
 }
+
+ActionPressed :: proc(cyc: i32) -> i32 {
+    return 0
+}
+
+FindThreat :: proc(cyc: i32) -> i32 {//1=high, 2=low
+    return 0
+}
