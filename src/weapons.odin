@@ -144,7 +144,7 @@ WeaponCycle :: proc() {
                         if cast(bool)WeaponProximity(v, cyc, cast(i32)range) && weapY[cyc] >= pY[v] + 5 && weapY[cyc] <= bb.EntityY(bb.FindChild(p[v], "Head"), 1) + 5 && AttackViable(v) > 0 && weapSting[cyc][v] == 1 {
                             charAttacker[pChar[v]] = pChar[weapThrower[cyc]]
                             blocked := 0
-                            if pAnim[v] >= 74 && pAnim[v] <= 75 && InLine(v, weap[cyc], 90) do blocked = 1
+                            if pAnim[v] >= 74 && pAnim[v] <= 75 && cast(bool)InLine(v, weap[cyc], 90) do blocked = 1
                             ProduceSound(weap[cyc], weapSound[weapType[cyc]], 22050, 0)
                             ExplodeWeapon(cyc, 0)
                             if blocked == 0 {
@@ -606,7 +606,7 @@ WeaponProximity :: proc(cyc, v, range: i32) -> i32 {
             checkX = bb.EntityX(pLimb[cyc][30], 1)
             checkZ = bb.EntityZ(pLimb[cyc][30], 1)
         }
-        if checkX > weapX[v]-range && checkX < weapX[v]+range && checkZ > weapZ[v]-range && checkZ < weapZ[v]+range {
+        if checkX > weapX[v]-cast(f32)range && checkX < weapX[v]+cast(f32)range && checkZ > weapZ[v]-cast(f32)range && checkZ < weapZ[v]+cast(f32)range {
             value = 1
         }
     }
@@ -647,7 +647,7 @@ FindSmashes :: proc(cyc: i32) {
     // weapon contact
     for v in 1..=no_weaps {
         range := weapSize[weapType[v]] + (weapSize[weapType[v]] / 2)
-        if weapLocation[v] == gamLocation[slot] && weapState[v] == 1 && WeaponProximity(cyc, v, range) && pY[cyc] > weapY[v]-5 && weapCarrier[v] == 0 {
+        if weapLocation[v] == gamLocation[slot] && weapState[v] == 1 && cast(bool)WeaponProximity(cyc, v, cast(i32)range) && pY[cyc] > weapY[v]-5 && weapCarrier[v] == 0 {
             ProduceSound(p[cyc], sPain[bb.Rnd(1, 8)], 22050, 0)
             ProduceSound(weap[v], weapSound[weapType[v]], 22050, 0)
             if weapStyle[weapType[v]] == 7 do ProduceSound(p[cyc], sStab, 22050, 1)
@@ -658,12 +658,12 @@ FindSmashes :: proc(cyc: i32) {
                 CreatePool(weapX[v], pGround[cyc], weapZ[v], bb.Rnd(3.0, 10.0), 2, 1)
             }
             if weapStyle[weapType[v]] != 6 {
-                Animate(weap[v], 3, 2.0, 0, 1)
+                bb.Animate(weap[v], 3, 2.0, 0, 1)
             }
-            weapA[v] += bb.Rnd(-30, 30)
-            weapX[v] += bb.Rnd(-2, 2)
-            weapZ[v] += bb.Rnd(-2, 2)
-            pHealth[cyc] -= bb.Rnd(1, weapDamage[weapType[v]])
+            weapA[v] += bb.Rnd(-30.0, 30.0)
+            weapX[v] += bb.Rnd(-2.0, 2.0)
+            weapZ[v] += bb.Rnd(-2.0, 2.0)
+            pHealth[cyc] -= cast(f32)bb.Rnd(1, weapDamage[weapType[v]])
             pDT[cyc] += 10 * weapDamage[weapType[v]]
             charHappiness[pChar[cyc]] -= 1
             charReputation[pChar[cyc]] -= 1
@@ -677,7 +677,7 @@ FindSmashes :: proc(cyc: i32) {
     }
     // human contact
     for v in 1..=no_plays {
-        if InProximity(cyc, v, 20) && AttackViable(v) == 3 {
+        if cast(bool)InProximity(cyc, v, 20) && AttackViable(v) == 3 {
             ProduceSound(p[cyc], sPain[bb.Rnd(1, 8)], 22050, 0)
             ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 0)
             ProduceSound(p[v], sImpact[6], 22050, 0)
@@ -716,7 +716,7 @@ ExhaustDrug :: proc(cyc: i32) {
     if randy == 0 do weapAmmo[w] -= 1
     if w > 0 && weapAmmo[w] <= 0 {
         ProduceSound(p[cyc], sSwing, 22050, 0.3)
-        limb := FindChild(p[cyc], weapFile[weapType[w]])
+        limb := bb.FindChild(p[cyc], weapFile[weapType[w]])
         CreateSpurt(bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1), 2, 10, 4)
         DropWeapon(cyc, 0)
         weapState[w] = 0
