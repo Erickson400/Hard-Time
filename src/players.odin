@@ -188,7 +188,7 @@ PlayerCycle :: proc() {
         }
         // trigger breakdown
         if gotim > 0 && charHappiness[pChar[cyc]] <= 0 && charBreakdown[pChar[cyc]] == 0 && pGrappling[cyc] == 0 && pGrappler[cyc] == 0 {
-            if pHealth[cyc] > 0 && cast(bool)AttackViable(cyc) >= 1 && cast(bool)AttackViable(cyc) <= 2 && pAnim[cyc] != 87 {
+            if pHealth[cyc] > 0 && AttackViable(cyc) >= 1 && AttackViable(cyc) <= 2 && pAnim[cyc] != 87 {
                 ChangeAnim(cyc, 96)
             }
         }
@@ -482,7 +482,7 @@ LoseLimb :: proc(cyc, limb, chance: i32) {
                 if charPromo[pChar[cyc]][gamChar[slot]] == 0 do charPromo[pChar[cyc]][gamChar[slot]] = 54
                 for v in 1..=no_plays {
                     if charRole[pChar[v]] == 1 && (Friendly(v, gamPlayer[slot]) == 0 || cast(bool)Friendly(v, cyc)) && charBribeTim[pChar[v]] == 0 && gamBlackout[slot] == 0 && cast(bool)InProximity(v, gamPlayer[slot], 50) && AttackViable(v) >= 1 && AttackViable(v) <= 2 && pDazed[v] == 0 {
-                        if InLine(v, p[gamPlayer[slot]], 60) || InLine(v, p[cyc], 60) {
+                        if cast(bool)InLine(v, p[gamPlayer[slot]], 60) || cast(bool)InLine(v, p[cyc], 60) {
                             randy = bb.Rnd(0, 2)
                             if (randy == 0 || major == 1) && gamWarrant[slot] < 11 {
                                 gamWarrant[slot] = 11

@@ -52,6 +52,22 @@ ActionPressed :: proc(cyc: i32) -> i32 {
     return 0
 }
 
-FindThreat :: proc(cyc: i32) -> i32 {//1=high, 2=low
+FindThreat :: proc(cyc: i32) -> i32 { //1=high, 2=low
     return 0
+}
+
+EnforceBlocks :: proc(cyc: i32) {
+
+}
+
+AssessRelationships :: proc(cyc: i32) {
+    
+}
+
+GetInput :: proc(cyc: i32) {
+    
+}
+
+TranslateInput :: proc(cyc: i32) {
+    
 }

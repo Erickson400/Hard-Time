@@ -263,7 +263,12 @@ ManageAtmos :: proc() {
             if charSentence[char] < 0 do charSentence[char] = 0
             if char != gamChar[slot] && charLocation[char] > 0 {
                 v := bb.Rnd(1, no_chars)
-                if char != v do charRelation[char][v] = ChangeRelationship(char, v, bb.Rnd(-1, 1))
+                if char != v  { 
+                    // NOTE: This might be an error since Basic functions always return 0 if assigned
+                    // to something. In this code it overwrites charRelation to 0 so it does nothing.
+                    ChangeRelationship(char, v, bb.Rnd(-1, 1))
+                    charRelation[char][v] = 0
+                }
                 charStrength[char] += bb.Rnd(-2, 2)
                 charAgility[char] += bb.Rnd(-2, 2)
                 if charRole[char] == 1 {
@@ -434,7 +439,7 @@ ManageAtmos :: proc() {
     if skyB < skyTB do skyB += changer
     if skyB > skyTB do skyB -= changer
     if bb.FindChild(world, "Sky") > 0 {
-        bb.EntityColor(bb.FindChild(world, "Sky"), skyR, skyG, skyB)
+        bb.EntityColor(bb.FindChild(world, "Sky"), cast(i32)skyR, cast(i32)skyG, cast(i32)skyB)
     }    
 }
 
@@ -1097,14 +1102,16 @@ RelocateChars :: proc() {
                 charLocation[char] = 0
                 gamRelease[slot] = char
                 RuinMission(char)
-                // TODO: cyc is undefined. This is probably a bug
+                // NOTE: cyc is undefined. This is probably a bug.
+                // Assumed cyc means v, so made it a temporary capital V instead.
                 for v in 1..=no_chars {
+                    V := v
                     if v != gamChar[slot] && charPromo[v][gamChar[slot]] == 0 && charRelation[v][gamChar[slot]] >= 0 && charAngerTim[v][gamChar[slot]] == 0 {
-                        if charRelation[gamChar[slot]][pChar[cyc]] > 0 && charRelation[v][pChar[cyc]] > 0 {
+                        if charRelation[gamChar[slot]][pChar[V]] > 0 && charRelation[v][pChar[V]] > 0 {
                             charPromo[v][gamChar[slot]] = 219
                             charPromoRef[v] = char
                         }
-                        if charRelation[gamChar[slot]][pChar[cyc]] < 0 && charRelation[v][pChar[cyc]] < 0 {
+                        if charRelation[gamChar[slot]][pChar[V]] < 0 && charRelation[v][pChar[V]] < 0 {
                             charPromo[v][gamChar[slot]] = 220
                             charPromoRef[v] = char
                         }
@@ -1321,7 +1328,7 @@ ChairProximity :: proc(cyc: i32, chair: i32) -> i32 {
                 back = 1
             }
         }
-        if back == 0 && InLine(cyc, limb, 45) do value = 1
+        if back == 0 && cast(bool)InLine(cyc, limb, 45) do value = 1
     }
     return value
 }
@@ -1342,7 +1349,7 @@ BedProximity :: proc(cyc: i32, bed: i32) -> i32 {
     if pX[cyc] > bb.EntityX(limb, 1)-25 && pX[cyc] < bb.EntityX(limb, 1)+25 &&
        pY[cyc] > bb.EntityY(limb, 1)-25 && pY[cyc] < bb.EntityY(limb, 1) &&
        pZ[cyc] > bb.EntityZ(limb, 1)-25 && pZ[cyc] < bb.EntityZ(limb, 1)+25 {
-        if InLine(cyc, limb, 45) do value = 1
+        if cast(bool)InLine(cyc, limb, 45) do value = 1
     }
     return value
 }
@@ -1396,7 +1403,7 @@ NearBasket :: proc(cyc: i32) -> i32 {
         limb: i32 = bb.FindChild(world, "Rim")
         if pX[cyc] > bb.EntityX(limb, 1)-100 && pX[cyc] < bb.EntityX(limb, 1)+100 &&
            pZ[cyc] > bb.EntityZ(limb, 1)-100 && pZ[cyc] < bb.EntityZ(limb, 1)+100 {
-            if InLine(cyc, limb, 60) do value = 1
+            if cast(bool)InLine(cyc, limb, 60) do value = 1
         }
     }
     return value

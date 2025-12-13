@@ -74,6 +74,8 @@ ReadFloat :: proc(file: os.Handle, loc := #caller_location) -> f32 { return read
 
 // -------Math-------
 Rnd :: proc{ rnd_float, rnd_int}
+RndF :: rnd_float
+RndI :: rnd_int
 
 // -------String-------
 StringWidth :: proc(text: string) -> i32 { return 1 }
