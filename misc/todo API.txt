@@ -1,0 +1,147 @@
+----Blitz API Implementations----
+This is the correct category of the functions, ignore how its organized in API.odin.
+
+Internal:
+- GfxMode3DExists
+- Graphics3DWidth
+
+Graphics:
+- Graphics3D
+- Cls
+- Flip
+- Color
+- Locate
+- SetFont
+- Text
+- Line
+- Rect
+- GraphicsWidth
+- GraphicsHeight
+- TileImage
+- DrawImage
+
+Audio:
+- LoadSound
+- Load3DSound
+- PlaySound
+- StopChannel
+- EmitSound
+- ChannelPlaying
+- SoundVolume
+- SoundPitch
+- CreateListener
+
+Image/Textures:
+- CreateImage
+- LoadImage
+- MaskImage
+- GrabImage
+- LoadTexture
+- LoadAnimTexture
+- SaveImage
+- ResizeImage
+
+Sprite:
+- LoadSprite
+- ScaleSprite
+- SpriteViewMode
+
+Text:
+- LoadFont
+- StringWidth
+- Left
+- Right
+
+File:
+- WriteFile
+- ReadFile
+- CloseFile
+- WriteInt
+- WriteFloat
+- WriteString
+- ReadInt
+- ReadFloat
+- ReadString
+
+Math:
+- RndI
+- RndF
+
+Time:
+- CreateTimer
+- WaitTimer
+- FreeTimer
+- MilliSecs
+
+Entity:
+- EntityType
+- CreatePivot
+- PointEntity
+- FreeEntity
+- ShowEntity
+- HideEntity
+- PositionEntity
+- MoveEntity
+- EntityX
+- EntityY
+- EntityZ
+- RotateEntity
+- EntityYaw
+- EntityPitch
+- EntityRoll
+- ScaleEntity
+- EntityAlpha
+- EntityColor
+- EntityTexture
+- EntityShininess
+- EntityFX
+- CountCollisions
+- CollisionEntity
+- EntityRadius
+- ResetEntity
+- GetChild
+- FindChild
+- CountChildren
+
+Camera:
+- CreateCamera
+- CameraViewport
+- CameraRange
+- CameraFogMode
+- CameraFogRange
+- CameraFogColor
+
+World:
+- UpdateWorld
+- RenderWorld
+
+Light:
+- AmbientLight
+- CreateLight
+- LightRange
+- LightConeAngles
+- LightColor
+
+Input:
+- Input
+- KeyDown
+- KeyHit
+- FlushKeys
+- JoyYDir
+- JoyXDir
+- JoyDown
+- MoveMouse
+- MouseDown
+- MouseXSpeed
+- MouseYSpeed
+- MouseX
+- MouseY
+
+Collision:
+- Collisions
+
+Animation:
+- Animate
+- LoadAnimMesh
+- LoadAnimSeq
+- ExtractAnimSeq

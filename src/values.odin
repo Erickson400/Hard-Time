@@ -1,9 +1,9 @@
 package main
 
 import bb "blitzbasic3d"
+import os "core:os/os2"
 import "core:strings"
 import "core:fmt"
-import "core:os"
 
 ////////////////////////////////////////////////////////////////////////////////
 //--------------------------- HARD TIME: VARIABLES -----------------------------
@@ -882,7 +882,7 @@ init_values :: proc() {
 	cellZ1[n] = -140; cellZ2[n] = -55
 	cellDoorX[n] = 195; cellDoorZ[n] = -100
 	// Upper translations
-	for m in 11..=20 { // Used m instead of n to distinguish it
+	for m in 11..=20 { // NOTE: Used m instead of n to distinguish it from n
 		cellX1[m] = cellX1[m - 10]; cellX2[m] = cellX2[m - 10]
 		cellY1[m] = cellY1[m - 10]; cellY2[m] = cellY2[m - 10]
 		cellZ1[m] = cellZ1[m - 10]; cellZ2[m] = cellZ2[m - 10]
@@ -948,19 +948,15 @@ LoadImages :: proc() {
 @(private="file")
 texture_loading :: proc() {
 	count_texture_files :: proc(path, prefix: string, counter: ^i32) {
-		folder, err := os.open(path, os.O_RDONLY, 0o600); assert(err==nil)
-		files: []os.File_Info
-		files, err = os.read_dir(folder, 1000); assert(err==nil)
-		for i in files{
-			upper := strings.to_upper(i.name, context.temp_allocator)
-			all_caps_prefix := strings.to_upper(prefix, context.temp_allocator)
-			if strings.has_prefix(upper, all_caps_prefix) {
+		folder := os.open(path) or_else fmt.panicf("Folder not found: %v", path)
+		files := os.read_directory(folder, 100, context.temp_allocator) or_else fmt.panicf("Could not read directory: %v", path)
+		for file in files {
+			upper_filename := strings.to_upper(file.name, context.temp_allocator)
+			upper_prefix := strings.to_upper(prefix, context.temp_allocator)
+			if strings.has_prefix(upper_filename, upper_prefix) {
 				counter^ += 1
 			}
-			delete(upper)
-			delete(all_caps_prefix)
 		}
-		os.file_info_slice_delete(files)
 		os.close(folder)
 	}
 
