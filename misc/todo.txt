@@ -1,4 +1,10 @@
+Make sure all files follow -vet and -strict-style.
 
+Comment out unused variables and put an Unused comment next to them.
+
+Replace Rnd with RndI/RndF.
+
+Go through data.odin and give it 10/10.
 
 
 
