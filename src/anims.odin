@@ -2132,7 +2132,7 @@ Animations :: proc(cyc: i32) {
                 randy = bb.Rnd(0, 5)
                 if randy == 0 do charReputation[pChar[cyc]] += 1
                 pHealth[cyc] -= 1
-                randy: i32 = bb.Rnd(0, 50)
+                randy = bb.Rnd(0, 50)
                 if randy == 0 && gamGrowth[slot] <= 0 do gamGrowth[slot] += 1
             }
             if cast(bool)DirPressed(cyc) || cast(bool)ActionPressed(cyc) || cyc == promoActor[1] || cyc == promoActor[2] || cast(bool)bb.KeyDown(1) do ChangeAnim(cyc, 0)
@@ -2447,7 +2447,7 @@ SittingEffects :: proc(cyc: i32) {
             randy = bb.Rnd(0, 5)
             if randy == 0 do charReputation[pChar[cyc]] = charReputation[pChar[cyc]] + 1
             pHealth[cyc] = pHealth[cyc] - 1
-            randy: i32 = bb.Rnd(0, 50)
+            randy = bb.Rnd(0, 50)
             if randy == 0 && gamGrowth[slot] <= 0 do gamGrowth[slot] = gamGrowth[slot] + 1
         } 
         if pAnimTim[cyc] == 10 do ProduceSound(p[cyc], sAxe, 22050, 0)

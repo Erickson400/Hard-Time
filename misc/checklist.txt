@@ -12,7 +12,7 @@ Terms:
 | Script name     | Last time checked | Accuracy | BB Line Count |
 |-----------------|-------------------|----------|---------------|
 | Text.bb         | Sep 28, 2025      | 10/10    | 460           |
-| Values.bb       | Dec 12, 2025      | 9/10    | 1157          |
+| Values.bb       | Dec 12, 2025      | 10/10    | 1157          |
 | Data.bb         | Sep 16, 2025      | 5/10     | 774           |
 | Functions.bb    | Sep 16, 2025      | 8/10     | 289           |
 | Menus.bb        | Sep 18, 2025      | 8/10     | 731           |

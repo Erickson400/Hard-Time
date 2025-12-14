@@ -1,7 +1,6 @@
 #+private
 package blitzbasic3d
 
-import "core:fmt"
 import "core:math/rand"
 
 

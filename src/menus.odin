@@ -4,7 +4,6 @@ package main
 ////////////////////////////////////////////////////////////////////////////////
 
 import "core:fmt"
-import "core:strings"
 import "core:strconv"
 import bb "blitzbasic3d"
 
@@ -25,7 +24,7 @@ MainMenu :: proc() {
         // clear / timing
         bb.Cls()
         frames := bb.WaitTimer(timer)
-        for framer in 1..=frames {
+        for _ in 1..=frames {
             // timers
             keytim -= 1
             if keytim < 1 do keytim = 0
@@ -34,23 +33,23 @@ MainMenu :: proc() {
             gotim += 1
             if gotim > 20 && keytim == 0 {
                 // leave
-                if bb.KeyDown(1) {
+                if cast(bool)bb.KeyDown(1) {
                     go = -1
                 }
                 // proceed
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
                     go = -1 if foc == 4 else 1
                 }
             }
 
             // CONFIGURATION
             if gotim > 20 && keytim == 0 {
-                if bb.KeyDown(200) || bb.JoyYDir() == -1 {
+                if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
                     foc -= 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
                 }
-                if bb.KeyDown(208) || bb.JoyYDir() == 1 {
+                if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
                     foc += 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
@@ -125,9 +124,9 @@ Options :: proc() {
             gotim += 1
             if gotim > 20 && keytim == 0 {
                 // leave
-                if bb.KeyDown(1) do go = -1
+                if cast(bool)bb.KeyDown(1) do go = -1
                 // proceed
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
                     if foc < 6 {
                         foc = 9
                         keytim = 10
@@ -140,12 +139,12 @@ Options :: proc() {
             // CONFIGURATION
             if gotim > 20 && keytim == 0 {
                 // highlight options
-                if bb.KeyDown(200) || bb.JoyYDir() == -1 {
+                if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
                     foc -= 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
                 }
-                if bb.KeyDown(208) || bb.JoyYDir() == 1 {
+                if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
                     foc += 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
@@ -153,61 +152,61 @@ Options :: proc() {
                 if foc < 1 do foc = 9
                 if foc > 9 do foc = 1
                 // browse left
-                if bb.KeyDown(203) || bb.JoyXDir() == -1 {
+                if cast(bool)bb.KeyDown(203) || bb.JoyXDir() == -1 {
                     switch foc {
-                        case 1:
-                            optRes -= 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 2:
-                            optPopulation -= 5
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 3:
-                            optFog -= 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 4:
-                            optShadows -= 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 5:
-                            optFX -= 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 6:
-                            optGore -= 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
+                    case 1:
+                        optRes -= 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 2:
+                        optPopulation -= 5
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 3:
+                        optFog -= 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 4:
+                        optShadows -= 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 5:
+                        optFX -= 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 6:
+                        optGore -= 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
                     }
                 }
                 // browse right
-                if bb.KeyDown(205) || bb.JoyXDir() == 1 {
+                if cast(bool)bb.KeyDown(205) || bb.JoyXDir() == 1 {
                     switch foc {
-                        case 1:
-                            optRes += 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 2:
-                            optPopulation += 5
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 3:
-                            optFog += 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 4:
-                            optShadows += 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 5:
-                            optFX += 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
-                        case 6:
-                            optGore += 1
-                            bb.PlaySound(sMenuBrowse)
-                            keytim = 6
+                    case 1:
+                        optRes += 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 2:
+                        optPopulation += 5
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 3:
+                        optFog += 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 4:
+                        optShadows += 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 5:
+                        optFX += 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
+                    case 6:
+                        optGore += 1
+                        bb.PlaySound(sMenuBrowse)
+                        keytim = 6
                     }
                 }
             }
@@ -296,9 +295,9 @@ RedefineKeys :: proc() {
             gotim += 1
             if gotim > 20 && keytim == 0 && screenCall == 0 {
                 // leave
-                if bb.KeyDown(1) do go = -1
+                if cast(bool)bb.KeyDown(1) do go = -1
                 // proceed
-                if bb.KeyDown(28) || bb.ButtonPressed() || bb.MouseDown(1) {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() || bb.MouseDown(1) {
                     if foc == 6 do go = -1
                 }
             }
@@ -306,12 +305,12 @@ RedefineKeys :: proc() {
             // CONFIGURATION
             if gotim > 20 && keytim == 0 && screenCall == 0 {
                 // highlight options
-                if bb.KeyDown(200) || bb.JoyYDir() == -1 {
+                if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
                     foc -= 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
                 }
-                if bb.KeyDown(208) || bb.JoyYDir() == 1 {
+                if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
                     foc += 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
@@ -319,7 +318,7 @@ RedefineKeys :: proc() {
                 if foc < 1 do foc = 6
                 if foc > 6 do foc = 1
                 // activate
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
                     // enter new command
                     if foc <= 4 {
                         bb.PlaySound(sMenuBrowse)
@@ -343,10 +342,10 @@ RedefineKeys :: proc() {
             // INPUT DELAY
             if screenCall > 0 && keytim == 0 {
                 switch screenCall {
-                    case 1: keyAttack = AssignKey(keyAttack)
-                    case 2: keyDefend = AssignKey(keyDefend)
-                    case 3: keyThrow = AssignKey(keyThrow)
-                    case 4: keyPickUp = AssignKey(keyPickUp)
+                case 1: keyAttack = AssignKey(keyAttack)
+                case 2: keyDefend = AssignKey(keyDefend)
+                case 3: keyThrow = AssignKey(keyThrow)
+                case 4: keyPickUp = AssignKey(keyPickUp)
                 }
             }
 
@@ -372,10 +371,10 @@ RedefineKeys :: proc() {
         DrawOption(6, rX(400.0), rY(f32(y + 320)), "<<< BACK <<<", "")
         // new overlay
         switch screenCall {
-            case 1: DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", "Press New Key")
-            case 2: DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", "Press New Key")
-            case 3: DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", "Press New Key")
-            case 4: DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", "Press New Key")
+        case 1: DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", "Press New Key")
+        case 2: DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", "Press New Key")
+        case 3: DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", "Press New Key")
+        case 4: DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", "Press New Key")
         }
 
         bb.Flip()
@@ -423,9 +422,9 @@ RedefineGamepad :: proc() {
             gotim += 1
             if gotim > 20 && keytim == 0 && screenCall == 0 {
                 // leave
-                if bb.KeyDown(1) do go = -1
+                if cast(bool)bb.KeyDown(1) do go = -1
                 // proceed
-                if bb.KeyDown(28) || bb.ButtonPressed() || bb.MouseDown(1) {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() || bb.MouseDown(1) {
                     if foc == 6 do go = -1
                 }
             }
@@ -433,12 +432,12 @@ RedefineGamepad :: proc() {
             // CONFIGURATION
             if gotim > 20 && keytim == 0 && screenCall == 0 {
                 // highlight options
-                if bb.KeyDown(200) || bb.JoyYDir() == -1 {
+                if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
                     foc -= 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
                 }
-                if bb.KeyDown(208) || bb.JoyYDir() == 1 {
+                if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
                     foc += 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
@@ -446,7 +445,7 @@ RedefineGamepad :: proc() {
                 if foc < 1 do foc = 6
                 if foc > 6 do foc = 1
                 // activate
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
                     // enter new command
                     if foc <= 4 {
                         bb.PlaySound(sMenuBrowse)
@@ -469,10 +468,10 @@ RedefineGamepad :: proc() {
             // INPUT DELAY
             if screenCall > 0 && keytim == 0 {
                 switch screenCall {
-                    case 1: buttAttack = AssignButton(buttAttack)
-                    case 2: buttDefend = AssignButton(buttDefend)
-                    case 3: buttThrow = AssignButton(buttThrow)
-                    case 4: buttPickUp = AssignButton(buttPickUp)
+                case 1: buttAttack = AssignButton(buttAttack)
+                case 2: buttDefend = AssignButton(buttDefend)
+                case 3: buttThrow = AssignButton(buttThrow)
+                case 4: buttPickUp = AssignButton(buttPickUp)
                 }
             }
 
@@ -498,10 +497,10 @@ RedefineGamepad :: proc() {
         DrawOption(6, rX(400.0), rY(f32(y + 320)), "<<< BACK <<<", "")
         // new overlay
         switch screenCall {
-            case 1: DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", "Press New Button")
-            case 2: DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", "Press New Button")
-            case 3: DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", "Press New Button")
-            case 4: DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", "Press New Button")
+        case 1: DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", "Press New Button")
+        case 2: DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", "Press New Button")
+        case 3: DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", "Press New Button")
+        case 4: DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", "Press New Button")
         }
 
         bb.Flip()
@@ -551,9 +550,9 @@ SlotSelect :: proc() {
             gotim += 1
             if gotim > 20 && keytim == 0 {
                 // leave
-                if bb.KeyDown(1) do go = -1
+                if cast(bool)bb.KeyDown(1) do go = -1
                 // proceed
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
                     go = -1 if foc == 4 else 1
                 }
             }
@@ -561,12 +560,12 @@ SlotSelect :: proc() {
             // CONFIGURATION
             if gotim > 20 && keytim == 0 {
                 // highlight slot
-                if bb.KeyDown(200) || bb.JoyYDir() == -1 {
+                if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
                     foc -= 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
                 }
-                if bb.KeyDown(208) || bb.JoyYDir() == 1 {
+                if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
                     foc += 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
@@ -575,16 +574,16 @@ SlotSelect :: proc() {
                 if foc > 4 do foc = 1
                 // reset
                 if foc >= 1 && foc <= 3 {
-                    if bb.KeyDown(14) || bb.KeyDown(210) {
+                    if cast(bool)bb.KeyDown(14) || cast(bool)bb.KeyDown(210) {
                         gamName[foc] = ""
                         bb.PlaySound(sTrash)
                         keytim = 10
                     }
-                    if bb.KeyDown(18) && gamName[foc] != "" {
+                    if cast(bool)bb.KeyDown(18) && gamName[foc] != "" {
                         bb.PlaySound(sComputer)
                         go = 2
                     }
-                    if bb.KeyDown(207) && gamName[foc] != "" {
+                    if cast(bool)bb.KeyDown(207) && gamName[foc] != "" {
                         bb.PlaySound(sDoor[1])
                         go = 3
                     }
@@ -699,9 +698,9 @@ EditSelect :: proc() {
             gotim += 1
             if gotim > 20 && keytim == 0 {
                 // leave
-                if bb.KeyDown(1) do go = -1
+                if cast(bool)bb.KeyDown(1) do go = -1
                 // proceed
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
                     go = -1 if foc == 2 else 1
                 }
             }
@@ -709,12 +708,12 @@ EditSelect :: proc() {
             // CONFIGURATION
             if gotim > 20 && keytim == 0 {
                 // highlight option
-                if bb.KeyDown(200) || bb.JoyYDir() == -1 {
+                if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
                     foc -= 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
                 }
-                if bb.KeyDown(208) || bb.JoyYDir() == 1 {
+                if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
                     foc += 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
@@ -723,12 +722,12 @@ EditSelect :: proc() {
                 if foc > 2 do foc = 1
                 // browse characters
                 if foc == 1 {
-                    if bb.KeyDown(203) || bb.JoyXDir() == -1 {
+                    if cast(bool)bb.KeyDown(203) || bb.JoyXDir() == -1 {
                         gamChar[0] -= 1
                         bb.PlaySound(sMenuBrowse)
                         keytim = 5
                     }
-                    if bb.KeyDown(205) || bb.JoyXDir() == 1 {
+                    if cast(bool)bb.KeyDown(205) || bb.JoyXDir() == 1 {
                         gamChar[0] += 1
                         bb.PlaySound(sMenuBrowse)
                         keytim = 5
@@ -837,7 +836,7 @@ AssignKey :: proc(current: i32) -> i32 {
     value: i32 = 0
     for value == 0 {
         for v in i32(0)..=255 {
-            if bb.KeyDown(v) && keytim == 0 {
+            if cast(bool)bb.KeyDown(v) && keytim == 0 {
                 if v != 0 && v != 1 && v != 28 && v != 25 {
                     value = v
                     screenCall = 0
@@ -847,7 +846,7 @@ AssignKey :: proc(current: i32) -> i32 {
                 }
             }
         }
-        if bb.KeyDown(1) && keytim == 0 {
+        if cast(bool)bb.KeyDown(1) && keytim == 0 {
             value = current
             screenCall = 0
             bb.PlaySound(sMenuBack)
@@ -873,7 +872,7 @@ AssignButton :: proc(current: i32) -> i32 {
                 keytim = 20
             }
         }
-        if bb.KeyDown(1) && keytim == 0 {
+        if cast(bool)bb.KeyDown(1) && keytim == 0 {
             value = current
             screenCall = 0
             bb.PlaySound(sMenuBack)

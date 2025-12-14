@@ -231,22 +231,22 @@ ExplosionCycle :: proc() {
             if exTim[cyc] == 20 || exTim[cyc] == 15 || exTim[cyc] == 10 || exTim[cyc] == 5 {
                 density: i32 = 25
                 if optFX <= 1 do density = 12
-                for count in 1..=density {
+                for _ in 1..=density {
                     CreateParticle(exX[cyc] + bb.Rnd(-15.0, 15.0), bb.Rnd(exY[cyc] - 5.0, exY[cyc] + 10.0), exZ[cyc] + bb.Rnd(-15.0, 15.0), exType[cyc])
                 }
                 density = 15
                 if optFX <= 1 do density = 7
-                for count in 1..=density {
+                for _ in 1..=density {
                     CreateParticle(exX[cyc] + bb.Rnd(-10.0, 10.0), bb.Rnd(exY[cyc] - 5.0, exY[cyc] + 5.0), exZ[cyc] + bb.Rnd(-10.0, 10.0), exType[cyc])
                 }
                 density = 5
                 if optFX <= 1 do density = 2
-                for count in 1..=density {
+                for _ in 1..=density {
                     CreateParticle(exX[cyc] + bb.Rnd(-5.0, 5.0), exY[cyc], exZ[cyc] + bb.Rnd(-5.0, 5.0), exType[cyc])
                 }
                 density = 10
                 if optFX <= 1 do density = 5
-                for count in 1..=density {
+                for _ in 1..=density {
                     CreateParticle(exX[cyc] + bb.Rnd(-10.0, 10.0), bb.Rnd(exY[cyc], exY[cyc] + 5.0), exZ[cyc] + bb.Rnd(-10.0, 10.0), 2)
                 }
             }

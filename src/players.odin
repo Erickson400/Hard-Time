@@ -23,7 +23,7 @@ LoadPlayers :: proc() {
             pOldScar[cyc][limb] = -1
             pScar[cyc][limb] = charScar[pChar[cyc]][limb]
             if pLimb[cyc][limb] > 0 && pScar[cyc][limb] >= 5 {
-                bb.HideEntity(pLimb[cyc][limb]);
+                bb.HideEntity(pLimb[cyc][limb])
             }
         }
         SeverLimbs(cyc)
@@ -199,7 +199,7 @@ PlayerCycle :: proc() {
             if pGravity[cyc] < -1.0 do pGravity[cyc] = -1.0
         }
         if pGravity[cyc] > -10.0 do pGravity[cyc] -= 0.3
-        if bb.KeyDown(201) && pControl[cyc] > 0 do pGravity[cyc] = bb.Rnd(2.0, 10.0)
+        if cast(bool)bb.KeyDown(201) && pControl[cyc] > 0 do pGravity[cyc] = bb.Rnd(2.0, 10.0)
         if pSeat[cyc] > 0 || pBed[cyc] > 0 do pGravity[cyc] = 0
         bb.MoveEntity(pPivot[cyc], 0, pGravity[cyc], 0)
         // monitor status

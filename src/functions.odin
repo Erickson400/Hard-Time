@@ -246,14 +246,14 @@ SatisfiedAngle :: proc(sA, tA: f32, range: i32) -> i32 {
 	value: i32 = 0
 	// scan clockwise
 	angler := sA
-	for count in 1..=range {
+	for _ in 1..=range {
 		if angler >= tA - 1 && angler <= tA + 1 do value = 1
 		angler += 1
 		if angler > 360 do angler = 0
 	}
 	// scan counter-clockwise
 	angler = sA
-	for count in 1..=range {
+	for _ in 1..=range {
 		if angler >= tA - 1 && angler <= tA + 1 do value = 1
 		angler -= 1
 		if angler < 0 do angler = 360

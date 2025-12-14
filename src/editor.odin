@@ -4,9 +4,6 @@ package main
 ////////////////////////////////////////////////////////////////////////////////
 
 import "core:fmt"
-import "core:math"
-import "core:strings"
-import "core:strconv"
 import bb "blitzbasic3d"
 
 //-------------------------------------------------------------------
@@ -94,11 +91,11 @@ Editor :: proc() {
             gotim += 1
             if gotim > 40 && keytim == 0 {
                 // quit
-                if bb.KeyDown(1) {
+                if cast(bool)bb.KeyDown(1) {
                     go = -1
                 }
                 // activations
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
                     // next page
                     if foc == 7 && keytim == 0 {
                         bb.PlaySound(sMenuGo)
@@ -120,13 +117,13 @@ Editor :: proc() {
             // CONFIGURATION
             if gotim > 20 && keytim == 0 {
                 // browse up
-                if bb.KeyDown(200) || bb.JoyYDir() == -1 {
+                if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
                     foc -= 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
                 }
                 // browse down
-                if bb.KeyDown(208) || bb.JoyYDir() == 1 {
+                if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
                     foc += 1
                     bb.PlaySound(sMenuSelect)
                     keytim = 6
@@ -150,7 +147,7 @@ Editor :: proc() {
             // 1. PROFILE
             if page == 1 && foc >= 2 && foc <= 6 && keytim == 0 {
                 // search left
-                if bb.KeyDown(203) || bb.JoyXDir() == -1 {
+                if cast(bool)bb.KeyDown(203) || bb.JoyXDir() == -1 {
                     switch foc {
                     case 2:
                         charHeight[char] -= 1
@@ -175,7 +172,7 @@ Editor :: proc() {
                     }
                 }
                 // search right
-                if bb.KeyDown(205) || bb.JoyXDir() == 1 {
+                if cast(bool)bb.KeyDown(205) || bb.JoyXDir() == 1 {
                     switch foc {
                     case 2:
                         charHeight[char] += 1
@@ -251,7 +248,7 @@ Editor :: proc() {
             oldCostume := charCostume[char]
             if page == 2 && foc >= 1 && foc <= 6 && keytim == 0 {
                 // search left
-                if bb.KeyDown(203) || bb.JoyXDir() == -1 {
+                if cast(bool)bb.KeyDown(203) || bb.JoyXDir() == -1 {
                     switch foc {
                     case 1:
                         charHairStyle[char] -= 1
@@ -280,7 +277,7 @@ Editor :: proc() {
                     }
                 }
                 // search right
-                if bb.KeyDown(205) || bb.JoyXDir() == 1 {
+                if cast(bool)bb.KeyDown(205) || bb.JoyXDir() == 1 {
                     switch foc {
                     case 1:
                         charHairStyle[char] += 1
@@ -309,7 +306,7 @@ Editor :: proc() {
                     }
                 }
                 // refresh model
-                if bb.KeyDown(28) || bb.ButtonPressed() {
+                if cast(bool)bb.KeyDown(28) || cast(bool)ButtonPressed() {
                     if foc == 5 {
                         screenCall = 1
                         bb.PlaySound(sMenuGo)
@@ -378,22 +375,22 @@ Editor :: proc() {
             }
             // CAMERA
             // change position
-            // if bb.KeyDown(36) do pZ[cyc] -= 1
-            // if bb.KeyDown(38) do pZ[cyc] += 1
-            // if bb.KeyDown(23) do pX[cyc] -= 1
-            // if bb.KeyDown(37) do pX[cyc] += 1
-            // if bb.KeyDown(35) do pY[cyc] -= 1
-            // if bb.KeyDown(21) do pY[cyc] += 1
+            // if cast(bool)bb.KeyDown(36) do pZ[cyc] -= 1
+            // if cast(bool)bb.KeyDown(38) do pZ[cyc] += 1
+            // if cast(bool)bb.KeyDown(23) do pX[cyc] -= 1
+            // if cast(bool)bb.KeyDown(37) do pX[cyc] += 1
+            // if cast(bool)bb.KeyDown(35) do pY[cyc] -= 1
+            // if cast(bool)bb.KeyDown(21) do pY[cyc] += 1
             // bb.PositionEntity(cam, pX[cyc], pY[cyc], pZ[cyc])
 
             // change angles
             // camXA: f32 = 3
             // camYA: f32 = 119
             // camZA: f32 = 0
-            // if bb.KeyDown(203) do camYA -= 1
-            // if bb.KeyDown(205) do camYA += 1
-            // if bb.KeyDown(200) do camXA -= 1
-            // if bb.KeyDown(208) do camXA += 1
+            // if cast(bool)bb.KeyDown(203) do camYA -= 1
+            // if cast(bool)bb.KeyDown(205) do camYA += 1
+            // if cast(bool)bb.KeyDown(200) do camXA -= 1
+            // if cast(bool)bb.KeyDown(208) do camXA += 1
             // camXA = CleanAngle(camXA)
             // camYA = CleanAngle(camYA)
             // bb.RotateEntity(cam, camXA, camYA, camZA)
@@ -418,7 +415,7 @@ Editor :: proc() {
             DrawOption(7, rX(x), rY(y + 345), ">>> APPEARANCE >>>", "")
             DrawOption(8, rX(x), rY(y + 400), "<<< SAVE & EXIT <<<", "")
             // enter name
-            if (bb.KeyDown(14) || bb.ButtonPressed()) && foc == 1 && gotim > 40 && keytim == 0 {
+            if (cast(bool)bb.KeyDown(14) || cast(bool)ButtonPressed()) && foc == 1 && gotim > 40 && keytim == 0 {
                 bb.PlaySound(sMenuBrowse)
                 keytim = 20
                 bb.FlushKeys()
@@ -923,45 +920,45 @@ ApplyClothing :: proc(cyc: i32) {
         bb.EntityAlpha(bb.FindChild(p[cyc], "Body_Baggy"), 0)
     }
     // arms
-    for limb in 4..=29 {
-        bb.EntityTexture(pLimb[cyc][limb], tMouth[0], 0, 2)
-        bb.EntityTexture(pLimb[cyc][limb], tMouth[0], 0, 3)
+    for limbA in 4..=29 {
+        bb.EntityTexture(pLimb[cyc][limbA], tMouth[0], 0, 2)
+        bb.EntityTexture(pLimb[cyc][limbA], tMouth[0], 0, 3)
         if charRole[char] == 0 {
             if charCostume[char] <= 2 {
-                bb.EntityTexture(pLimb[cyc][limb], tArm[1], 0, 1)
-                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[GetRace(char)], 0, 2)
-                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooArm[charGang[char]], 0, 3)
+                bb.EntityTexture(pLimb[cyc][limbA], tArm[1], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limbA], tArmShade[GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limbA], tTattooArm[charGang[char]], 0, 3)
             }
             if charCostume[char] >= 3 && charCostume[char] <= 4 {
-                bb.EntityTexture(pLimb[cyc][limb], tArm[2], 0, 1)
-                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[2 + GetRace(char)], 0, 2)
-                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooTee[charGang[char]], 0, 3)
+                bb.EntityTexture(pLimb[cyc][limbA], tArm[2], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limbA], tArmShade[2 + GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limbA], tTattooTee[charGang[char]], 0, 3)
             }
             if charCostume[char] >= 5 && charCostume[char] <= 6 {
-                bb.EntityTexture(pLimb[cyc][limb], tArm[3 + charBlock[char]], 0, 1)
-                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[2 + GetRace(char)], 0, 2)
-                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooTee[charGang[char]], 0, 3)
+                bb.EntityTexture(pLimb[cyc][limbA], tArm[3 + charBlock[char]], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limbA], tArmShade[2 + GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limbA], tTattooTee[charGang[char]], 0, 3)
             }
             if charCostume[char] >= 7 && charCostume[char] <= 8 {
-                bb.EntityTexture(pLimb[cyc][limb], tArm[7 + charBlock[char]], 0, 1)
-                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[4 + GetRace(char)], 0, 2)
-                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limb], tTattooSleeve[charGang[char]], 0, 3)
+                bb.EntityTexture(pLimb[cyc][limbA], tArm[7 + charBlock[char]], 0, 1)
+                if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limbA], tArmShade[4 + GetRace(char)], 0, 2)
+                if charGang[char] > 0 do bb.EntityTexture(pLimb[cyc][limbA], tTattooSleeve[charGang[char]], 0, 3)
             }
         }
         if charRole[char] == 1 {
-            bb.EntityTexture(pLimb[cyc][limb], tArm[3], 0, 1)
-            if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[2 + GetRace(char)], 0, 2)
+            bb.EntityTexture(pLimb[cyc][limbA], tArm[3], 0, 1)
+            if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limbA], tArmShade[2 + GetRace(char)], 0, 2)
         }
         if charRole[char] >= 2 {
-            bb.EntityTexture(pLimb[cyc][limb], tArm[12], 0, 1)
-            if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limb], tArmShade[6 + GetRace(char)], 0, 2)
+            bb.EntityTexture(pLimb[cyc][limbA], tArm[12], 0, 1)
+            if GetRace(char) > 0 do bb.EntityTexture(pLimb[cyc][limbA], tArmShade[6 + GetRace(char)], 0, 2)
         }
     }
     // legs
-    for limb in 30..=36 {
-        if charRole[char] == 0 do bb.EntityTexture(pLimb[cyc][limb], tLegs[1 + charBlock[char]], 0, 1)
-        if charRole[char] == 1 do bb.EntityTexture(pLimb[cyc][limb], tLegs[1], 0, 1)
-        if charRole[char] >= 2 do bb.EntityTexture(pLimb[cyc][limb], tLegs[6], 0, 1)
+    for limbA in 30..=36 {
+        if charRole[char] == 0 do bb.EntityTexture(pLimb[cyc][limbA], tLegs[1 + charBlock[char]], 0, 1)
+        if charRole[char] == 1 do bb.EntityTexture(pLimb[cyc][limbA], tLegs[1], 0, 1)
+        if charRole[char] >= 2 do bb.EntityTexture(pLimb[cyc][limbA], tLegs[6], 0, 1)
     }
 }
 

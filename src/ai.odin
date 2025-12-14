@@ -71,3 +71,5 @@ GetInput :: proc(cyc: i32) {
 TranslateInput :: proc(cyc: i32) {
     
 }
+
+ButtonPressed :: proc() -> i32 { return 0}

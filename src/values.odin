@@ -746,14 +746,14 @@ init_values :: proc() {
 	// Blocks
 	for b in 1..=8 {
 		if b == 1 || b == 3 || b == 7 {
-			d := 1;
+			d := 1
 			doorA[b][d] = 180
 			doorX1[b][d] = -25; doorX2[b][d] = 25
 			doorY1[b][d] = 0; doorY2[b][d] = 60
 			doorZ1[b][d] = -350; doorZ2[b][d] = -330
 		}
 		if b == 2 || b == 4 || b == 8 {
-			d := 1;
+			d := 1
 			doorA[b][d] = 180
 			doorX1[b][d] = 65; doorX2[b][d] = 90
 			doorY1[b][d] = 0; doorY2[b][d] = 60

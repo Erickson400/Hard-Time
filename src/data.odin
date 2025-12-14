@@ -7,8 +7,6 @@ import bb "blitzbasic3d"
 import "core:strings"
 import "core:slice"
 import "core:fmt"
-import "core:os"
-import "core:mem"
 
 //------------------------------------------------------------------------
 /////////////////////////////// OPTIONS //////////////////////////////////
@@ -680,7 +678,7 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
     if randy == 0 && style == 0 && area == 0 do weapLocation[cyc] = 0
     // Favour habitat
     if weapLocation[cyc] > 0 && GetBlock(weapLocation[cyc]) == 0 && weapType[cyc] != 16 {
-        randy := bb.Rnd(0, 2)
+        randy = bb.Rnd(0, 2)
         if randy > 0 && weapHabitat[weapType[cyc]] > 0 && weapHabitat[weapType[cyc]] != 99 {
             weapLocation[cyc] = weapHabitat[weapType[cyc]]
         }
@@ -688,7 +686,7 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
         if randy == 0 && weapType[cyc] >= 24 && weapType[cyc] <= 25 do weapLocation[cyc] = 11
     }
     // Pinpoint location
-    weapX[cyc] = x; weapY[cyc] = y; weapZ[cyc] = z; 
+    weapX[cyc] = x; weapY[cyc] = y; weapZ[cyc] = z
     weapA[cyc] = bb.Rnd(0.0, 360.0)
     if weapY[cyc] == 0 && weapY[cyc] == 0 && weapZ[cyc] == 0 {
         weapX[cyc] = 50
@@ -707,24 +705,24 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
                 }
             }
             switch randy {
-                case 6:
-                    weapX[cyc] = bb.Rnd(-190.0, 60.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
-                case 7:
-                    weapX[cyc] = bb.Rnd(60.0, 190.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
-                case 8:
-                    weapX[cyc] = bb.Rnd(-115.0, 115.0); weapZ[cyc] = bb.Rnd(-335.0, 15.0) 
-                case 9:
-                    weapX[cyc] = bb.Rnd(-80.0, 80.0); weapZ[cyc] = bb.Rnd(-220.0, 350.0); weapY[cyc] = 150
+            case 6:
+                weapX[cyc] = bb.Rnd(-190.0, 60.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
+            case 7:
+                weapX[cyc] = bb.Rnd(60.0, 190.0); weapZ[cyc] = bb.Rnd(-140.0, 250.0) 
+            case 8:
+                weapX[cyc] = bb.Rnd(-115.0, 115.0); weapZ[cyc] = bb.Rnd(-335.0, 15.0) 
+            case 9:
+                weapX[cyc] = bb.Rnd(-80.0, 80.0); weapZ[cyc] = bb.Rnd(-220.0, 350.0); weapY[cyc] = 150
             }
         }
         // Yard Locations
         if weapLocation[cyc] == 2 {
-            randy := bb.Rnd(1, 2)
+            randy = bb.Rnd(1, 2)
             switch randy {
-                case 1:
-                    weapX[cyc] = bb.Rnd(-20.0, 475.0); weapZ[cyc] = bb.Rnd(-210.0, 475.0)
-                case 2:
-                    weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 475.0) 
+            case 1:
+                weapX[cyc] = bb.Rnd(-20.0, 475.0); weapZ[cyc] = bb.Rnd(-210.0, 475.0)
+            case 2:
+                weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 475.0) 
             }
             if weapType[cyc] == 11 {
                 weapX[cyc] = bb.Rnd(210.0, 475.0); weapZ[cyc] = bb.Rnd(-50.0, 200.0) 
@@ -735,18 +733,18 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
         }
         // Study locations
         if weapLocation[cyc] == 4 {
-            randy := bb.Rnd(1, 5)
+            randy = bb.Rnd(1, 5)
             switch randy {
-                case 1:
-                    weapX[cyc] = bb.Rnd(-135.0, 135.0); weapZ[cyc] = bb.Rnd(-130.0, -40.0)
-                case 2:
-                    weapX[cyc] = bb.Rnd(-120.0, 135.0); weapZ[cyc] = bb.Rnd(40.0, 120.0)
-                case 3:
-                    weapX[cyc] = bb.Rnd(-120.0, -40.0); weapZ[cyc] = bb.Rnd(-135.0, 120.0)
-                case 4:
-                    weapX[cyc] = bb.Rnd(40.0, 135.0); weapZ[cyc] = bb.Rnd(-125.0, 105.0)
-                case 5:
-                    weapX[cyc] = bb.Rnd(-140.0, 140.0); weapZ[cyc] = bb.Rnd(-140.0, 140.0)
+            case 1:
+                weapX[cyc] = bb.Rnd(-135.0, 135.0); weapZ[cyc] = bb.Rnd(-130.0, -40.0)
+            case 2:
+                weapX[cyc] = bb.Rnd(-120.0, 135.0); weapZ[cyc] = bb.Rnd(40.0, 120.0)
+            case 3:
+                weapX[cyc] = bb.Rnd(-120.0, -40.0); weapZ[cyc] = bb.Rnd(-135.0, 120.0)
+            case 4:
+                weapX[cyc] = bb.Rnd(40.0, 135.0); weapZ[cyc] = bb.Rnd(-125.0, 105.0)
+            case 5:
+                weapX[cyc] = bb.Rnd(-140.0, 140.0); weapZ[cyc] = bb.Rnd(-140.0, 140.0)
             }
         }
         // Hospital locations
@@ -755,16 +753,16 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
         }
         // Kitchen locations
         if weapLocation[cyc] == 8 {
-            randy := bb.Rnd(1, 4)
+            randy = bb.Rnd(1, 4)
             switch randy {
-                case 1:
-                    weapX[cyc] = bb.Rnd(-105.0, 105.0); weapZ[cyc] = bb.Rnd(-325.0, -160.0)
-                case 2:
-                    weapX[cyc] = bb.Rnd(-105.0, 250.0); weapZ[cyc] = bb.Rnd(-160.0, 250.0)
-                case 3:
-                    weapX[cyc] = bb.Rnd(-250.0, 250.0); weapZ[cyc] = bb.Rnd(170.0, 325.0)
-                case 4:
-                    weapX[cyc] = bb.Rnd(-240.0, -145.0); weapZ[cyc] = bb.Rnd(-120.0, 140.0)
+            case 1:
+                weapX[cyc] = bb.Rnd(-105.0, 105.0); weapZ[cyc] = bb.Rnd(-325.0, -160.0)
+            case 2:
+                weapX[cyc] = bb.Rnd(-105.0, 250.0); weapZ[cyc] = bb.Rnd(-160.0, 250.0)
+            case 3:
+                weapX[cyc] = bb.Rnd(-250.0, 250.0); weapZ[cyc] = bb.Rnd(170.0, 325.0)
+            case 4:
+                weapX[cyc] = bb.Rnd(-240.0, -145.0); weapZ[cyc] = bb.Rnd(-120.0, 140.0)
             }
         }
         // Hall locations
@@ -773,21 +771,21 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
         }
         // Workshop locations
         if weapLocation[cyc] == 10 {
-            randy := bb.Rnd(1, 4)
+            randy = bb.Rnd(1, 4)
             switch randy {
-                case 1:
-                    weapX[cyc] = bb.Rnd(-95.0, 95.0); weapZ[cyc] = bb.Rnd(-115.0, 115.0)
-                case 2:
-                    weapX[cyc] = bb.Rnd(-65.0, -30.0); weapZ[cyc] = -114.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
-                case 3:
-                    weapX[cyc] = bb.Rnd(30.0, 70.0); weapZ[cyc] = -114.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
-                case 4:
-                    weapX[cyc] = bb.Rnd(-20.0, 20.0); weapZ[cyc] = 119.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
+            case 1:
+                weapX[cyc] = bb.Rnd(-95.0, 95.0); weapZ[cyc] = bb.Rnd(-115.0, 115.0)
+            case 2:
+                weapX[cyc] = bb.Rnd(-65.0, -30.0); weapZ[cyc] = -114.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
+            case 3:
+                weapX[cyc] = bb.Rnd(30.0, 70.0); weapZ[cyc] = -114.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
+            case 4:
+                weapX[cyc] = bb.Rnd(-20.0, 20.0); weapZ[cyc] = 119.0; weapY[cyc] = bb.Rnd(20.0, 35.0)
             }
         }
         // Toilet locations
         if weapLocation[cyc] == 11 {
-            randy := bb.Rnd(1, 7)
+            randy = bb.Rnd(1, 7)
             if randy >= 1 && randy <= 2 {
                 weapX[cyc] = bb.Rnd(-140.0, 50.0); weapZ[cyc] = bb.Rnd(-65.0, 10.0)
             }

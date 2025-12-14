@@ -1,7 +1,7 @@
 package main
 
-import "core:fmt"
-import bb "blitzbasic3d"
+// import "core:fmt"
+// import bb "blitzbasic3d"
 
 
 /*

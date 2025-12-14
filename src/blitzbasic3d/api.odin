@@ -155,8 +155,7 @@ LightConeAngles :: proc(light: i32, inner_angle, outer_angle: f32) {}
 LightColor :: proc(light: i32, r, g, b: f32) {}
 
 // -------Input--------
-KeyDown :: proc(key: i32) -> bool { return false}
-ButtonPressed :: proc() -> bool { return false}
+KeyDown :: proc(key: i32) -> i32 { return 0}
 JoyYDir :: proc() -> i32 { return 0}
 JoyXDir :: proc() -> i32 { return 0}
 JoyDown :: proc(something: i32) -> bool { return false}
@@ -179,7 +178,7 @@ Collisions :: proc(mode, entity1, entity2, response: i32) {}
 //------Initialization---------
 init :: proc() {
 	ray.InitWindow(1280, 720, "Hard Time")
-	ray.InitAudioDevice(); 
+	ray.InitAudioDevice()
 	ray.SetTargetFPS(120)
 	init_audio_system()
 	init_font_system()

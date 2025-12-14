@@ -20,7 +20,7 @@ rendering_queue: [dynamic]RenderingEntry
 
 
 init_rendering_system :: proc() {
-	rendering_queue = make([dynamic]RenderingEntry, 0, 100);
+	rendering_queue = make([dynamic]RenderingEntry, 0, 100)
 }
 
 

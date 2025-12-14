@@ -5,5 +5,5 @@ EntityHandle :: int
 
 
 Entity :: struct {
-	sus: bool
+	sus: bool,
 }
