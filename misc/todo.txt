@@ -1,13 +1,13 @@
+---- Keep in mind ----
 Make sure all files follow -vet and -strict-style.
 
-Comment out unused variables and put an Unused comment next to them.
+Comment out unused variables/functions and put an Unused comment next to them.
 
 Replace Rnd with RndI/RndF.
 
+
+---- Tasks ----
 Go through data.odin and give it 10/10.
-
-
-
 
 
 

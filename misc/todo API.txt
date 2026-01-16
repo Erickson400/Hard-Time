@@ -1,4 +1,4 @@
-----Blitz API Implementations----
+---- Blitz API Implementations ----
 This is the correct category of the functions, ignore how its organized in API.odin.
 
 Internal:
