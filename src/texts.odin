@@ -139,6 +139,7 @@ textFirstName := [101]string {0  = "Vic", 1  = "Eddie", 2  = "Matt", 3  = "Liam"
 							59 = "Gaz", 60 = "Kevin", 61 = "Frank", 62 = "Bruce", 63 = "Gavin",
 							64 = "Cody", 65 = "Noel", 66..=100="?"}
 //surnames
+@(rodata)
 textSurName := [101]string{0  = "Aceveda", 1  = "Sanders", 2  = "Grimm", 3  = "Clark", 4  = "Evans",
 						5  = "Bryant", 6  = "Madison", 7  = "Jackson", 8  = "Mackey",
 						9  = "Rooney", 10 = "Gaunt", 11 = "Collins", 12 = "Dickin",
