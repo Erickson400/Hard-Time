@@ -9,7 +9,7 @@
 - All hardtime code should use the context.allocator, init_values() is an exception. Only the Blitz API should create custom allocators.
 
 ---- Tasks ----
-Go through data.odin and give it 10/10.
+Complete - Go through functions.odin and give it 10/10.
 
 
 

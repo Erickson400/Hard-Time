@@ -1254,5 +1254,3 @@ LoadWeaponData :: proc() {
 	weapCreate[n] = 1 ; weapValue[n] = 20
 }
 
-
-

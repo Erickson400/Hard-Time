@@ -4,7 +4,6 @@ import "core:fmt"
 import "core:strings"
 import bb "blitzbasic3d"
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //--------------------------- UNIVERSAL FUNCTIONS ------------------------------
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,9 +13,9 @@ ProduceSound :: proc(entity, sound, pitch: i32, vol: f32) {
 	// fluctuate pitch
 	range1 := pitch - (pitch / 8)
 	range2 := pitch + (pitch / 16)
-	pitcher := bb.Rnd(range1, range2)
+	pitcher := bb.RndI(range1, range2)
 	// fluctuate volume
-	if vol == 0.0 do vol = bb.Rnd(0.4, 1.2)
+	if vol == 0.0 do vol = bb.RndF(0.4, 1.2)
 	// deliver sound
 	if sound > 0 && (gotim > 0 || screen != 50) {
 		if pitch > 0 do bb.SoundPitch(sound, pitcher)
@@ -39,10 +38,10 @@ Outline :: proc(script: string, x, y, r1, g1, b1, r2, g2, b2: i32) {
 	if r1 != r2 || g1 != g2 || b1 != b2 {
 		bb.Color(r1, g1, b1)
 		bb.Text(x + 2, y + 2, script, 1, 1)
-		bb.Text(x + 1, y, script, 1, 1)
-		bb.Text(x - 1, y, script, 1, 1)
-		bb.Text(x, y + 1, script, 1, 1)
-		bb.Text(x, y - 1, script, 1, 1)
+		bb.Text(x + 1, y	, script, 1, 1)
+		bb.Text(x - 1, y	, script, 1, 1)
+		bb.Text(x	 , y + 1, script, 1, 1)
+		bb.Text(x	 , y - 1, script, 1, 1)
 	}
 	// core
 	bb.Color(r2, g2, b2)
@@ -51,15 +50,15 @@ Outline :: proc(script: string, x, y, r1, g1, b1, r2, g2, b2: i32) {
 
 
 // Outline Straight
-OutlineStraight :: proc(script: string, x, y: i32, r1, g1, b1, r2, g2, b2: i32) {
+OutlineStraight :: proc(script: string, x, y, r1, g1, b1, r2, g2, b2: i32) {
 	// outline
 	if r1 != r2 || g1 != g2 || b1 != b2 {
 		bb.Color(r1, g1, b1)
 		bb.Text(x + 2, y + 2, script, 0, 1)
-		bb.Text(x + 1, y, script, 0, 1)
-		bb.Text(x - 1, y, script, 0, 1)
-		bb.Text(x, y + 1, script, 0, 1)
-		bb.Text(x, y - 1, script, 0, 1)
+		bb.Text(x + 1, y	, script, 0, 1)
+		bb.Text(x - 1, y	, script, 0, 1)
+		bb.Text(x	 , y + 1, script, 0, 1)
+		bb.Text(x	 , y - 1, script, 0, 1)
 	}
 	// core
 	bb.Color(r2, g2, b2)
@@ -71,10 +70,10 @@ OutlineStraight :: proc(script: string, x, y: i32, r1, g1, b1, r2, g2, b2: i32) 
 DrawLine :: proc(startX, startY, endX, endY, r, g, b: i32) {
 	// outline
 	bb.Color(0, 0, 0)
-	bb.Line(startX - 1, startY, endX - 1, endY)
-	bb.Line(startX + 1, startY, endX + 1, endY)
-	bb.Line(startX, startY - 1, endX, endY - 1)
-	bb.Line(startX, startY + 1, endX, endY + 1)
+	bb.Line(startX - 1, startY	  , endX - 1, endY)
+	bb.Line(startX + 1, startY	  , endX + 1, endY)
+	bb.Line(startX	  , startY - 1, endX	, endY - 1)
+	bb.Line(startX	  , startY + 1, endX	, endY + 1)
 	// coloured line
 	bb.Color(r, g, b)
 	bb.Line(startX, startY, endX, endY)
@@ -84,16 +83,14 @@ DrawLine :: proc(startX, startY, endX, endY, r, g, b: i32) {
 // Resolution X Fix
 rX :: proc(x: f32) -> f32 {
 	factor := 800.0 / f32(bb.GraphicsWidth())
-	newX := x / factor
-	return newX
+	return x / factor
 }
 
 
 // Resolution Y Fix
 rY :: proc(y: f32) -> f32 {
 	factor := 600.0 / f32(bb.GraphicsHeight())
-	newY := y / factor
-	return newY
+	return y / factor
 }
 
 
@@ -101,7 +98,7 @@ rY :: proc(y: f32) -> f32 {
 ////////////////////////////// MATHEMATICAL /////////////////////////////////
 //---------------------------------------------------------------------------
 
-// CALCULATE CENTRE (of any 2 numbers)
+// Calculate height in feet & inches
 GetHeight :: proc(value: i32) -> string {
 	feet := value / 12
 	inches := value - (feet * 12)
@@ -120,7 +117,7 @@ GetFigure :: proc(value: i32) -> string {
 	minus := 0
 	if value < 0 {
 		minus = 1
-		value -= (value * 2)
+		value -= value * 2
 	}
 	// get segments
 	hundreds, thousands, millions: i32 = 0, 0, 0
@@ -130,44 +127,48 @@ GetFigure :: proc(value: i32) -> string {
 	if thousands < 0 do thousands = 0
 	hundreds = value - ((millions * 1000000) + (thousands * 1000))
 	if hundreds < 0 do hundreds = 0
-	// piece together
 
+	// piece together
+	clean_sbprintf :: proc(buf: ^strings.Builder, format: string, args: ..any,) {
+		strings.builder_reset(buf)
+		fmt.sbprintf(buf, format, ..args)
+	}
 	hun, tho, mil: strings.Builder
 	strings.builder_init(&hun)
 	strings.builder_init(&tho)
 	strings.builder_init(&mil)
-	if thousands > 0 do fmt.sbprintf(&tho, "%s", thousands)
-	if millions > 0 do fmt.sbprintf(&mil, "%s", millions)
-	if thousands > 0 || millions > 0 do fmt.sbprintf(&hun, "'%s", hundreds)
-	if (thousands > 0 || millions > 0) && hundreds < 100 do fmt.sbprintf(&hun, "'0%s", hundreds)
-	if (thousands > 0 || millions > 0) && hundreds < 10 do fmt.sbprintf(&hun, "'00%s", hundreds)
-	if millions > 0 do fmt.sbprintf(&tho, "'%s", thousands)
-	if millions > 0 && thousands < 100 do fmt.sbprintf(&tho, "'0%s", thousands)
-	if millions > 0 && thousands < 10 do fmt.sbprintf(&tho, "'00%s", thousands)
+	if thousands > 0 do clean_sbprintf(&tho, "%s", thousands)
+	if millions > 0 do clean_sbprintf(&mil, "%s", millions)
+	if thousands > 0 || millions > 0 do clean_sbprintf(&hun, "'%s", hundreds)
+	if (thousands > 0 || millions > 0) && hundreds < 100 do clean_sbprintf(&hun, "'0%s", hundreds)
+	if (thousands > 0 || millions > 0) && hundreds < 10 do clean_sbprintf(&hun, "'00%s", hundreds)
+	if millions > 0 do clean_sbprintf(&tho, "'%s", thousands)
+	if millions > 0 && thousands < 100 do clean_sbprintf(&tho, "'0%s", thousands)
+	if millions > 0 && thousands < 10 do clean_sbprintf(&tho, "'00%s", thousands)
 	// return
-	figure: strings.Builder
-	strings.builder_init(&figure)
-	if minus == 0 do fmt.sbprint(&figure, mil, tho, hun)
-	if minus == 1 do fmt.sbprint(&figure, "-", mil, tho, hun)
+	figure: string
+	if minus == 0 do figure = fmt.aprint(strings.to_string(mil), strings.to_string(tho), strings.to_string(hun))
+	if minus == 1 do figure = fmt.aprint("-", strings.to_string(mil), strings.to_string(tho), strings.to_string(hun))
 	strings.builder_destroy(&hun)
 	strings.builder_destroy(&tho)
 	strings.builder_destroy(&mil)
-	return strings.to_string(figure)
+	return figure
 }
 
 
 // FORMAT DIGITS (to 2 or 3 digits with leading zeros)
+// Needs allocator param because init_values() uses it with temp_allocator
 Dig :: proc(value, degree: i32, allocator := context.allocator) -> string {
-	if value == 0 && degree == 10 do return "00"
-	if value == 0 && degree == 100 do return "000"
+	if value == 0 && degree == 10 do return fmt.aprint("00", allocator = allocator)
+	if value == 0 && degree == 100 do return fmt.aprint("000", allocator = allocator)
 	if value < degree {
 		if value < degree / 10 {
-			return fmt.aprintf("00%s", value, allocator)
+			return fmt.aprintf("00%s", value, allocator = allocator)
 		} else {
-			return fmt.aprintf("0%s", value, allocator)
+			return fmt.aprintf("0%s", value, allocator = allocator)
 		}
 	}
-	return fmt.aprintf("%s", value, allocator)
+	return fmt.aprintf("%s", value, allocator = allocator)
 }
 
 
@@ -196,7 +197,7 @@ ReachedCord :: proc(currX, currZ, destX, destZ: f32, range: i32) -> i32 {
 }
 
 
-// CLEAN GIVEN ANGLE
+// Clean given angle
 CleanAngle :: proc(angle: f32) -> f32 {
 	angle := angle
 	its := 0
@@ -241,7 +242,7 @@ ReachAngle :: proc(sA, tA, speed: f32) -> f32 {
 }
 
 
-// SATISFIED TARGET ANGLE?
+// Satisfied target angle?
 SatisfiedAngle :: proc(sA, tA: f32, range: i32) -> i32 {
 	value: i32 = 0
 	// scan clockwise
@@ -262,7 +263,7 @@ SatisfiedAngle :: proc(sA, tA: f32, range: i32) -> i32 {
 }
 
 
-// CALCULATE DIFFERENCE (between any 2 numbers)
+// Calculate difference between any 2 numbers
 GetDiff :: proc(source, dest: f32) -> f32 {
 	diff := dest - source
 	if diff < 0 {
@@ -272,7 +273,7 @@ GetDiff :: proc(source, dest: f32) -> f32 {
 }
 
 
-// CALCULATE CENTRE (of any 2 numbers)
+// Calculate center of any 2 numbers
 GetCentre :: proc(source, dest: f32) -> f32 {
 	return source + (GetDiff(source, dest) / 2)
 }
@@ -322,11 +323,6 @@ GetSmoothSpeeds :: proc(x, tX, y, tY, z, tZ: f32, factor: i32) {
 	if diffZ > lead {
 		lead = diffZ
 		leader = 3
-	}
-	// avoid divide-by-zero
-	if lead == 0 {
-		speedX, speedY, speedZ = 0.0, 0.0, 0.0
-		return
 	}
 	// make anchor speed from leading difference
 	anchor := lead / f32(factor)
