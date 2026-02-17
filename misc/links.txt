@@ -7,3 +7,9 @@ https://kippykip.com/b3ddocs/commands/index.htm
 Blitz3D fork source code:
 https://github.com/ZiYueCommentary/Blitz3D?tab=readme-ov-file
 
+Odin style convention:
+https://github.com/odin-lang/examples/wiki/Naming-and-style-convention
+
+
+
+

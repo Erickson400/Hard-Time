@@ -1,14 +1,6 @@
----- Keep in mind ----
-- Make sure all files follow -vet, -strict-style.
-- Comment out unused variables/functions and put an Unused comment next to them.
-- Replace Rnd with RndI/RndF.
-- Replace os/os2 to os on the next Odin upgrade.
-- Cast i32 to bool for non bool if statements.
-- "Dim value[9]" means the array is a length of 10.
-- "For i = 0 to 99" is the same as "for i in 0..=99" in odin.
-- All hardtime code should use the context.allocator, init_values() is an exception. Only the Blitz API should create custom allocators.
+\---- Tasks ----
+Replace os/os2 to os on the next Odin upgrade (March).
 
----- Tasks ----
 Go through menus.odin and give it 10/10.
 
 

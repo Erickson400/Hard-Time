@@ -1,0 +1,18 @@
+---- Writing conventions Odin code ----
+- Comment out unused variables/functions and put an "Unused" comment next to them.
+- Game source code should be PascalCase just like the original. Only the BlitzBasic API should use the Odin naming convention. The code should still use the other Odin style points.
+- If a variable is only read, then make it constant or rodata.
+- Imports statements should be right below the package name, no comments between.
+- Make sure all files follow -vet, -strict-style, and -vet-tabs.
+
+
+---- Translaton Guide ----
+- All hardtime code should use the context.allocator, init_values() is an exception. Only the Blitz API should create custom allocators.
+- "Dim value[9]" means the array is a length of 10.
+- "For i = 0 to 99" is the same as "for i in 0..=99" in odin.
+- Cast i32 to bool for non bool Blitz if statements.
+- Replace Rnd with RndI/RndF.
+
+
+
+
