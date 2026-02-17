@@ -70,7 +70,7 @@ Editor :: proc() {
 	timer := bb.CreateTimer(30)
 	// MAIN LOOP
 	foc := 8
-	oldfoc := foc
+	//oldfoc := foc // Unused
 	page := 1
 	go := 0
 	gotim := 0
@@ -80,7 +80,7 @@ Editor :: proc() {
 		bb.Cls()
 		screenCall := 0
 		frames := bb.WaitTimer(timer)
-		for framer in 1..=frames {
+		for _ in 1..=frames {
 			// counters
 			keytim -= 1
 			if keytim < 1 {
@@ -756,7 +756,7 @@ ApplyHairstyle :: proc(cyc: i32) {
 	}
 	// Compose hair
 	if charHairStyle[char] > 1 {
-		randy := bb.Rnd(1, 3)
+		//randy := bb.Rnd(1, 3) // Unused
 		if showA == 1 {
 			bb.EntityAlpha(bb.FindChild(p[cyc], hairerA), 1)
 			bb.EntityTexture(bb.FindChild(p[cyc], hairerA), tHair[charHair[char]], 0, 1)
@@ -860,7 +860,7 @@ ApplyAccessories :: proc(cyc: i32) {
 ApplyClothing :: proc(cyc: i32) {
 	// head
 	char := pChar[cyc]
-	for limb in 1..=2 {
+	for _ in 1..=2 {
 		bb.EntityTexture(pLimb[cyc][1], tFace[charFace[char]], 0, 1)
 		bb.EntityTexture(pLimb[cyc][2], tFace[charFace[char]], 0, 1)
 	}

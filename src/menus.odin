@@ -16,10 +16,9 @@ MainMenu :: proc() {
 	timer := bb.CreateTimer(30)
 	// MAIN LOOP
 	foc: i32 = 1
-	oldfoc: i32 = foc
+	//oldfoc: i32 = foc // Unused
 	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
-		// clear / timing
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
 		for _ in 1..=frames {
@@ -31,9 +30,7 @@ MainMenu :: proc() {
 			gotim += 1
 			if gotim > 20 && keytim == 0 {
 				// leave
-				if cast(bool)bb.KeyDown(1) {
-					go = -1
-				}
+				if cast(bool)bb.KeyDown(1) do go = -1
 				// proceed
 				if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
 					go = -1 if foc == 4 else 1
@@ -71,9 +68,7 @@ MainMenu :: proc() {
 
 		bb.Flip()
 		// screenshot (F12)
-		if bb.KeyHit(88) > 0 {
-			Screenshot()
-		}
+		if bb.KeyHit(88) > 0 do Screenshot()
 	}
 
 	// leave
@@ -104,7 +99,7 @@ Options :: proc() {
 
 	// MAIN LOOP
 	foc: i32 = 9
-	oldfoc: i32 = foc
+	//oldfoc: i32 = foc // Unused
 	go: i32 = 0
 	gotim: i32 = 0
 	keytim: i32 = 20
@@ -112,7 +107,7 @@ Options :: proc() {
 	for go == 0 {
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
-		for framer in 1..=frames {
+		for _ in 1..=frames {
 
 			// timers
 			keytim -= 1
@@ -231,7 +226,8 @@ Options :: proc() {
 		bb.DrawImage(gLogo[3], i32(rX(400.0)), i32(rY(50.0)))
 		// options
 		bb.SetFont(font[1])
-		x, y, spacer: i32 = 300, 200, 53
+		//x: i32 = 300 //Unused
+		y, spacer: i32 = 200, 53
 		DrawOption(1, rX(400.0), rY(f32(y)), "Resolution", fmt.tprint(textResX[optRes], " x ", textResY[optRes])); y += spacer
 		DrawOption(2, rX(400.0), rY(f32(y)), "Population", fmt.tprint(optPopulation, " Characters")); y += (spacer + 5)
 		DrawOption(3, rX(400.0), rY(f32(y)), "Fog Effect", textOnOff[optFog]); y += spacer
@@ -275,7 +271,7 @@ RedefineKeys :: proc() {
 
 	// MAIN LOOP
 	foc: i32 = 6
-	oldfoc: i32 = foc
+	//oldfoc: i32 = foc //Unused
 	screenCall: i32 = 0
 	go: i32 = 0
 	gotim: i32 = 0
@@ -284,7 +280,7 @@ RedefineKeys :: proc() {
 	for go == 0 {
 		if screenCall == 0 do bb.Cls()
 		frames := bb.WaitTimer(timer)
-		for framer in 1..=frames {
+		for _ in 1..=frames {
 			// timers
 			keytim -= 1
 			if keytim < 1 do keytim = 0
@@ -402,7 +398,7 @@ RedefineGamepad :: proc() {
 
 	// MAIN LOOP
 	foc: i32 = 6
-	oldfoc: i32 = foc
+	//oldfoc: i32 = foc // Unused
 	screenCall: i32 = 0
 	go: i32 = 0
 	gotim: i32 = 0
@@ -411,7 +407,7 @@ RedefineGamepad :: proc() {
 	for go == 0 {
 		if screenCall == 0 do bb.Cls()
 		frames := bb.WaitTimer(timer)
-		for framer in 1..=frames {
+		for _ in 1..=frames {
 			// timers
 			keytim -= 1
 			if keytim < 1 do keytim = 0
@@ -539,7 +535,7 @@ SlotSelect :: proc() {
 	for go == 0 {
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
-		for framer in 1..=frames {
+		for _ in 1..=frames {
 			// timers
 			keytim -= 1
 			if keytim < 1 do keytim = 0
@@ -679,7 +675,7 @@ EditSelect :: proc() {
 	timer := bb.CreateTimer(30)
 	// MAIN LOOP
 	foc: i32 = 1
-	oldfoc: i32 = foc
+	//oldfoc: i32 = foc // Unused
 	go: i32 = 0
 	gotim: i32 = 0
 	keytim: i32 = 20
@@ -687,7 +683,7 @@ EditSelect :: proc() {
 	for go == 0 {
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
-		for framer in 1..=frames {
+		for _ in 1..=frames {
 			// timers
 			keytim -= 1
 			if keytim < 1 do keytim = 0

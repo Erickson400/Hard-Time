@@ -313,7 +313,7 @@ FireBullet :: proc(cyc: i32) {
 BulletCycle :: proc() {
 	for cyc in 1..=no_bullets {
 		if bulletState[cyc] == 1 {
-			for depth in 1..=10 {
+			for _ in 1..=10 {
 				//honour collision detection 
 				bulletX[cyc] = bb.EntityX(bullet[cyc])
 				bulletY[cyc] = bb.EntityY(bullet[cyc])

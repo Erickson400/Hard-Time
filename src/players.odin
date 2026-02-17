@@ -350,7 +350,7 @@ ScarLimb :: proc(cyc, limb, chance: i32) {
 			vol := cast(f32)pScar[cyc][limb] * 0.1
 			ProduceSound(p[cyc], sBleed, 22050, vol)
 			limbX := bb.EntityX(pLimb[cyc][limb], 1)
-			limbY := bb.EntityY(pLimb[cyc][limb], 1)
+			//limbY := bb.EntityY(pLimb[cyc][limb], 1) // Unused
 			limbZ := bb.EntityZ(pLimb[cyc][limb], 1)
 			CreatePool(limbX, pGround[cyc], limbZ, bb.Rnd(1.0, 5.0), 1, 1)
 			if pScar[cyc][limb] >= 3 do LoseLimb(cyc, limb, chance)

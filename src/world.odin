@@ -773,7 +773,7 @@ CamConflict :: proc(command: i32) -> i32 {
 //ENTER DOOR
 EnterDoor :: proc(cyc: i32, door: i32) -> i32 {
 	//store current location
-	oldLocation: i32 = gamLocation[slot]
+	//oldLocation: i32 = gamLocation[slot] // Unused
 	//north >>> hall
 	if gamLocation[slot] == 1 {
 		charX[pChar[cyc]] = -150

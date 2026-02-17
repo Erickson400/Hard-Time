@@ -140,7 +140,7 @@ CreateSpurt :: proc(x, y, z, spread: f32, density, style: i32) {
 		// reduce density
 		if optFX <= 1 do density /= 2
 		// deliver particles
-		for count in 1..=density {
+		for _ in 1..=density {
 			if style < 99 {
 				CreateParticle(x + bb.Rnd(-spread, spread), y + bb.Rnd(-spread, spread), z + bb.Rnd(-spread, spread), style)
 			}

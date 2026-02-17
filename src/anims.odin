@@ -1090,7 +1090,7 @@ Animations :: proc(cyc: i32) {
 					ProduceSound(p[v], weapSound[weapType[pWeapon[cyc]]], 22050, 1)
 					if weapStyle[weapType[pWeapon[cyc]]] == 7 do ProduceSound(p[v], sStab, 22050, 1)
 					if pHealth[v] > 0 do ProduceSound(p[v], sPain[bb.Rnd(1, 8)], 22050, 0)
-					limb := bb.FindChild(p[cyc], weapFile[weapType[pWeapon[cyc]]])
+					//limb := bb.FindChild(p[cyc], weapFile[weapType[pWeapon[cyc]]]) // Unused
 					CreateSpurt(pX[v], pY[v], pZ[v], 3, 10, 99)
 					ScarArea(v, pX[v], pY[v], pZ[v], 2)
 					if CountScars(v) >= 2 {
@@ -1396,7 +1396,7 @@ Animations :: proc(cyc: i32) {
 	//lower block
 	if pAnim[cyc] == 75 {
 		anim: i32 = 75
-		threat := FindThreat(cyc)
+		//threat := FindThreat(cyc) Unused
 		if pWeapon[cyc] > 0 do anim = 77
 		if pAnimTim[cyc] == 0 || anim != pState[cyc] {
 			bb.Animate(p[cyc], 1, bb.Rnd(0.2, 0.5), pSeq[cyc][anim], 6)
