@@ -1,6 +1,5 @@
 The entry point is on Gameplay.bb
 
-There are memory leaks. 
-e.g. charPhoto is set to LoadImage, but then set to 0 without freeing. 
+There are memory leaks. e.g. charPhoto is set to LoadImage, but then set to 0 without freeing. 
 
 

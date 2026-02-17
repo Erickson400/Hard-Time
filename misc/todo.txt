@@ -1,5 +1,5 @@
 ---- Keep in mind ----
-- Make sure all files follow -vet and -strict-style.
+- Make sure all files follow -vet, -strict-style.
 - Comment out unused variables/functions and put an Unused comment next to them.
 - Replace Rnd with RndI/RndF.
 - Replace os/os2 to os on the next Odin upgrade.
@@ -9,7 +9,7 @@
 - All hardtime code should use the context.allocator, init_values() is an exception. Only the Blitz API should create custom allocators.
 
 ---- Tasks ----
-Complete - Go through functions.odin and give it 10/10.
+Go through menus.odin and give it 10/10.
 
 
 
