@@ -12,7 +12,7 @@ import "core:strings"
 
 
 // ------Internals-------
-GfxMode3DExists :: proc(width, height, color: i32) -> bool { return true }
+GfxMode3DExists :: proc(width, height, color: i32) -> i32 { return 0 }
 Graphics3DWidth :: proc(width, height, color, thingy: i32) {}
 
 // ------Graphics-------
@@ -27,7 +27,7 @@ GraphicsHeight :: proc() -> i32 { return 1}
 TileImage :: proc(image: i32) {}
 DrawImage :: proc(image: i32, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
-GrabImage :: proc(image: i32, x, y: i32, frame: i32 = 0) -> i32 { return 1}
+GrabImage :: proc(image: i32, x, y: i32, frame: i32 = 0) {}
 Locate :: proc(x, y: i32) {}
 Graphics3D :: proc(width, height, color, fullscreen: i32) {}
 

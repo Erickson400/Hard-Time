@@ -788,7 +788,9 @@ DrawMainLogo :: proc(x: f32, y: f32) {
 	bb.DrawImage(gLogo[2], i32(x), i32(y))
 	// version ID
 	bb.SetFont(font[1])
-	Outline(fmt.tprint("Version 1.", version), i32(x + 310.0), i32(y + 20.0), 20, 20, 20, 20, 20, 20)
+	outline_string := fmt.aprint("Version 1.", version)
+	Outline(outline_string, i32(x + 310.0), i32(y + 20.0), 20, 20, 20, 20, 20, 20)
+	delete(outline_string)
 }
 
 
@@ -953,10 +955,11 @@ DisplayMap :: proc(x, y: i32) {
 
 
 ChangeResolution :: proc(resolution: i32, task: i32) {
+	// 0=pre-game, 1=during game
 	// assess preferences
 	width := i32(strconv.atoi(textResX[resolution]))
 	height := i32(strconv.atoi(textResY[resolution]))
-	if bb.GfxMode3DExists(width, height, 16) == false {
+	if bb.GfxMode3DExists(width, height, 16) == 0 {
 		width = 800
 		height = 600
 		optRes = 2
@@ -967,7 +970,8 @@ ChangeResolution :: proc(resolution: i32, task: i32) {
 			Loader("Please Wait", "Adjusting Resolution")
 		}
 		bb.Graphics3D(width, height, 16, 1)
-		if task > 0 {
+		if task > 0 { 
+			//restore media
 			LoadImages()
 			Loader("Please Wait", "Restoring Media")
 			LoadPhotos()
@@ -986,6 +990,9 @@ Screenshot :: proc() {
 	bb.GrabImage(screenshot, bb.GraphicsWidth() / 2, bb.GraphicsHeight() / 2)
 	// title & save
 	temp := bb.MilliSecs() / 10
-	namer := fmt.tprint("Screenshot - ", temp, ".bmp")
-	bb.SaveImage(screenshot, fmt.tprint("Photo Album/", namer))
+	namer := fmt.aprint("Screenshot - ", temp, ".bmp")
+	path := fmt.aprint("Photo Album/", namer)
+	bb.SaveImage(screenshot, path)
+	delete(namer)
+	delete(path)
 }
