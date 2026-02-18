@@ -404,10 +404,7 @@ RedefineGamepad :: proc() {
 	foc: i32 = 6
 	//oldfoc: i32 = foc // Unused
 	screenCall: i32 = 0
-	go: i32 = 0
-	gotim: i32 = 0
-	keytim: i32 = 20
-
+	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		if screenCall == 0 do bb.Cls()
 		frames := bb.WaitTimer(timer)
@@ -487,12 +484,22 @@ RedefineGamepad :: proc() {
 		// options
 		bb.SetFont(font[1])
 		y: i32 = 120
-		DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", fmt.tprint("Button ", buttAttack))
-		DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", fmt.tprint("Button ", buttDefend))
-		DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", fmt.tprint("Button ", buttThrow))
-		DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", fmt.tprint("Button ", buttPickUp))
+
+		attack_string := fmt.aprint("Button ", buttAttack)
+		defence_string := fmt.aprint("Button ", buttDefend)
+		throw_string := fmt.aprint("Button ", buttThrow)
+		pickup_string := fmt.aprint("Button ", buttPickUp)
+		DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", attack_string)
+		DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", defence_string)
+		DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", throw_string)
+		DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", pickup_string)
 		DrawOption(5, rX(400.0), rY(f32(y + 250)), "RESTORE DEFAULTS", "")
 		DrawOption(6, rX(400.0), rY(f32(y + 320)), "<<< BACK <<<", "")
+		delete(attack_string)
+		delete(defence_string)
+		delete(throw_string)
+		delete(pickup_string)
+
 		// new overlay
 		switch screenCall {
 		case 1: DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", "Press New Button")
@@ -532,10 +539,7 @@ SlotSelect :: proc() {
 	} else {
 		foc = 1
 	}
-	go: i32 = 0
-	gotim: i32 = 0
-	keytim: i32 = 20
-
+	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
@@ -573,6 +577,7 @@ SlotSelect :: proc() {
 				// reset
 				if foc >= 1 && foc <= 3 {
 					if cast(bool)bb.KeyDown(14) || cast(bool)bb.KeyDown(210) {
+						delete(gamName[foc])
 						gamName[foc] = ""
 						bb.PlaySound(sTrash)
 						keytim = 10
@@ -680,10 +685,7 @@ EditSelect :: proc() {
 	// MAIN LOOP
 	foc: i32 = 1
 	//oldfoc: i32 = foc // Unused
-	go: i32 = 0
-	gotim: i32 = 0
-	keytim: i32 = 20
-
+	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
@@ -750,8 +752,10 @@ EditSelect :: proc() {
 		} else {
 			bb.DrawImage(gPhoto, i32(rX(400.0)), i32(rY(185.0) - 80.0))
 		}
-		DrawOption(1, rX(400.0), rY(185.0), "Character", fmt.tprint(gamChar[0], ". ", charName[gamChar[0]]))
+		character_string := fmt.aprint(gamChar[0], ". ", charName[gamChar[0]])
+		DrawOption(1, rX(400.0), rY(185.0), "Character", character_string)
 		DrawOption(2, rX(400.0), rY(415.0), "<<< BACK <<<", "")
+		delete(character_string)
 
 		bb.Flip()
 		// screenshot (F12)
