@@ -96,14 +96,10 @@ MainMenu :: proc() {
 Options :: proc() {
 	// frame rating
 	timer := bb.CreateTimer(30)
-
 	// MAIN LOOP
 	foc: i32 = 9
 	//oldfoc: i32 = foc // Unused
-	go: i32 = 0
-	gotim: i32 = 0
-	keytim: i32 = 20
-
+	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
@@ -228,8 +224,10 @@ Options :: proc() {
 		bb.SetFont(font[1])
 		//x: i32 = 300 //Unused
 		y, spacer: i32 = 200, 53
-		DrawOption(1, rX(400.0), rY(f32(y)), "Resolution", fmt.tprint(textResX[optRes], " x ", textResY[optRes])); y += spacer
-		DrawOption(2, rX(400.0), rY(f32(y)), "Population", fmt.tprint(optPopulation, " Characters")); y += (spacer + 5)
+		resolution_string := fmt.aprint(textResX[optRes], " x ", textResY[optRes])
+		population_string := fmt.aprint(optPopulation, " Characters")
+		DrawOption(1, rX(400.0), rY(f32(y)), "Resolution", resolution_string); y += spacer
+		DrawOption(2, rX(400.0), rY(f32(y)), "Population", population_string); y += (spacer + 5)
 		DrawOption(3, rX(400.0), rY(f32(y)), "Fog Effect", textOnOff[optFog]); y += spacer
 		DrawOption(4, rX(400.0), rY(f32(y)), "Shadows", textShadows[optShadows]); y += spacer
 		DrawOption(5, rX(400.0), rY(f32(y)), "Particle FX", textFX[optFX]); y += spacer
@@ -237,6 +235,8 @@ Options :: proc() {
 		DrawOption(7, rX(400.0), rY(f32(y)), "REDEFINE KEYS", ""); y += spacer
 		DrawOption(8, rX(400.0), rY(f32(y)), "REDEFINE GAMEPAD", ""); y += (spacer + 5)
 		DrawOption(9, rX(400.0), rY(f32(y)), "<<< BACK <<<", "")
+		delete(resolution_string)
+		delete(population_string)
 
 		bb.Flip()
 		// screenshot (F12)
@@ -273,10 +273,7 @@ RedefineKeys :: proc() {
 	foc: i32 = 6
 	//oldfoc: i32 = foc //Unused
 	screenCall: i32 = 0
-	go: i32 = 0
-	gotim: i32 = 0
-	keytim: i32 = 20
-
+	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		if screenCall == 0 do bb.Cls()
 		frames := bb.WaitTimer(timer)
@@ -351,18 +348,25 @@ RedefineKeys :: proc() {
 		bb.TileImage(gTile)
 		bb.DrawImage(gLogo[3], i32(rX(400.0)), i32(rY(50.0)))
 		// lock mouse
-		if screenCall > 0 {
-			bb.MoveMouse(callX, callY)
-		}
+		if screenCall > 0 do bb.MoveMouse(callX, callY)
 		// options
 		bb.SetFont(font[1])
 		y: i32 = 120
-		DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", fmt.tprint("'", Key[keyAttack], "' Key"))
-		DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", fmt.tprint("'", Key[keyDefend], "' Key"))
-		DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", fmt.tprint("'", Key[keyThrow], "' Key"))
-		DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", fmt.tprint("'", Key[keyPickUp], "' Key"))
+		attack_string := fmt.aprint("'", Key[keyAttack], "' Key")
+		defence_string := fmt.aprint("'", Key[keyDefend], "' Key")
+		throw_string := fmt.aprint("'", Key[keyThrow], "' Key")
+		pickup_string := fmt.aprint("'", Key[keyPickUp], "' Key")
+		DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", attack_string)
+		DrawOption(2, rX(400.0), rY(f32(y + 60)), "Defend / Run", defence_string)
+		DrawOption(3, rX(400.0), rY(f32(y + 120)), "Throw / Grab", throw_string)
+		DrawOption(4, rX(400.0), rY(f32(y + 180)), "Pick Up / Drop", pickup_string)
 		DrawOption(5, rX(400.0), rY(f32(y + 250)), "RESTORE DEFAULTS", "")
 		DrawOption(6, rX(400.0), rY(f32(y + 320)), "<<< BACK <<<", "")
+		delete(attack_string)
+		delete(defence_string)
+		delete(throw_string)
+		delete(pickup_string)
+
 		// new overlay
 		switch screenCall {
 		case 1: DrawOption(1, rX(400.0), rY(f32(y)), "Attack / Shoot", "Press New Key")
