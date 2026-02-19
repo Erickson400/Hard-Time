@@ -157,7 +157,8 @@ GetFigure :: proc(value: i32) -> string {
 
 
 // FORMAT DIGITS (to 2 or 3 digits with leading zeros)
-// Needs allocator param because init_values() uses it with temp_allocator
+// Needs allocator param because init_values() uses it with temp_allocator.
+// Returned string has to be freed.
 Dig :: proc(value, degree: i32, allocator := context.allocator) -> string {
 	if value == 0 && degree == 10 do return fmt.aprint("00", allocator = allocator)
 	if value == 0 && degree == 100 do return fmt.aprint("000", allocator = allocator)

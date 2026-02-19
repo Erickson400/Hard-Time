@@ -1,10 +1,11 @@
 package main
-////////////////////////////////////////////////////////////////////////////////
-//----------------------------- HARD TIME: EDITOR ------------------------------
-////////////////////////////////////////////////////////////////////////////////
 
 import "core:fmt"
 import bb "blitzbasic3d"
+
+////////////////////////////////////////////////////////////////////////////////
+//----------------------------- HARD TIME: EDITOR ------------------------------
+////////////////////////////////////////////////////////////////////////////////
 
 //-------------------------------------------------------------------
 /////////////////////// 51. EDIT CHARACTER //////////////////////////
@@ -18,25 +19,21 @@ Editor :: proc() {
 	cam := bb.CreateCamera()
 	bb.CameraViewport(cam, 0, 0, bb.GraphicsWidth(), bb.GraphicsHeight())
 	bb.PositionEntity(cam, -232, 36, -89)
-	if bb.GraphicsWidth() > 1024 {
-		bb.PositionEntity(cam, -228, 36, -84)
-	}
+	if bb.GraphicsWidth() > 1024 do bb.PositionEntity(cam, -228, 36, -84)
 	bb.RotateEntity(cam, 3, 119, 0)
 	// atmosphere
 	bb.AmbientLight(200, 190, 170)
-	light1 := bb.CreateLight(3)
-	bb.PositionEntity(light1, -145, 100, -70)
-	bb.RotateEntity(light1, 90, 0, 0)
-	bb.LightRange(light1, 500)
-	bb.LightConeAngles(light1, 0, 135)
-	bb.LightColor(light1, 200, 180, 160)
+	light[1] = bb.CreateLight(3)
+	bb.PositionEntity(light[1], -145, 100, -70)
+	bb.RotateEntity(light[1], 90, 0, 0)
+	bb.LightRange(light[1], 500)
+	bb.LightConeAngles(light[1], 0, 135)
+	bb.LightColor(light[1], 200, 180, 160)
 	// load model
 	cyc: i32 = 1
 	char := gamChar[0]
 	pChar[cyc] = char
-	pX[cyc] = -257
-	pY[cyc] = 11.5
-	pZ[cyc] = -124
+	pX[cyc] = -257; pY[cyc] = 11.5; pZ[cyc] = -124
 	ReloadModel(i32(cyc))
 	// shadows
 	for limb in 1..=40{
@@ -72,10 +69,7 @@ Editor :: proc() {
 	foc := 8
 	//oldfoc := foc // Unused
 	page := 1
-	go := 0
-	gotim := 0
-	keytim := 20
-
+	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		bb.Cls()
 		screenCall := 0
@@ -95,7 +89,7 @@ Editor :: proc() {
 					go = -1
 				}
 				// activations
-				if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() {
+				if cast(bool)bb.KeyDown(28) || cast(bool)ButtonPressed() {
 					// next page
 					if foc == 7 && keytim == 0 {
 						bb.PlaySound(sMenuGo)
@@ -103,14 +97,10 @@ Editor :: proc() {
 						page += 1
 						foc = 7
 						gotim = 0
-						if page > 2 {
-							page = 1
-						}
+						if page > 2 do page = 1
 					}
 					// leave
-					if foc == 8 && keytim == 0 {
-						go = 1
-					}
+					if foc == 8 && keytim == 0 do go = 1
 				}
 			}
 
@@ -130,15 +120,11 @@ Editor :: proc() {
 				}
 			}
 			// limits
-			if foc < 1 {
-				foc = 1
-			}
-			if foc > 8 {
-				foc = 8
-			}
+			if foc < 1 do foc = 1
+			if foc > 8 do foc = 8
 
 			// ASSESS POINTS
-			gamPoints := gamPointLimit
+			gamPoints = gamPointLimit
 			gamPoints -= charStrength[char]
 			gamPoints -= charAgility[char]
 			gamPoints -= charIntelligence[char]
@@ -204,36 +190,16 @@ Editor :: proc() {
 				}
 			}
 			// limits
-			if charHeight[char] < 5 {
-				charHeight[char] = 5
-			}
-			if charHeight[char] > 24 {
-				charHeight[char] = 24
-			}
-			if charStrength[char] < 30 {
-				charStrength[char] = 30
-			}
-			if charStrength[char] > 99 {
-				charStrength[char] = 99
-			}
-			if charAgility[char] < 30 {
-				charAgility[char] = 30
-			}
-			if charAgility[char] > 99 {
-				charAgility[char] = 99
-			}
-			if charIntelligence[char] < 30 {
-				charIntelligence[char] = 30
-			}
-			if charIntelligence[char] > 99 {
-				charIntelligence[char] = 99
-			}
-			if charCrime[char] < 1 {
-				charCrime[char] = 1
-			}
-			if charCrime[char] > 15 {
-				charCrime[char] = 15
-			}
+			if charHeight[char] < 5 do charHeight[char] = 5
+			if charHeight[char] > 24 do charHeight[char] = 24
+			if charStrength[char] < 30 do charStrength[char] = 30
+			if charStrength[char] > 99 do charStrength[char] = 99
+			if charAgility[char] < 30 do charAgility[char] = 30
+			if charAgility[char] > 99 do charAgility[char] = 99
+			if charIntelligence[char] < 30 do charIntelligence[char] = 30
+			if charIntelligence[char] > 99 do charIntelligence[char] = 99
+			if charCrime[char] < 1 do charCrime[char] = 1
+			if charCrime[char] > 15 do charCrime[char] = 15
 			if gamPointLimit < 999 {
 				charReputation[char] = 50 + (charCrime[char] * 2)
 				charSentence[char] = 30 + (charCrime[char] * 2)
@@ -315,42 +281,18 @@ Editor :: proc() {
 				}
 			}
 			// limits
-			if charHairStyle[char] < 0 {
-				charHairStyle[char] = no_hairstyles
-			}
-			if charHairStyle[char] > no_hairstyles {
-				charHairStyle[char] = 0
-			}
-			if charHair[char] < 1 {
-				charHair[char] = no_hairs
-			}
-			if charHair[char] > no_hairs {
-				charHair[char] = 1
-			}
-			if charFace[char] < 1 {
-				charFace[char] = no_faces
-			}
-			if charFace[char] > no_faces {
-				charFace[char] = 1
-			}
-			if charSpecs[char] < 0 {
-				charSpecs[char] = no_specs
-			}
-			if charSpecs[char] > no_specs {
-				charSpecs[char] = 0
-			}
-			if charModel[char] < 1 {
-				charModel[char] = no_models
-			}
-			if charModel[char] > no_models {
-				charModel[char] = 1
-			}
-			if charCostume[char] < 0 {
-				charCostume[char] = no_costumes
-			}
-			if charCostume[char] > no_costumes {
-				charCostume[char] = 0
-			}
+			if charHairStyle[char] < 0 do charHairStyle[char] = no_hairstyles
+			if charHairStyle[char] > no_hairstyles do charHairStyle[char] = 0
+			if charHair[char] < 1 do charHair[char] = no_hairs
+			if charHair[char] > no_hairs do charHair[char] = 1
+			if charFace[char] < 1 do charFace[char] = no_faces
+			if charFace[char] > no_faces do charFace[char] = 1
+			if charSpecs[char] < 0 do charSpecs[char] = no_specs
+			if charSpecs[char] > no_specs do charSpecs[char] = 0
+			if charModel[char] < 1 do charModel[char] = no_models
+			if charModel[char] > no_models do charModel[char] = 1
+			if charCostume[char] < 0 do charCostume[char] = no_costumes
+			if charCostume[char] > no_costumes do charCostume[char] = 0
 
 			// UPDATE MODEL
 			if oldHairStyle != charHairStyle[char] ||
@@ -404,16 +346,23 @@ Editor :: proc() {
 		// PROFILE DISPLAY
 		if page == 1 {
 			// main options
-			x: f32 = 570
-			y: f32 = 145
+			strength_string := fmt.aprint(charStrength[char])
+			agility_string := fmt.aprint(charAgility[char])
+			intelligence_string := fmt.aprint(charIntelligence[char])
+			crime_string := fmt.aprint(charCrime[char], ". ", textCrime[charCrime[char]])
+			x, y: f32 = 570, 145
 			DrawOption(1, rX(x), rY(y), "Name", charName[char])
 			DrawOption(2, rX(x), rY(y + 55), "Height", GetHeight(charHeight[char]))
-			DrawOption(3, rX(x), rY(y + 115), "Strength", fmt.tprintf("%d", charStrength[char]))
-			DrawOption(4, rX(x), rY(y + 170), "Agility", fmt.tprintf("%d", charAgility[char]))
-			DrawOption(5, rX(x), rY(y + 230), "Intelligence", fmt.tprintf("%d", charIntelligence[char]))
-			DrawOption(6, rX(x), rY(y + 285), "Crime", fmt.tprintf("%d. %s", charCrime[char], textCrime[charCrime[char]]))
+			DrawOption(3, rX(x), rY(y + 115), "Strength", strength_string)
+			DrawOption(4, rX(x), rY(y + 170), "Agility", agility_string)
+			DrawOption(5, rX(x), rY(y + 230), "Intelligence", intelligence_string)
+			DrawOption(6, rX(x), rY(y + 285), "Crime", crime_string)
 			DrawOption(7, rX(x), rY(y + 345), ">>> APPEARANCE >>>", "")
 			DrawOption(8, rX(x), rY(y + 400), "<<< SAVE & EXIT <<<", "")
+			delete(strength_string)
+			delete(agility_string)
+			delete(intelligence_string)
+			delete(crime_string)
 			// enter name
 			if (cast(bool)bb.KeyDown(14) || cast(bool)ButtonPressed()) && foc == 1 && gotim > 40 && keytim == 0 {
 				bb.PlaySound(sMenuBrowse)
@@ -427,9 +376,7 @@ Editor :: proc() {
 				bb.SetFont(font[3])
 				oldName := charName[char]
 				charName[char] = bb.Left(bb.Input(""), 20)
-				if charName[char] == "" {
-					charName[char] = oldName
-				}
+				if charName[char] == "" do charName[char] = oldName
 			} else {
 				bb.SetFont(font[2])
 				if foc == 1 {
@@ -459,14 +406,18 @@ Editor :: proc() {
 			// main options
 			x: f32 = 570
 			y: f32 = 145
+			hair_string := fmt.aprint(charHair[char], "/", no_hairs)
+			face_string := fmt.aprint(charFace[char], "/", no_faces)
 			DrawOption(1, rX(x), rY(y), "Hair Style", textHair[charHairStyle[char]])
-			DrawOption(2, rX(x), rY(y + 55), "Hair Colour", fmt.tprintf("%d/%d", charHair[char], no_hairs))
-			DrawOption(3, rX(x), rY(y + 115), "Face", fmt.tprintf("%d/%d", charFace[char], no_faces))
+			DrawOption(2, rX(x), rY(y + 55), "Hair Colour", hair_string)
+			DrawOption(3, rX(x), rY(y + 115), "Face", face_string)
 			DrawOption(4, rX(x), rY(y + 170), "Eyewear", textSpecs[charSpecs[char]])
 			DrawOption(5, rX(x), rY(y + 230), "Build", textModel[charModel[char]])
 			DrawOption(6, rX(x), rY(y + 285), "Outfit", textCostume[charCostume[char]])
 			DrawOption(7, rX(x), rY(y + 345), ">>> PROFILE >>>", "")
 			DrawOption(8, rX(x), rY(y + 400), "<<< SAVE & EXIT <<<", "")
+			delete(hair_string)
+			delete(face_string)
 			// advice
 			bb.SetFont(font[2])
 			if foc == 5 {
@@ -490,9 +441,7 @@ Editor :: proc() {
 
 		bb.Flip()
 		// screenshot (F12)
-		if bb.KeyHit(88) > 0 {
-			Screenshot()
-		}
+		if bb.KeyHit(88) > 0 do Screenshot()
 	}
 	// leave
 	if go >= 1 {
@@ -502,29 +451,30 @@ Editor :: proc() {
 			bb.PlaySound(sMenuBack)
 		}
 	}
-
 	// take photo
 	QuickLoader(rX(400), rY(300), "Please Wait", "Saving Character")
 	charPhoto[char] = bb.CreateImage(i32(rX(300)), i32(rY(200)))
 	bb.GrabImage(charPhoto[char], i32(rX(210)), i32(rY(f32(220 - charHeight[char]))))
 	bb.ResizeImage(charPhoto[char], 150, 100)
-	bb.SaveImage(charPhoto[char], fmt.tprintf("Data/Slot0%s/Photos/Photo%s.bmp", slot, Dig(char, 100)))
+	digits := Dig(char, 100)
+	photo_path := fmt.aprintf("Data/Slot0%s/Photos/Photo%s.bmp", slot, digits)
+	bb.SaveImage(charPhoto[char], photo_path)
+	delete(digits)
+	delete(photo_path)
 	bb.MaskImage(charPhoto[char], 255, 0, 255)
 	charSnapped[char] = 1
 	SaveChars()
-
 	// free entities
 	bb.FreeTimer(timer)
 	bb.FreeEntity(world)
 	bb.FreeEntity(cam)
-	bb.FreeEntity(light1)
+	bb.FreeEntity(light[1])
 	bb.FreeEntity(p[cyc])
 	for limb in 1..=40 {
 		if pShadow[cyc][limb] > 0 {
 			bb.FreeEntity(pShadow[cyc][limb])
 		}
 	}
-
 	// proceed
 	screen = 8
 	if gamPointLimit < 999 {
