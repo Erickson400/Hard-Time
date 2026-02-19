@@ -13,7 +13,8 @@
 - Replace Rnd with RndI/RndF.
 - All Hardtime code should use the context.allocator, init_values() using temp_alloc is an exception since it happens once. The Blitz API should create a arena allocator. temp_alloc will be reserved for future use in rewritten Hardtime code.
 - String arguments should not be freed or reassigned inside the function. The caller has to handle it. Do not assume the string is alive after exiting the function.
-
+- Blitz functions with path args are rooted in the assets folder. The Blitz API and any Odin OS calls have to add the assets string. 
+- Blitz variables and file paths are case-insensitive. (Probably not important)
 
 
 

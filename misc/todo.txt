@@ -1,7 +1,6 @@
 \---- Tasks ----
 (In March) Replace os/os2 to os on the next Odin upgrade.
 
-Go through editor.odin and give it 10/10.
-
+Go through .odin and give it 10/10.
 
 

@@ -11,11 +11,8 @@ import "core:fmt"
 /////////////////////////////// OPTIONS //////////////////////////////////
 //------------------------------------------------------------------------
 
-DATA_FOLDER :: "assets/Data/"
-
-
 SaveOptions :: proc() {
-	file := bb.WriteFile(DATA_FOLDER + "Options.dat")
+	file := bb.WriteFile("Data/Options.dat")
 	// Preferences
 	bb.WriteInt(file, optRes)
 	bb.WriteInt(file, optPopulation)
@@ -42,7 +39,7 @@ SaveOptions :: proc() {
 
 
 LoadOptions :: proc() {
-	file := bb.ReadFile(DATA_FOLDER + "Options.dat")
+	file := bb.ReadFile("Data/Options.dat")
 	// Preferences
 	optRes = bb.ReadInt(file)
 	optPopulation = bb.ReadInt(file)
@@ -72,7 +69,7 @@ LoadOptions :: proc() {
 /////////////////////////////// PROGRESS /////////////////////////////////
 //------------------------------------------------------------------------
 SaveProgress :: proc() {
-	filepath := fmt.aprintf("%sslot0%d/Progress.dat", DATA_FOLDER, slot)
+	filepath := fmt.aprintf("Data/Slot0%d/Progress.dat", slot)
 	defer delete(filepath)
 	file := bb.WriteFile(filepath)
 	// Status
@@ -137,7 +134,7 @@ SaveProgress :: proc() {
 
 
 LoadProgress :: proc() {
-	filepath := fmt.aprintf("%sslot0%d/Progress.dat", DATA_FOLDER, slot)
+	filepath := fmt.aprintf("Data/Slot0%d/Progress.dat", slot)
 	defer delete(filepath)
 	file := bb.ReadFile(filepath)
 	// Status
@@ -206,7 +203,9 @@ LoadProgress :: proc() {
 //------------------------------------------------------------------------
 SaveChars :: proc() {
 	for char in i32(1)..=no_chars {
-		filepath := fmt.aprintf("%sslot0%d/Character%s.dat", DATA_FOLDER, slot, Dig(char, 100))
+		digit := Dig(char, 100)
+		filepath := fmt.aprintf("Data/Slot0%d/Character%s.dat", slot, digit)
+		delete(digit)
 		defer delete(filepath)
 		file := bb.WriteFile(filepath)
 		// Appearance
@@ -270,7 +269,9 @@ SaveChars :: proc() {
 
 LoadChars :: proc() {
 	for char in i32(1)..=no_chars {
-		filepath := fmt.aprintf("%sslot0%d/Character%s.dat", DATA_FOLDER, slot, Dig(char, 100))
+		digit := Dig(char, 100)
+		filepath := fmt.aprintf("Data/Slot0%d/Character%s.dat", slot, digit)
+		delete(digit)
 		defer delete(filepath)
 		file := bb.ReadFile(filepath)
 		// Appearance
@@ -337,7 +338,9 @@ LoadPhotos :: proc() {
 	for char in i32(1)..=no_chars {
 		charPhoto[char] = 0
 		if charSnapped[char] > 0 {
-			path := fmt.aprintf("%sSlot0%s/Photo/Photo%s.bmp", DATA_FOLDER, slot, Dig(char, 100))
+			digit := Dig(char, 100)
+			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.bmp", slot, digit)
+			delete(digit)
 			defer delete(path)
 			charPhoto[char] = bb.LoadImage(path)
 			if charPhoto[char] > 0 do bb.MaskImage(charPhoto[char], 255, 0, 255)
@@ -351,7 +354,9 @@ SavePhotos :: proc() {
 	if charHealth[gamChar[slot]] > 0 do Loader("Please Wait","Saving Photos")
 	for char in i32(1)..=no_chars {
 		if charPhoto[char] > 0 {
-			path := fmt.aprintf("%sSlot0%s/Photo/Photo%s.bmp", DATA_FOLDER, slot, Dig(char, 100))
+			digit := Dig(char, 100)
+			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.bmp", slot, digit)
+			delete(digit)
 			defer delete(path)
 			bb.SaveImage(charPhoto[char], path)
 		}
@@ -363,7 +368,7 @@ SavePhotos :: proc() {
 //////////////////////////////// WEAPONS /////////////////////////////////
 //------------------------------------------------------------------------
 SaveItems :: proc() {
-	path := fmt.aprintf("%sSlot0%s/Items.dat", DATA_FOLDER, slot)
+	path := fmt.aprintf("Data/Slot0%s/Items.dat", slot)
 	defer delete(path)
 	file := bb.WriteFile(path)
 	// Weapons
@@ -391,7 +396,7 @@ SaveItems :: proc() {
 
 
 LoadItems :: proc() {
-	path := fmt.aprintf("%sSlot0%s/Items.dat", DATA_FOLDER, slot)
+	path := fmt.aprintf("Data/Slot0%s/Items.dat", slot)
 	defer delete(path)
 	file := bb.ReadFile(path)
 	// Weapons
@@ -431,7 +436,9 @@ GenerateGame :: proc() {
 		charRole[char] = 0; charLocation[char] = 0
 		charBlock[char] = 0; charCell[char] = 0
 		delete(charName[char])
-		charName[char] = fmt.aprintf("Character%s", Dig(char, 100))
+		digit := Dig(char, 100)
+		charName[char] = fmt.aprintf("Character%s", digit)
+		delete(digit)
 	}
 	gamChar[slot] = bb.RndI(no_wardens + 4, no_chars)
 	for char in 1..=no_chars {
@@ -734,7 +741,7 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
 			case 4:
 				weapX[cyc] = bb.RndF(40.0, 135.0); weapZ[cyc] = bb.RndF(-125.0, 105.0)
 			case 5:
-				weapX[cyc] = bb.Rnd(-140.0, 140.0); weapZ[cyc] = bb.Rnd(-140.0, 140.0)
+				weapX[cyc] = bb.RndF(-140.0, 140.0); weapZ[cyc] = bb.RndF(-140.0, 140.0)
 			}
 		}
 		// Hospital locations
@@ -789,7 +796,7 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
 				weapX[cyc] = bb.RndF(-70.0, -40.0); weapZ[cyc] = bb.RndF(10.0, 70.0)
 			}
 			if randy == 7 {
-				weapX[cyc] = bb.Rnd(0.0, 30.0); weapZ[cyc] = bb.Rnd(10.0, 70.0)
+				weapX[cyc] = bb.RndF(0.0, 30.0); weapZ[cyc] = bb.RndF(10.0, 70.0)
 			}
 		}
 	}
@@ -804,7 +811,9 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
 GenerateName :: proc(char: i32) -> string {
 	name: string
 	for {
-		name = fmt.aprintf("Character%s", Dig(char, 100))
+		digit := Dig(char, 100)
+		name = fmt.aprintf("Character%s", digit)
+		delete(digit)
 		// Inmate
 		if charRole[char] == 0 {
 			randy := bb.RndI(0, 1)

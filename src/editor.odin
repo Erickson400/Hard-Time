@@ -493,7 +493,9 @@ Editor :: proc() {
 //-----------------------------------------------------------------
 ReloadModel :: proc(cyc: i32) {
 	// sequences
-	p[cyc] = bb.LoadAnimMesh(fmt.tprintf("Characters/Models/Model%d.3ds", charModel[pChar[cyc]]))
+	path := fmt.aprintf("Characters/Models/Model%d.3ds", charModel[pChar[cyc]])
+	defer delete(path)
+	p[cyc] = bb.LoadAnimMesh(path)
 	pSeq[cyc][604] = bb.LoadAnimSeq(p[cyc], "Characters/Sequences/Standard04.3ds")
 	pSeq[cyc][1] = bb.ExtractAnimSeq(p[cyc], 770, 850, pSeq[cyc][604])
 	// position
@@ -533,7 +535,9 @@ GetLimbs :: proc(cyc: i32) {
 	pLimb[cyc][7] = bb.FindChild(p[cyc], "L_Thumb01")
 	pLimb[cyc][8] = bb.FindChild(p[cyc], "L_Thumb02")
 	for count in 1..=8 {
-		pLimb[cyc][8 + count] = bb.FindChild(p[cyc], fmt.tprintf("L_Finger0%d", count))
+		child_name := fmt.aprintf("L_Finger0%d", count)
+		pLimb[cyc][8 + count] = bb.FindChild(p[cyc], child_name)
+		delete(child_name)
 	}
 	// right arm
 	pLimb[cyc][17] = bb.FindChild(p[cyc], "R_Bicep")
@@ -542,7 +546,9 @@ GetLimbs :: proc(cyc: i32) {
 	pLimb[cyc][20] = bb.FindChild(p[cyc], "R_Thumb01")
 	pLimb[cyc][21] = bb.FindChild(p[cyc], "R_Thumb02")
 	for count in 1..=8 {
-		pLimb[cyc][21 + count] = bb.FindChild(p[cyc], fmt.tprintf("R_Finger0%d", count))
+		child_name := fmt.aprintf("R_Finger0%d", count)
+		pLimb[cyc][21 + count] = bb.FindChild(p[cyc], child_name)
+		delete(child_name)
 	}
 	// lower body
 	pLimb[cyc][30] = bb.FindChild(p[cyc], "Hips")
@@ -574,6 +580,7 @@ HandIntact :: proc(cyc: i32, limb: i32) -> i32 { // left=4, right=17
 
 
 // DESCRIBE LIMB
+// Returns a literal
 DescribeLimb :: proc(char: i32) -> string {
 	injury := "a limb"
 	// ears
@@ -615,23 +622,21 @@ DescribeLimb :: proc(char: i32) -> string {
 
 // DETERMINE RACE
 GetRace :: proc(char: i32) -> i32 {
-	value: i32 = 0
 	if charFace[char] >= 21 && charFace[char] <= 40 {
-		value = 1 // Asian
+		return 1 // Asian
 	}
 	if charFace[char] >= 41 && charFace[char] <= 60 {
-		value = 2 // Black
+		return 2 // Black
 	}
-	return value // 0 = White, 1 = Asian, 2 = Black
+	return 0 // 0 = White, 1 = Asian, 2 = Black
 }
 
 
 BaggyTop :: proc(costume: i32) -> i32 {
-	baggy: i32 = 0
 	if costume == 2 || costume == 4 || costume == 6 || costume == 8 {
-		baggy = 1
+		return 1
 	}
-	return baggy
+	return 0
 }
 
 
@@ -657,9 +662,9 @@ ApplyHairstyle :: proc(cyc: i32) {
 	// Hide all hair by default
 	char := pChar[cyc]
 	RemoveHair(cyc)
+	// determine style
 	showA, showB: i32 = 0, 0
 	hairerA, hairerB: string = "", ""
-
 	switch charHairStyle[char] {
 	case 2:  hairerA = "Hair_Bald";   showA = 1
 	case 3:  hairerA = "Hair_Thin";   showA = 1
@@ -674,23 +679,23 @@ ApplyHairstyle :: proc(cyc: i32) {
 	case 12: hairerA = "Hair_Spike";  showA = 1
 	case 13: hairerA = "Hair_Punk";   showA = 1
 	case 14: hairerA = "Hair_Rolls";  showA = 1
-	case 15: hairerA = "Hair_Bald";   hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 16: hairerA = "Hair_Thin";   hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 17: hairerA = "Hair_Short";  hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 18: hairerA = "Hair_Raise";  hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 19: hairerA = "Hair_Quiff";  hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 20: hairerA = "Hair_Mop";    hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 21: hairerA = "Hair_Thick";  hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 22: hairerA = "Hair_Curl";   hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 23: hairerA = "Hair_Punk";   hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 24: hairerA = "Hair_Rolls";  hairerB = "Hair_Pony";   showA = 1; showB = 1
-	case 25: hairerA = "Hair_Bald";   hairerB = "Hair_Long";   showA = 1; showB = 1
-	case 26: hairerA = "Hair_Thin";   hairerB = "Hair_Long";   showA = 1; showB = 1
-	case 27: hairerA = "Hair_Short";  hairerB = "Hair_Long";   showA = 1; showB = 1
-	case 28: hairerA = "Hair_Raise";  hairerB = "Hair_Long";   showA = 1; showB = 1
-	case 29: hairerA = "Hair_Quiff";  hairerB = "Hair_Long";   showA = 1; showB = 1
-	case 30: hairerA = "Hair_Mop";    hairerB = "Hair_Long";   showA = 1; showB = 1
-	case 31: hairerA = "Hair_Thick";  hairerB = "Hair_Long";   showA = 1; showB = 1
+	case 15: hairerA = "Hair_Bald";   hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 16: hairerA = "Hair_Thin";   hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 17: hairerA = "Hair_Short";  hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 18: hairerA = "Hair_Raise";  hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 19: hairerA = "Hair_Quiff";  hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 20: hairerA = "Hair_Mop";    hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 21: hairerA = "Hair_Thick";  hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 22: hairerA = "Hair_Curl";   hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 23: hairerA = "Hair_Punk";   hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 24: hairerA = "Hair_Rolls";  hairerB = "Hair_Pony";  showA = 1; showB = 1
+	case 25: hairerA = "Hair_Bald";   hairerB = "Hair_Long";  showA = 1; showB = 1
+	case 26: hairerA = "Hair_Thin";   hairerB = "Hair_Long";  showA = 1; showB = 1
+	case 27: hairerA = "Hair_Short";  hairerB = "Hair_Long";  showA = 1; showB = 1
+	case 28: hairerA = "Hair_Raise";  hairerB = "Hair_Long";  showA = 1; showB = 1
+	case 29: hairerA = "Hair_Quiff";  hairerB = "Hair_Long";  showA = 1; showB = 1
+	case 30: hairerA = "Hair_Mop";    hairerB = "Hair_Long";  showA = 1; showB = 1
+	case 31: hairerA = "Hair_Thick";  hairerB = "Hair_Long";  showA = 1; showB = 1
 	}
 	// Tuck hair under hat
 	if charAccessory[char] == 2 || charAccessory[char] == 7 {
@@ -706,7 +711,7 @@ ApplyHairstyle :: proc(cyc: i32) {
 	}
 	// Compose hair
 	if charHairStyle[char] > 1 {
-		//randy := bb.Rnd(1, 3) // Unused
+		//randy := bb.RndI(1, 3) // Unused
 		if showA == 1 {
 			bb.EntityAlpha(bb.FindChild(p[cyc], hairerA), 1)
 			bb.EntityTexture(bb.FindChild(p[cyc], hairerA), tHair[charHair[char]], 0, 1)
@@ -736,10 +741,12 @@ ApplyEyewear :: proc(cyc: i32) {
 		bb.ShowEntity(bb.FindChild(p[cyc], "Specs"))
 		bb.EntityShininess(bb.FindChild(p[cyc], "Specs"), 0.5)
 		for count in 1..=2 {
-			bb.ShowEntity(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)))
-			bb.EntityColor(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 255, 255, 255)
-			bb.EntityAlpha(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 0.35)
-			bb.EntityShininess(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 1)
+			lens := fmt.aprintf("Lens0%d", count)
+			bb.ShowEntity(bb.FindChild(p[cyc], lens))
+			bb.EntityColor(bb.FindChild(p[cyc], lens), 255, 255, 255)
+			bb.EntityAlpha(bb.FindChild(p[cyc], lens), 0.35)
+			bb.EntityShininess(bb.FindChild(p[cyc], lens), 1)
+			delete(lens)
 		}
 		// golden frame
 		if charSpecs[char] == 1 {
@@ -757,8 +764,10 @@ ApplyEyewear :: proc(cyc: i32) {
 		if charSpecs[char] == 4 {
 			bb.EntityTexture(bb.FindChild(p[cyc], "Specs"), tSpecs[3])
 			for count in 1..=2 {
-				bb.EntityColor(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 0, 0, 0)
-				bb.EntityAlpha(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", count)), 0.75)
+				lens := fmt.aprintf("Lens0%d", count)
+				bb.EntityColor(bb.FindChild(p[cyc], lens), 0, 0, 0)
+				bb.EntityAlpha(bb.FindChild(p[cyc], lens), 0.75)
+				delete(lens)
 			}
 		}
 	}
@@ -776,18 +785,14 @@ ApplyAccessories :: proc(cyc: i32) {
 	bb.HideEntity(bb.FindChild(p[cyc], "Armband"))
 	bb.HideEntity(bb.FindChild(p[cyc], "Cap"))
 	// turban
-	if charAccessory[char] == 2 {
-		bb.ShowEntity(bb.FindChild(p[cyc], "Turban"))
-	}
+	if charAccessory[char] == 2 do bb.ShowEntity(bb.FindChild(p[cyc], "Turban"))
 	// bling
 	if charAccessory[char] == 3 {
 		bb.EntityShininess(bb.FindChild(p[cyc], "Bling"), 1.0)
 		bb.ShowEntity(bb.FindChild(p[cyc], "Bling"))
 	}
 	// tie
-	if charAccessory[char] == 4 {
-		bb.ShowEntity(bb.FindChild(p[cyc], "Tie"))
-	}
+	if charAccessory[char] == 4 do bb.ShowEntity(bb.FindChild(p[cyc], "Tie"))
 	// headband
 	if charAccessory[char] == 5 {
 		bb.ShowEntity(bb.FindChild(p[cyc], "BandA"))
@@ -797,13 +802,9 @@ ApplyAccessories :: proc(cyc: i32) {
 		}
 	}
 	// armband
-	if charAccessory[char] == 6 {
-		bb.ShowEntity(bb.FindChild(p[cyc], "Armband"))
-	}
+	if charAccessory[char] == 6 do bb.ShowEntity(bb.FindChild(p[cyc], "Armband"))
 	// cap
-	if charAccessory[char] == 7 {
-		bb.ShowEntity(bb.FindChild(p[cyc], "Cap"))
-	}
+	if charAccessory[char] == 7 do bb.ShowEntity(bb.FindChild(p[cyc], "Cap"))
 }
 
 
@@ -917,9 +918,9 @@ GangAdjust :: proc(char: i32) {
 	if charRole[char] == 0 do charAccessory[char] = charGang[char]
 	// skinhead & shades
 	if charGang[char] == 1 && charHairStyle[char] > 1 {
-		charHairStyle[char] = bb.Rnd(0, 1)
+		charHairStyle[char] = bb.RndI(0, 1)
 		charSpecs[char] = 4
 	} 
 	// chest vest for thug
-	if charGang[char] == 5 && charCostume[char] > 2 do charCostume[char] = bb.Rnd(0, 2)
+	if charGang[char] == 5 && charCostume[char] > 2 do charCostume[char] = bb.RndI(0, 2)
 }

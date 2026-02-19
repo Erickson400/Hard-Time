@@ -18,7 +18,7 @@ lines_translated% =  scored_rows_total / total_line_count
 | Data.bb         | Feb 15, 2026      | 10/10    | 774           |
 | Functions.bb    | Feb 16, 2026      | 10/10    | 289           |
 | Menus.bb        | Feb 18, 2026      | 10/10    | 731           |
-| Editor.bb       | Sep 27, 2025      | 5/10     | 702           |
+| Editor.bb       | Feb 19, 2025      | 10/10    | 702           |
 | World.bb        | Oct 19, 2025      | 5/10     | 1172          |
 | Weapons.bb      | Nov 16, 2025      | 8/10     | 625           |
 | Particles.bb    | Nov 17, 2025      | 8/10     | 367           |

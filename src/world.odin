@@ -260,22 +260,22 @@ ManageAtmos :: proc() {
 			charSentence[char] -= 1
 			if charSentence[char] < 0 do charSentence[char] = 0
 			if char != gamChar[slot] && charLocation[char] > 0 {
-				v := bb.Rnd(1, no_chars)
+				v := bb.RndI(1, no_chars)
 				if char != v  { 
 					// NOTE: This might be an error since Basic functions always return 0 if assigned
 					// to something. In this code it overwrites charRelation to 0 so it does nothing.
-					ChangeRelationship(char, v, bb.Rnd(-1, 1))
+					ChangeRelationship(char, v, bb.RndI(-1, 1))
 					charRelation[char][v] = 0
 				}
-				charStrength[char] += bb.Rnd(-2, 2)
-				charAgility[char] += bb.Rnd(-2, 2)
+				charStrength[char] += bb.RndI(-2, 2)
+				charAgility[char] += bb.RndI(-2, 2)
 				if charRole[char] == 1 {
-					charHappiness[char] = bb.Rnd(50, 100)
+					charHappiness[char] = bb.RndI(50, 100)
 				} else {
-					charHappiness[char] = bb.Rnd(10, 100)
+					charHappiness[char] = bb.RndI(10, 100)
 				}
-				charIntelligence[char] += bb.Rnd(-2, 2)
-				charReputation[char] += bb.Rnd(-2, 2)
+				charIntelligence[char] += bb.RndI(-2, 2)
+				charReputation[char] += bb.RndI(-2, 2)
 				LimitStats(char)
 			}
 		}
@@ -313,7 +313,7 @@ ManageAtmos :: proc() {
 			if gamLocation[slot] != 8 || pSeat[gamPlayer[slot]] == 0 do TriggerPromo(0, 0, 27)
 		}
 		for tray in i32(1)..=50 {
-			trayState[tray] = bb.Rnd(1, 7)
+			trayState[tray] = bb.RndI(1, 7)
 		}
 	}
 	// eat into trays
@@ -332,10 +332,10 @@ ManageAtmos :: proc() {
 		for cyc in i32(1)..=6 {
 			cyc2 += 1
 			for {
-				kitType[cyc] = bb.Rnd(1, weapList)
+				kitType[cyc] = bb.RndI(1, weapList)
 				if weapCreate[kitType[cyc]] == 1 do break
 			}
-			randy := bb.Rnd(0, 2)
+			randy := bb.RndI(0, 2)
 			if randy <= 1 {
 				kitState[cyc] = 1
 			} else {
@@ -344,10 +344,10 @@ ManageAtmos :: proc() {
 		}
 		for char in i32(1)..=no_chars {
 			if char != gamChar[slot] && charLocation[char] > 0 {
-				charHealth[char] += bb.Rnd(10, 100)
+				charHealth[char] += bb.RndI(10, 100)
 				if charHealth[char] > 100 do charHealth[char] = 100
-				randy := bb.Rnd(0, 10000)
-				if randy == 0 && charInjured[char] == 0 do charInjured[char] = bb.Rnd(1000, 80000)
+				randy := bb.RndI(0, 10000)
+				if randy == 0 && charInjured[char] == 0 do charInjured[char] = bb.RndI(1000, 80000)
 			}
 		}
 		for v in i32(1)..=no_plays {
@@ -968,122 +968,122 @@ RelocateChars :: proc() {
 			if target > 0 && target != source {
 				//north >>> hall
 				if source == 1 && target == 9 {
-					charX[char] = bb.Rnd(-200.0, -100.0)
-					charZ[char] = bb.Rnd(230.0, 280.0)
+					charX[char] = bb.RndF(-200.0, -100.0)
+					charZ[char] = bb.RndF(230.0, 280.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(135.0, 225.0)
+					charA[char] = bb.RndF(135.0, 225.0)
 				}
 				//yard >>> hall
 				if source == 2 && target == 9 {
-					charX[char] = bb.Rnd(100.0, 200.0)
-					charZ[char] = bb.Rnd(230.0, 280.0)
+					charX[char] = bb.RndF(100.0, 200.0)
+					charZ[char] = bb.RndF(230.0, 280.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(135.0, 225.0)
+					charA[char] = bb.RndF(135.0, 225.0)
 				}
 				//east >>> hall
 				if source == 3 && target == 9 {
-					charX[char] = bb.Rnd(230.0, 280.0)
-					charZ[char] = bb.Rnd(100.0, 200.0)
+					charX[char] = bb.RndF(230.0, 280.0)
+					charZ[char] = bb.RndF(100.0, 200.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(45.0, 135.0)
+					charA[char] = bb.RndF(45.0, 135.0)
 				}
 				//study >>> hall
 				if (source == 4 || source == 10) && target == 9 {
-					charX[char] = bb.Rnd(230.0, 280.0)
-					charZ[char] = bb.Rnd(-200.0, -100.0)
+					charX[char] = bb.RndF(230.0, 280.0)
+					charZ[char] = bb.RndF(-200.0, -100.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(45.0, 135.0)
+					charA[char] = bb.RndF(45.0, 135.0)
 				}
 				//study >>> workshop
 				if target == 10 {
-					charX[char] = bb.Rnd(-25.0, 25.0)
-					charZ[char] = bb.Rnd(-105.0, -55.0)
+					charX[char] = bb.RndF(-25.0, 25.0)
+					charZ[char] = bb.RndF(-105.0, -55.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//south >>> hall
 				if source == 5 && target == 9 {
-					charX[char] = bb.Rnd(100.0, 200.0)
-					charZ[char] = bb.Rnd(-280.0, -230.0)
+					charX[char] = bb.RndF(100.0, 200.0)
+					charZ[char] = bb.RndF(-280.0, -230.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//hospital >>> hall
 				if (source == 6 || source == 11) && target == 9 {
-					charX[char] = bb.Rnd(-200.0, -100.0)
-					charZ[char] = bb.Rnd(-280.0, -230.0)
+					charX[char] = bb.RndF(-200.0, -100.0)
+					charZ[char] = bb.RndF(-280.0, -230.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//hospital >>> toilets
 				if target == 11 {
-					charX[char] = bb.Rnd(40.0, 140.0)
-					charZ[char] = bb.Rnd(-55.0, -5.0)
+					charX[char] = bb.RndF(40.0, 140.0)
+					charZ[char] = bb.RndF(-55.0, -5.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//west >>> hall
 				if source == 7 && target == 9 {
-					charX[char] = bb.Rnd(-280.0, -230.0)
-					charZ[char] = bb.Rnd(-200.0, -100.0)
+					charX[char] = bb.RndF(-280.0, -230.0)
+					charZ[char] = bb.RndF(-200.0, -100.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(225.0, 315.0)
+					charA[char] = bb.RndF(225.0, 315.0)
 				}
 				//kitchen >>> hall
 				if source == 8 && target == 9 {
-					charX[char] = bb.Rnd(-280.0, -230.0)
-					charZ[char] = bb.Rnd(100.0, 200.0)
+					charX[char] = bb.RndF(-280.0, -230.0)
+					charZ[char] = bb.RndF(100.0, 200.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(225.0, 315.0)
+					charA[char] = bb.RndF(225.0, 315.0)
 				}
 				//hall >>> block
 				if GetBlock(target) > 0 {
-					charX[char] = bb.Rnd(-50.0, 50.0)
-					charZ[char] = bb.Rnd(-325.0, -275.0)
+					charX[char] = bb.RndF(-50.0, 50.0)
+					charZ[char] = bb.RndF(-325.0, -275.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//hall >>> yard
 				if target == 2 {
-					charX[char] = bb.Rnd(30.0, 130.0)
-					charZ[char] = bb.Rnd(215.0, 265.0)
+					charX[char] = bb.RndF(30.0, 130.0)
+					charZ[char] = bb.RndF(215.0, 265.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//hall >>> study
 				if source != 10 && target == 4 {
-					charX[char] = bb.Rnd(-45.0, 55.0)
-					charZ[char] = bb.Rnd(-130.0, -80.0)
+					charX[char] = bb.RndF(-45.0, 55.0)
+					charZ[char] = bb.RndF(-130.0, -80.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//hall >>> hospital
 				if source != 11 && target == 6 {
-					charX[char] = bb.Rnd(-50.0, 50.0)
-					charZ[char] = bb.Rnd(-130.0, -80.0)
+					charX[char] = bb.RndF(-50.0, 50.0)
+					charZ[char] = bb.RndF(-130.0, -80.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//hall >>> kitchen
 				if target == 8 {
-					charX[char] = bb.Rnd(-50.0, 50.0)
-					charZ[char] = bb.Rnd(-330.0, -180.0)
+					charX[char] = bb.RndF(-50.0, 50.0)
+					charZ[char] = bb.RndF(-330.0, -180.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(-45.0, 45.0)
+					charA[char] = bb.RndF(-45.0, 45.0)
 				}
 				//workshop >>> study
 				if source == 10 && target == 4 {
-					charX[char] = bb.Rnd(85.0, 135.0)
-					charZ[char] = bb.Rnd(-25.0, 25.0)
+					charX[char] = bb.RndF(85.0, 135.0)
+					charZ[char] = bb.RndF(-25.0, 25.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(45.0, 135.0)
+					charA[char] = bb.RndF(45.0, 135.0)
 				}
 				//toilet >>> hospital
 				if source == 11 && target == 10 {
-					charX[char] = bb.Rnd(-50.0, 50.0)
-					charZ[char] = bb.Rnd(80.0, 130.0)
+					charX[char] = bb.RndF(-50.0, 50.0)
+					charZ[char] = bb.RndF(80.0, 130.0)
 					charY[char] = 20
-					charA[char] = bb.Rnd(135.0, 225.0)
+					charA[char] = bb.RndF(135.0, 225.0)
 				}
 				//place inside cell
 				if charRole[char] == 0 && bool(LockDown()) && GetBlock(target) > 0 && target != gamLocation[slot] {
