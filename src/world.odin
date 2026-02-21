@@ -1,11 +1,12 @@
 package main
+
+import "core:fmt"
+import "core:mem"
+import bb "blitzbasic3d"
+
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------ HARD TIME: WORLD ------------------------------
 ////////////////////////////////////////////////////////////////////////////////
-
-import "core:fmt"
-import bb "blitzbasic3d"
-
 
 SetCollisions :: proc() {
 	// entity physics
@@ -24,6 +25,12 @@ SetCollisions :: proc() {
 /////////////////////////// LOAD TERRAIN /////////////////////////////
 //--------------------------------------------------------------------
 LoadWorld :: proc() {
+	arena_mem := make([]byte, 1 * mem.Kilobyte)
+	defer delete(arena_mem)
+	arena: mem.Arena
+	mem.arena_init(&arena, arena_mem)
+	arena_alloc := mem.arena_allocator(&arena)
+
 	// Prison block
 	if GetBlock(gamLocation[slot]) > 0 {
 		world = bb.LoadAnimMesh("World/Block/Block.3ds")
@@ -31,26 +38,29 @@ LoadWorld :: proc() {
 		bb.Animate(world, 3, 10)
 		cellLocked[gamLocation[slot]][0] = 0
 		for count in i32(1)..=20 {
+			digit := Dig(count,10)
 			switch gamLocation[slot] {
 			case 1:
-				bb.EntityTexture(bb.FindChild(world, fmt.tprint("Plate", Dig(count,10))), tBlock[1], 0, 2)
+				bb.EntityTexture(bb.FindChild(world, fmt.aprint("Plate", digit, allocator = arena_alloc)), tBlock[1], 0, 2)
 			case 3:
-				bb.EntityTexture(bb.FindChild(world, fmt.tprint("Plate", Dig(count,10))), tBlock[2], 0, 2)
+				bb.EntityTexture(bb.FindChild(world, fmt.aprint("Plate", digit, allocator = arena_alloc)), tBlock[2], 0, 2)
 			case 5:
-				bb.EntityTexture(bb.FindChild(world, fmt.tprint("Plate", Dig(count,10))), tBlock[3], 0, 2)
+				bb.EntityTexture(bb.FindChild(world, fmt.aprint("Plate", digit, allocator = arena_alloc)), tBlock[3], 0, 2)
 			case 7:
-				bb.EntityTexture(bb.FindChild(world, fmt.tprint("Plate", Dig(count,10))), tBlock[4], 0, 2)
+				bb.EntityTexture(bb.FindChild(world, fmt.aprint("Plate", digit, allocator = arena_alloc)), tBlock[4], 0, 2)
 			}
-			bb.EntityTexture(bb.FindChild(world, fmt.tprint("Plate", Dig(count,10))), tCell[count], 0, 3)
-			bb.EntityType(bb.FindChild(world, fmt.tprint("Door", Dig(count,10))), 11, 0)
-			bb.EntityType(bb.FindChild(world, fmt.tprint("Plate", Dig(count,10))), 11, 0)
-			bb.EntityType(bb.FindChild(world, fmt.tprint("Bars", Dig(count,10))), 11, 0)
+			bb.EntityTexture(bb.FindChild(world, fmt.aprint("Plate", digit, allocator = arena_alloc)), tCell[count], 0, 3)
+			bb.EntityType(bb.FindChild(world, fmt.aprint("Door", digit, allocator = arena_alloc)), 11, 0)
+			bb.EntityType(bb.FindChild(world, fmt.aprint("Plate", digit, allocator = arena_alloc)), 11, 0)
+			bb.EntityType(bb.FindChild(world, fmt.aprint("Bars", digit, allocator = arena_alloc)), 11, 0)
 			cellLocked[gamLocation[slot]][count] = 0
+			delete(digit)
 		}
 		bb.EntityTexture(bb.FindChild(world, "Sign01"), tSign[9], 0, 2)
 		bb.EntityTexture(bb.FindChild(world, "Sign02"), tSign[gamLocation[slot]], 0, 2)
 		no_chars, no_beds, no_doors = 0, 20, 1
 		sAtmos = bb.LoadSound("Sound/Ambience/Quiet.wav")
+		mem.arena_free_all(&arena)
 	}
 	// Exercise yard
 	if gamLocation[slot] == 2 {
@@ -61,7 +71,7 @@ LoadWorld :: proc() {
 		bb.EntityType(bb.FindChild(world, "Net"), 0)
 		bb.EntityType(bb.FindChild(world, "Rim"), 0)
 		for count in i32(1)..=2 {
-			bb.EntityTexture(bb.FindChild(world, fmt.tprint("Fence0", Dig(count,10))), tFence)
+			bb.EntityTexture(bb.FindChild(world, fmt.aprint("Fence0", Dig(count,10, arena_alloc), allocator = arena_alloc)), tFence)
 		}
 		no_chars, no_beds, no_doors = 6, 0, 1
 		sAtmos = bb.LoadSound("Sound/Ambience/Yard.wav")
@@ -84,11 +94,14 @@ LoadWorld :: proc() {
 		bb.EntityTexture(bb.FindChild(world, "Sign02"), tSign[11], 0, 2)
 		bb.EntityFX(bb.FindChild(world, "Screen"), 9)
 		for count in i32(1)..=4 {
-			bb.EntityAlpha(bb.FindChild(world, fmt.tprint("Beaker0", Dig(count,10))), 0.7)
-			bb.EntityAlpha(bb.FindChild(world, fmt.tprint("Water0", Dig(count,10))), 0.5)
+			digit := Dig(count,10)
+			bb.EntityAlpha(bb.FindChild(world, fmt.aprint("Beaker0", digit, allocator = arena_alloc)), 0.7)
+			bb.EntityAlpha(bb.FindChild(world, fmt.aprint("Water0", digit, allocator = arena_alloc)), 0.5)
+			delete(digit)
 		}
 		no_chars, no_beds, no_doors = 9, 3, 2
 		sAtmos = bb.LoadSound("Sound/Ambience/Hall.wav")
+		mem.arena_free_all(&arena)
 	}
 	// Kitchen
 	if gamLocation[slot] == 8 {
@@ -96,37 +109,41 @@ LoadWorld :: proc() {
 		bb.EntityType(world, 10, 1)
 		bb.EntityTexture(bb.FindChild(world, "Sign01"), tSign[9], 0, 2)
 		for count in i32(1)..=4 {
-			bb.EntityAlpha(bb.FindChild(world, fmt.tprint("Window0", Dig(count,10))), 0.5)
+			bb.EntityAlpha(bb.FindChild(world, fmt.aprint("Window0", Dig(count,10, arena_alloc), allocator = arena_alloc)), 0.5)
 		}
 		for tray in i32(1)..=50 {
 			trayOldState[tray] = -1
 		}
 		no_chars, no_beds, no_doors = 45, 0, 1
 		sAtmos = bb.LoadSound("Sound/Ambience/Canteen.wav")
+		mem.arena_free_all(&arena)
 	}
 	// Main hall
 	if gamLocation[slot] == 9 {
 		world = bb.LoadAnimMesh("World/Hall/Hall.3ds")
 		bb.EntityType(world, 10, 1)
 		for count in i32(1)..=8 {
-			bb.EntityTexture(bb.FindChild(world, fmt.tprint("Sign", Dig(count,10))), tSign[count], 0, 2)
+			bb.EntityTexture(bb.FindChild(world, fmt.aprint("Sign", Dig(count,10, arena_alloc), allocator = arena_alloc)), tSign[count], 0, 2)
 		}
 		for count in i32(1)..=9 {
-			bb.EntityShininess(bb.FindChild(world, fmt.tprint("Ball", Dig(count,10))), 1.0)
+			bb.EntityShininess(bb.FindChild(world, fmt.aprint("Ball", Dig(count,10, arena_alloc), allocator = arena_alloc)), 1.0)
 		}
 		bb.EntityFX(bb.FindChild(world, "TV"), 9)
 		bb.EntityFX(bb.FindChild(world, "Screen"), 9)
 		for count in i32(1)..=4 {
-			bb.EntityAlpha(bb.FindChild(world, fmt.tprint("Alarm", Dig(count,10))), 0.8)
-			bb.EntityShininess(bb.FindChild(world, fmt.tprint("Alarm", Dig(count,10))), 1.0)
-			bb.EntityColor(bb.FindChild(world, fmt.tprint("Alarm", Dig(count,10))), 5, 0, 0)
-			bb.EntityShininess(bb.FindChild(world, fmt.tprint("Phone", Dig(count,10))), 1.0)
-			phoneX[count] = bb.EntityX(bb.FindChild(world, fmt.tprint("Phone", Dig(count,10))), 1)
-			phoneY[count] = bb.EntityY(bb.FindChild(world, fmt.tprint("Phone", Dig(count,10))), 1)
-			phoneZ[count] = bb.EntityZ(bb.FindChild(world, fmt.tprint("Phone", Dig(count,10))), 1)
+			digit := Dig(count,10)
+			bb.EntityAlpha(bb.FindChild(world, fmt.aprint("Alarm", digit, allocator = arena_alloc)), 0.8)
+			bb.EntityShininess(bb.FindChild(world, fmt.aprint("Alarm", digit, allocator = arena_alloc)), 1.0)
+			bb.EntityColor(bb.FindChild(world, fmt.aprint("Alarm", digit, allocator = arena_alloc)), 5, 0, 0)
+			bb.EntityShininess(bb.FindChild(world, fmt.aprint("Phone", digit, allocator = arena_alloc)), 1.0)
+			phoneX[count] = bb.EntityX(bb.FindChild(world, fmt.aprint("Phone", digit, allocator = arena_alloc)), 1)
+			phoneY[count] = bb.EntityY(bb.FindChild(world, fmt.aprint("Phone", digit, allocator = arena_alloc)), 1)
+			phoneZ[count] = bb.EntityZ(bb.FindChild(world, fmt.aprint("Phone", digit, allocator = arena_alloc)), 1)
+			delete(digit)
 		}
 		no_chars, no_beds, no_doors = 8, 0, 8
 		sAtmos = bb.LoadSound("Sound/Ambience/Hall.wav")
+		mem.arena_free_all(&arena)
 	}
 	// Workshop
 	if gamLocation[slot] == 10 {
@@ -135,9 +152,9 @@ LoadWorld :: proc() {
 		bb.EntityTexture(bb.FindChild(world, "Sign01"), tSign[4], 0, 2)
 		no_chars, no_beds, no_doors = 6, 0, 1
 		for cyc in i32(1)..=6 {
-			kit[cyc] = bb.LoadAnimMesh(fmt.tprint("Weapons/", weapFile[kitType[cyc]], " Kit.3ds"))
+			kit[cyc] = bb.LoadAnimMesh(fmt.aprint("Weapons/", weapFile[kitType[cyc]], " Kit.3ds", allocator = arena_alloc))
 			bb.ScaleEntity(kit[cyc], 0.4, 0.4, 0.4)
-			limb := bb.FindChild(world, fmt.tprint("Table", Dig(cyc,10)))
+			limb := bb.FindChild(world, fmt.aprint("Table", Dig(cyc,10, arena_alloc), allocator = arena_alloc))
 			bb.PositionEntity(kit[cyc], bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1))
 			if cyc >= 5 {
 				bb.RotateEntity(kit[cyc], 0, 90, 0)
@@ -147,11 +164,10 @@ LoadWorld :: proc() {
 					bb.EntityTexture(bb.GetChild(kit[cyc], count), weapTex[kitType[cyc]])
 				}
 			}
-			if kitState[cyc] == 0 {
-				bb.HideEntity(kit[cyc])
-			}
+			if kitState[cyc] == 0 do bb.HideEntity(kit[cyc])
 		}
 		sAtmos = bb.LoadSound("Sound/Ambience/Quiet.wav")
+		mem.arena_free_all(&arena)
 	}
 	// Toilets
 	if gamLocation[slot] == 11 {
@@ -159,16 +175,17 @@ LoadWorld :: proc() {
 		bb.EntityType(world, 10, 1)
 		bb.EntityTexture(bb.FindChild(world, "Sign01"), tSign[6], 0, 2)
 		for count in i32(1)..=5 {
-			bb.EntityType(bb.FindChild(world, fmt.tprint("Door", Dig(count,10))), 11, 0)
-			bb.EntityAlpha(bb.FindChild(world, fmt.tprint("Water", Dig(count,10))), 0.5)
+			bb.EntityType(bb.FindChild(world, fmt.aprint("Door", Dig(count,10, arena_alloc), allocator = arena_alloc)), 11, 0)
+			bb.EntityAlpha(bb.FindChild(world, fmt.aprint("Water", Dig(count,10, arena_alloc), allocator = arena_alloc)), 0.5)
 		}
 		for count in i32(1)..=4 {
-			bb.EntityType(bb.FindChild(world, fmt.tprint("Shower", Dig(count,10))), 0, 0)
-			bb.EntityTexture(bb.FindChild(world, fmt.tprint("Shower", Dig(count,10))), tShower)
-			bb.EntityAlpha(bb.FindChild(world, fmt.tprint("Shower", Dig(count,10))), 0.6)
+			bb.EntityType(bb.FindChild(world, fmt.aprint("Shower", Dig(count,10, arena_alloc), allocator = arena_alloc)), 0, 0)
+			bb.EntityTexture(bb.FindChild(world, fmt.aprint("Shower", Dig(count,10, arena_alloc), allocator = arena_alloc)), tShower)
+			bb.EntityAlpha(bb.FindChild(world, fmt.aprint("Shower", Dig(count,10, arena_alloc), allocator = arena_alloc)), 0.6)
 		}
 		no_chars, no_beds, no_doors = 5, 0, 1
 		sAtmos = bb.LoadSound("Sound/Ambience/Bathroom.wav")
+		mem.arena_free_all(&arena)
 	}
 	// Reset screen
 	wOldScreen = -1
@@ -190,12 +207,11 @@ LoadAtmos :: proc() {
 	camPivot = bb.CreatePivot()
 	bb.PositionEntity(camPivot, camPivX, camPivY, camPivZ)
 	// fog effect
-	if gamLocation[slot] == 2 {
-		bb.CameraRange(cam, 1, 2000)
-	}
+	if gamLocation[slot] == 2 do bb.CameraRange(cam, 1, 2000)
 	bb.CameraFogMode(cam, optFog)
 	bb.CameraFogRange(cam, 400, 1000)
-	if gamLocation[slot] == 4 || gamLocation[slot] == 6 || gamLocation[slot] == 10 || gamLocation[slot] == 11 {
+	switch gamLocation[slot] {
+	case 4, 6, 10, 11: 
 		bb.CameraFogRange(cam, 250, 1000)
 	}
 	// additional
@@ -213,7 +229,9 @@ LoadLighting :: proc() {
 	// use lights in scene
 	no_lights = 0
 	for count in i32(1)..=10 {
-		limb := bb.FindChild(world, fmt.tprint("Light", Dig(count,10)))
+		digit := Dig(count,10)
+		light_string := fmt.aprint("Light", digit)
+		limb := bb.FindChild(world, light_string)
 		if limb > 0 {
 			no_lights += 1
 			light[no_lights] = bb.CreateLight(3)
@@ -224,6 +242,8 @@ LoadLighting :: proc() {
 			bb.EntityFX(limb, 9)
 			bb.EntityShininess(limb, 1.0)
 		}
+		delete(digit)
+		delete(light_string)
 	}
 	// last resort
 	if no_lights == 0 {
@@ -262,9 +282,13 @@ ManageAtmos :: proc() {
 			if char != gamChar[slot] && charLocation[char] > 0 {
 				v := bb.RndI(1, no_chars)
 				if char != v  { 
-					// NOTE: This might be an error since Basic functions always return 0 if assigned
-					// to something. In this code it overwrites charRelation to 0 so it does nothing.
-					ChangeRelationship(char, v, bb.RndI(-1, 1))
+					// NOTE: Likely a bug. Functions in Basic that don't return a value
+					// are interpreted as returning 0 if assigned to a variable.
+					// In this code it overwrites the charRelation element to 0 since ChangeRelationship
+					// returns nothing. The intended code might've been calling ChangeRelationship
+					// without the assignment.
+
+					//ChangeRelationship(char, v, bb.RndI(-1, 1))
 					charRelation[char][v] = 0
 				}
 				charStrength[char] += bb.RndI(-2, 2)
@@ -294,7 +318,8 @@ ManageAtmos :: proc() {
 		if gamHours[slot] == 22 {
 			ProduceSound(cam, sBuzzer, 22050, 1)
 			statTim[5] = 50
-			if InsideCell(pX[gamPlayer[slot]], pY[gamPlayer[slot]], pZ[gamPlayer[slot]]) != charCell[gamChar[slot]] || gamLocation[slot] != TranslateBlock(charBlock[gamChar[slot]]) {
+			if InsideCell(pX[gamPlayer[slot]], pY[gamPlayer[slot]], pZ[gamPlayer[slot]]) != charCell[gamChar[slot]] || 
+			gamLocation[slot] != TranslateBlock(charBlock[gamChar[slot]]) {
 				if gamPromo == 0 && pAnim[gamPlayer[slot]] != 76 && pAnim[gamPlayer[slot]] != 77 {
 					TriggerPromo(0, 0, 25)
 				}
@@ -328,19 +353,22 @@ ManageAtmos :: proc() {
 	}
 	// morning effects
 	if gamHours[slot] == 7 && gamMins[slot] == 0 && gamSecs[slot] == 0 {
-		cyc2: i32 = 1 // In blitz, cyc is in the function scope, and mat is using it further down
+		// NOTE: Likely a bug. Mat uses the cyc local variable again at the last loop
+		// of this if statement. Any variable used in a Basic function becomes a local variable
+		// of that function. After the loop below finishes using cyc, it will be 6 till the
+		// function exits. I made a variable called cyc2 to replicate this behaviour.
+		// The intended code might've been to use the v index instead of cyc for the last loop
+		// in this scope.
+		
+		cyc2: i32
 		for cyc in i32(1)..=6 {
-			cyc2 += 1
 			for {
 				kitType[cyc] = bb.RndI(1, weapList)
 				if weapCreate[kitType[cyc]] == 1 do break
 			}
 			randy := bb.RndI(0, 2)
-			if randy <= 1 {
-				kitState[cyc] = 1
-			} else {
-				kitState[cyc] = 0
-			}
+			kitState[cyc] = 1 if randy <= 1 else 0
+			cyc2 = cyc
 		}
 		for char in i32(1)..=no_chars {
 			if char != gamChar[slot] && charLocation[char] > 0 {
@@ -350,7 +378,7 @@ ManageAtmos :: proc() {
 				if randy == 0 && charInjured[char] == 0 do charInjured[char] = bb.RndI(1000, 80000)
 			}
 		}
-		for v in i32(1)..=no_plays {
+		for v in 1..=no_plays {
 			if pChar[v] != gamChar[slot] {
 				pHealth[v] = f32(charHealth[pChar[cyc2]])
 				pInjured[v] = charInjured[pChar[cyc2]]
@@ -412,14 +440,18 @@ ManageAtmos :: proc() {
 	if lightB < lightTB do lightB += changer
 	if lightB > lightTB do lightB -= changer
 	for count in i32(1)..=no_lights {
+		digit := Dig(count,10)
+		light_string := fmt.aprint("Light",digit)
 		bb.LightColor(light[count], lightR, lightG, lightB)
 		if gamBlackout[slot] > 10 && gamLocation[slot] != 2 {
-			bb.EntityColor(bb.FindChild(world, fmt.tprint("Light", Dig(count,10))), 100, 100, 100)
-			bb.EntityFX(bb.FindChild(world, fmt.tprint("Light", Dig(count,10))), 0)
+			bb.EntityColor(bb.FindChild(world, light_string), 100, 100, 100)
+			bb.EntityFX(bb.FindChild(world, light_string), 0)
 		} else {
-			bb.EntityColor(bb.FindChild(world, fmt.tprint("Light", Dig(count,10))), 255, 255, 255)
-			bb.EntityFX(bb.FindChild(world, fmt.tprint("Light", Dig(count,10))), 9)
+			bb.EntityColor(bb.FindChild(world, light_string), 255, 255, 255)
+			bb.EntityFX(bb.FindChild(world, light_string), 9)
 		}
+		delete(digit)
+		delete(light_string)
 	}
 	// apply atmosphere
 	if atmosR < atmosTR do atmosR += changer
@@ -466,11 +498,7 @@ Camera :: proc(){
 			if pAnim[camFoc] == 102 do camType = 10
 			if pAnim[camFoc] == 132 do camType = 10
 			if pAnim[camFoc] >= 76 && pAnim[camFoc] <= 77 {
-				if pAnimTim[camFoc] > 150{
-					camType = 12
-				} else {
-					camType = 11
-				}
+				camType = 12 if pAnimTim[camFoc] > 150 else 11
 			}
 		}
 	}
@@ -500,7 +528,7 @@ Camera :: proc(){
 		//if KeyDown(21) && CamConflict(21) == 0 do bb.MoveEntity(cam, 0, 2, 0)
 		//if KeyDown(23) && CamConflict(23) == 0 do bb.MoveEntity(cam, 0, 0, 2)
 		//if KeyDown(37) && CamConflict(37) == 0 do bb.MoveEntity(cam, 0, 0, -2)
-		if bb.MouseDown(1) || bb.MouseDown(2) {
+		if cast(bool)bb.MouseDown(1) || cast(bool)bb.MouseDown(2) {
 			if camMouseY > 0 && ReachedCord(camX, camZ, camPivTX, camPivTZ, 20) > 0 && camY >= camPivTY - 20 && camY <= camPivTY + 5 {
 				bb.MoveEntity(cam, camMouseX, 0, 0)
 			} else {
@@ -519,14 +547,10 @@ Camera :: proc(){
 			ResetDummy(camFoc)
 			camTY = pY[camFoc] + 40
 			zoom: f32 = 0
-			if pGrappler[camFoc] > 0 {
-				zoom = 70
-			} else {
-				zoom = -70
-			}
+			zoom = 70 if pGrappler[camFoc] > 0 else -70
 			if InsideCell(pX[camFoc], pY[camFoc], pZ[camFoc]) > 0 {
-				zoom = zoom / 2
-				camTY = camTY - 5
+				zoom /= 2
+				camTY -= 5
 			}
 			bb.MoveEntity(dummy, 0, 0, zoom)
 			camTX = bb.EntityX(dummy)
@@ -540,12 +564,7 @@ Camera :: proc(){
 		if camType == 10 {
 			ResetDummy(camFoc)
 			zoom: f32 = 0
-			sway: f32 = 0
-			if camFoc == promoActor[1] {
-				sway = 12
-			} else {
-				sway = -12
-			}
+			sway: f32 = 12 if camFoc == promoActor[1] else -12
 			if OnComputer(camFoc) > 0 do sway = 12
 			if pGrappling[camFoc] > 0 || pGrappler[camFoc] > 0 {
 				zoom = -28
@@ -553,12 +572,16 @@ Camera :: proc(){
 				zoom = 28
 			}
 			if pPhone[camFoc] > 0 {
-				limb := bb.FindChild(world, fmt.tprint("Pad", Dig(pPhone[camFoc],10)))
+				digit := Dig(pPhone[camFoc],10)
+				pad_string := fmt.aprint("Pad", digit)
+				limb := bb.FindChild(world, pad_string)
 				if pZ[camFoc] < bb.EntityZ(limb, 1) {
 					zoom = -28
 				} else {
 					zoom = 28
 				}
+				delete(digit)
+				delete(pad_string)
 			}
 			if gamPromo > 0 && promoActor[1] > 0 && promoActor[2] > 0 {
 				closeness := 30 - GetDistance(f32(pX[promoActor[1]]), f32(pZ[promoActor[1]]), f32(pX[promoActor[2]]), f32(pZ[promoActor[2]]))
@@ -569,11 +592,7 @@ Camera :: proc(){
 				if zoom > 0 do zoom = zoom - (closeness / 2)
 			}
 			if screen == 52 {
-				if camFoc == 2 {
-					sway = -12
-				} else {
-					sway = 12
-				}
+				sway = -12 if camFoc == 2 else 12
 				zoom = 28
 			}
 			bb.MoveEntity(dummy, sway, 0, zoom)
@@ -637,7 +656,9 @@ Camera :: proc(){
 	}
 	// phone call
 	if camFoc < 0 {
-		limb := bb.FindChild(world, fmt.tprint("Pad", Dig(i32(MakePositive(f32(camFoc))),10)))
+		digit := Dig(i32(MakePositive(f32(camFoc))),10)
+		pad_string := fmt.aprint("Pad", digit)
+		limb := bb.FindChild(world, pad_string)
 		bb.PositionEntity(dummy, bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1))
 		bb.RotateEntity(dummy, 0, 270, 0)
 		if pZ[gamPlayer[slot]] >= bb.EntityZ(limb, 1) do bb.MoveEntity(dummy, 12, 0, 25)
@@ -648,6 +669,8 @@ Camera :: proc(){
 		camPivTX = bb.EntityX(limb, 1)
 		camPivTY = bb.EntityY(limb, 1)
 		camPivTZ = bb.EntityZ(limb, 1)
+		delete(digit)
+		delete(pad_string)
 	}
 	// ENFORCE BLOCKS
 	if screen == 50 && camFoc > 0 && camType > 0 && gamPromo == 0 {
@@ -743,12 +766,15 @@ Camera :: proc(){
 	}
 }
 
+
+// Unused
 //ZOOM CAMERA TO TARGET
-ZoomCamera :: proc() {
-	camX = camTX
-	camY = camTY
-	camZ = camTZ
-}
+// ZoomCamera :: proc() {
+// 	camX = camTX
+// 	camY = camTY
+// 	camZ = camTZ
+// }
+
 
 //RESET DUMMY (in terms of target)
 ResetDummy :: proc(cyc: i32) {
@@ -756,22 +782,20 @@ ResetDummy :: proc(cyc: i32) {
 	bb.RotateEntity(dummy, 0, pA[cyc], 0)
 }
 
+// Unused function
 //CAMERA vs CONTROL CONFLICTS?
-CamConflict :: proc(command: i32) -> i32 {
-	// These variables are never declared. The function will always return 0.
-	keyShoot: i32 = 0
-	keyPass: i32 = 0
-	keyLob: i32 = 0
-
-	conflict: i32 = 0
-	if command == keyShoot || command == keyPass || command == keyLob {
-		conflict = 1
-	}
-	return conflict
-}
+// CamConflict :: proc(command: i32) -> i32 {
+	// NOTE: Likely a bug. These variables are never declared.
+	// It'll just return 1 if command is 0
+// 	keyShoot, keyPass, keyLob: i32 = 0, 0, 0
+// 	if command == keyShoot || command == keyPass || command == keyLob {
+// 		return 1
+// 	}
+// 	return 0
+// }
 
 //ENTER DOOR
-EnterDoor :: proc(cyc: i32, door: i32) -> i32 {
+EnterDoor :: proc(cyc: i32, door: i32) {
 	//store current location
 	//oldLocation: i32 = gamLocation[slot] // Unused
 	//north >>> hall
@@ -913,7 +937,6 @@ EnterDoor :: proc(cyc: i32, door: i32) -> i32 {
 	//proceed
 	pDoorFriction[cyc][door] = 0
 	go = 1
-	return go
 }
 
 //RELOCATE CPU CHARACTERS
@@ -923,15 +946,15 @@ RelocateChars :: proc() {
 			//get new destination
 			target: i32 = 0
 			source: i32 = charLocation[char]
-			randy: i32 = bb.Rnd(0, 20)
+			randy: i32 = bb.RndI(0, 20)
 			if charRole[char] == 1 && AreaPopulation(charLocation[char], 1) > 2 {
-				randy = bb.Rnd(0, 10)
+				randy = bb.RndI(0, 10)
 			}
 			if charLocation[char] == 8 && (gamHours[slot] < 12 || gamHours[slot] > 14) {
-				randy = bb.Rnd(0, 10)
+				randy = bb.RndI(0, 10)
 			}
 			if randy == 0 && charLocation[char] >= 1 && charLocation[char] <= 8 do target = 9
-			if randy == 0 && charLocation[char] == 9 do target = bb.Rnd(1, 8)
+			if randy == 0 && charLocation[char] == 9 do target = bb.RndI(1, 8)
 			if randy == 1 && charLocation[char] == 9 do target = 2
 			if randy == 1 && charLocation[char] == 4 do target = 10
 			if randy == 1 && charLocation[char] == 10 do target = 4
@@ -940,7 +963,7 @@ RelocateChars :: proc() {
 			if randy == 2 && charRole[char] == 0 && charLocation[char] == 9 {
 				target = TranslateBlock(charBlock[char])
 			}
-			if randy == 3 || charY[char] < 0 do target = bb.Rnd(1, 11)
+			if randy == 3 || charY[char] < 0 do target = bb.RndI(1, 11)
 			if randy >= 4 && randy <= 5 && gamHours[slot] >= 12 && gamHours[slot] <= 14 {
 				target = 8
 			}
@@ -1090,7 +1113,7 @@ RelocateChars :: proc() {
 					charX[char] = GetCentre(cellX1[charCell[char]], cellX2[charCell[char]])
 					charZ[char] = GetCentre(cellZ1[charCell[char]], cellZ2[charCell[char]])
 					charY[char] = cellY1[charCell[char]] + 20
-					charA[char] = bb.Rnd(0.0, 360.0)
+					charA[char] = bb.RndF(0.0, 360.0)
 				}
 				//update location
 				charLocation[char] = target
@@ -1100,16 +1123,17 @@ RelocateChars :: proc() {
 				charLocation[char] = 0
 				gamRelease[slot] = char
 				RuinMission(char)
-				// NOTE: cyc is undefined. This is probably a bug.
-				// Assumed cyc means v, so made it a temporary capital V instead.
 				for v in 1..=no_chars {
-					V := v
 					if v != gamChar[slot] && charPromo[v][gamChar[slot]] == 0 && charRelation[v][gamChar[slot]] >= 0 && charAngerTim[v][gamChar[slot]] == 0 {
-						if charRelation[gamChar[slot]][pChar[V]] > 0 && charRelation[v][pChar[V]] > 0 {
+						// NOTE: Likely a bug. cyc is undefined in this function scope.
+						// Blitz will interpret it as being 0. I'm not sure what was the intended behaviour.
+
+						cyc := 0
+						if charRelation[gamChar[slot]][pChar[cyc]] > 0 && charRelation[v][pChar[cyc]] > 0 {
 							charPromo[v][gamChar[slot]] = 219
 							charPromoRef[v] = char
 						}
-						if charRelation[gamChar[slot]][pChar[V]] < 0 && charRelation[v][pChar[V]] < 0 {
+						if charRelation[gamChar[slot]][pChar[cyc]] < 0 && charRelation[v][pChar[cyc]] < 0 {
 							charPromo[v][gamChar[slot]] = 220
 							charPromoRef[v] = char
 						}
@@ -1117,13 +1141,13 @@ RelocateChars :: proc() {
 				}
 			}
 			//make weapon follow
-			if charWeapon[char] > 0 {
-				weapLocation[charWeapon[char]] = charLocation[char]
-			}
+			if charWeapon[char] > 0 do weapLocation[charWeapon[char]] = charLocation[char]
 		}
 		//introduce new characters
-		randy: i32 = bb.Rnd(0, 10)
-		if randy == 0 && char != gamChar[slot] && charRole[char] <= 1 && charLocation[char] == 0 && char != gamFatality[slot] && char != gamRelease[slot] && gamArrival[slot] == 0 {
+		randy: i32 = bb.RndI(0, 10)
+		if randy == 0 && char != gamChar[slot] && charRole[char] <= 1 &&
+		charLocation[char] == 0 && char != gamFatality[slot] &&
+		char != gamRelease[slot] && gamArrival[slot] == 0 {
 			role: i32 = 0
 			if GamePopulation(1) < optPopulation / 5 {
 				role = 1
@@ -1131,11 +1155,9 @@ RelocateChars :: proc() {
 				role = 0
 			}
 			GenerateCharacter(char, role)
-			if charLocation[char] > 0 {
-				gamArrival[slot] = char
-			}
+			if charLocation[char] > 0 do gamArrival[slot] = char
 			if role == 0 {
-				randy = bb.Rnd(0, 4)
+				randy = bb.RndI(0, 4)
 				if randy == 1 || (randy == 0 && charReputation[char] < charReputation[gamChar[slot]]) {
 					charPromo[char][gamChar[slot]] = 200
 				}
@@ -1143,19 +1165,19 @@ RelocateChars :: proc() {
 					charPromo[char][gamChar[slot]] = 201
 				}
 				if charRole[char] == 0 && charCell[char] == charCell[gamChar[slot]] && charBlock[char] == charBlock[gamChar[slot]] {
-					randy = bb.Rnd(0, 2)
+					randy = bb.RndI(0, 2)
 					if randy == 1 || (randy == 0 && charReputation[char] < charReputation[gamChar[slot]]) {
-						charPromo[char][gamChar[slot]] = bb.Rnd(202, 203)
+						charPromo[char][gamChar[slot]] = bb.RndI(202, 203)
 					}
 					if randy == 2 || (randy == 0 && charReputation[char] >= charReputation[gamChar[slot]]) {
-						charPromo[char][gamChar[slot]] = bb.Rnd(203, 204)
+						charPromo[char][gamChar[slot]] = bb.RndI(203, 204)
 					}
 				}
 			}
 		}
 		//change gang affilliations
 		oldGang := charGang[char]
-		randy = bb.Rnd(0, 1000)
+		randy = bb.RndI(0, 1000)
 		if randy >= 1 && randy <= 6 && char != gamChar[slot] && charRole[char] == 0 && charLocation[char] > 0 {
 			if charGang[char] == 0 {
 				if randy == 1 && charGangHistory[char][1] == 0 && GetRace(char) == 0 {
@@ -1195,12 +1217,10 @@ RelocateChars :: proc() {
 }
 
 //COUNT AREA POPULATION
-AreaPopulation :: proc(area: i32, role: i32) -> i32 { // -1=any
+AreaPopulation :: proc(area, role: i32) -> i32 { // -1=any
 	value: i32 = 0
 	for char in 1..=no_chars {
-		if charRole[char] == role || role == -1 {
-			if charLocation[char] == area do value = value + 1
-		}
+		if charRole[char] == role || role == -1 && charLocation[char] == area do value += 1
 	}
 	return value
 }
@@ -1209,7 +1229,7 @@ AreaPopulation :: proc(area: i32, role: i32) -> i32 { // -1=any
 CellPopulation :: proc(block: i32, cell: i32) -> i32 {
 	value: i32 = 0
 	for char in 1..=no_chars {
-		if charBlock[char] == block && charCell[char] == cell do value = value + 1
+		if charBlock[char] == block && charCell[char] == cell do value += 1
 	}
 	return value
 }
@@ -1218,29 +1238,27 @@ CellPopulation :: proc(block: i32, cell: i32) -> i32 {
 GamePopulation :: proc(role: i32) -> i32 { // -1=any
 	value: i32 = 0
 	for char in 1..=no_chars {
-		if charRole[char] == role || role == -1 do value = value + 1
+		if charRole[char] == role || role == -1 do value += 1
 	}
 	return value
 }
 
 //GET BLOCK (FROM LOCATION)
 GetBlock :: proc(area: i32) -> i32 {
-	block: i32 = 0
-	if area == 1 do block = 1
-	if area == 3 do block = 2
-	if area == 5 do block = 3
-	if area == 7 do block = 4
-	return block
+	if area == 1 do return 1
+	if area == 3 do return 2
+	if area == 5 do return 3
+	if area == 7 do return 4
+	return 0
 }
 
 //GET BLOCK LOCATION (FROM ID)
 TranslateBlock :: proc(block: i32) -> i32 {
-	area: i32 = 0
-	if block == 1 do area = 1
-	if block == 2 do area = 3
-	if block == 3 do area = 5
-	if block == 4 do area = 7
-	return area
+	if block == 1 do return 1
+	if block == 2 do return 3
+	if block == 3 do return 5
+	if block == 4 do return 7
+	return 0
 }
 
 //LOCK DOWN TIME?
@@ -1278,7 +1296,8 @@ LockCells :: proc(lock: i32) { // 0=open, 1=close
 	}
 }
 
-InsideCell :: proc(x: f32, y: f32, z: f32) -> i32 {
+InsideCell :: proc(x, y, z: f32) -> i32 {
+	// find matches
 	cell: i32 = 0
 	for count in i32(1)..=20 {
 		if y >= cellY1[count] && y <= cellY2[count] {
@@ -1295,7 +1314,7 @@ InsideCell :: proc(x: f32, y: f32, z: f32) -> i32 {
 }
 
 // IN LINE WITH CELL?
-CellVisible :: proc(x: f32, y: f32, z: f32, cell: i32) -> i32 {
+CellVisible :: proc(x, y, z: f32, cell: i32) -> i32 {
 	value: i32 = 0
 	if GetBlock(gamLocation[slot]) > 0 && cell > 0 {
 		if y >= cellY1[cell] && y <= cellY2[cell] {
@@ -1311,54 +1330,60 @@ CellVisible :: proc(x: f32, y: f32, z: f32, cell: i32) -> i32 {
 
 // IN PROXIMITY OF CHAIR?
 ChairProximity :: proc(cyc: i32, chair: i32) -> i32 {
+	digit := Dig(chair, 10)
+	chair_string := fmt.aprint("Chair%d", digit)
 	value: i32 = 0
-	limb: i32 = bb.FindChild(world, fmt.tprint("Chair%d", Dig(chair, 10)))
-	if pX[cyc] > bb.EntityX(limb, 1)-18 && pX[cyc] < bb.EntityX(limb, 1)+18 &&
-	   pY[cyc] > bb.EntityY(limb, 1)-30 && pY[cyc] < bb.EntityY(limb, 1)-5 &&
-	   pZ[cyc] > bb.EntityZ(limb, 1)-18 && pZ[cyc] < bb.EntityZ(limb, 1)+18 {
+	limb := bb.FindChild(world, chair_string)
+	if pX[cyc] > bb.EntityX(limb, 1)-18 && pX[cyc] < bb.EntityX(limb, 1)+18 \
+	&& pY[cyc] > bb.EntityY(limb, 1)-30 && pY[cyc] < bb.EntityY(limb, 1)-5 \
+	&& pZ[cyc] > bb.EntityZ(limb, 1)-18 && pZ[cyc] < bb.EntityZ(limb, 1)+18 {
 		back: i32 = 0
 		if gamLocation[slot] != 11 {
 			bb.PositionEntity(dummy, bb.EntityX(limb, 1), bb.EntityY(limb, 1), bb.EntityZ(limb, 1))
 			bb.RotateEntity(dummy, 0, bb.EntityYaw(limb, 1), 0)
 			bb.MoveEntity(dummy, 0, 0, -30)
-			if pX[cyc] > bb.EntityX(dummy, 1)-20 && pX[cyc] < bb.EntityX(dummy, 1)+20 &&
-			   pZ[cyc] > bb.EntityZ(dummy, 1)-20 && pZ[cyc] < bb.EntityZ(dummy, 1)+20 {
+			if pX[cyc] > bb.EntityX(dummy, 1)-20 && pX[cyc] < bb.EntityX(dummy, 1)+20 \
+			&& pZ[cyc] > bb.EntityZ(dummy, 1)-20 && pZ[cyc] < bb.EntityZ(dummy, 1)+20 {
 				back = 1
 			}
 		}
 		if back == 0 && cast(bool)InLine(cyc, limb, 45) do value = 1
 	}
+	delete(digit)
+	delete(chair_string)
 	return value
 }
 
 // CHAIR TAKEN?
 ChairTaken :: proc(chair: i32) -> i32 {
-	value: i32 = 0
 	for v in 1..=no_plays {
-		if pSeat[v] == chair do value = 1
+		if pSeat[v] == chair do return 1
 	}
-	return value
+	return 0
 }
 
 // IN PROXIMITY OF BED?
 BedProximity :: proc(cyc: i32, bed: i32) -> i32 {
+	digit := Dig(bed, 10)
+	bed_string := fmt.aprint("Mat%d", digit)
 	value: i32 = 0
-	limb: i32 = bb.FindChild(world, fmt.tprint("Mat%d", Dig(bed, 10)))
-	if pX[cyc] > bb.EntityX(limb, 1)-25 && pX[cyc] < bb.EntityX(limb, 1)+25 &&
-	   pY[cyc] > bb.EntityY(limb, 1)-25 && pY[cyc] < bb.EntityY(limb, 1) &&
-	   pZ[cyc] > bb.EntityZ(limb, 1)-25 && pZ[cyc] < bb.EntityZ(limb, 1)+25 {
+	limb: i32 = bb.FindChild(world, bed_string)
+	if pX[cyc] > bb.EntityX(limb, 1)-25 && pX[cyc] < bb.EntityX(limb, 1)+25 \
+	&& pY[cyc] > bb.EntityY(limb, 1)-25 && pY[cyc] < bb.EntityY(limb, 1) \
+	&& pZ[cyc] > bb.EntityZ(limb, 1)-25 && pZ[cyc] < bb.EntityZ(limb, 1)+25 {
 		if cast(bool)InLine(cyc, limb, 45) do value = 1
 	}
+	delete(digit)
+	delete(bed_string)
 	return value
 }
 
 // BED TAKEN?
 BedTaken :: proc(bed: i32) -> i32 {
-	value: i32 = 0
 	for v in 1..=no_plays {
-		if pBed[v] == bed do value = 1
+		if pBed[v] == bed do return 1
 	}
-	return value
+	return 0
 }
 
 // IN PROXIMITY OF PHONE?
@@ -1366,11 +1391,15 @@ PhoneProximity :: proc(cyc: i32) -> i32 {
 	value: i32 = 0
 	if gamLocation[slot] == 9 {
 		for v in i32(1)..=4 {
-			limb: i32 = bb.FindChild(world, fmt.tprint("Pad%d", Dig(v, 10)))
-			if pX[cyc] > bb.EntityX(limb, 1)-20 && pX[cyc] < bb.EntityX(limb, 1)+20 &&
-			   pZ[cyc] > bb.EntityZ(limb, 1)-15 && pZ[cyc] < bb.EntityZ(limb, 1)+15 {
+			digit := Dig(v, 10)
+			pad_string := fmt.aprint("Pad%d", digit)
+			limb: i32 = bb.FindChild(world, pad_string)
+			if pX[cyc] > bb.EntityX(limb, 1)-20 && pX[cyc] < bb.EntityX(limb, 1)+20 \
+			&& pZ[cyc] > bb.EntityZ(limb, 1)-15 && pZ[cyc] < bb.EntityZ(limb, 1)+15 {
 				value = v
 			}
+			delete(digit)
+			delete(pad_string)
 		}
 	}
 	return value
@@ -1378,20 +1407,18 @@ PhoneProximity :: proc(cyc: i32) -> i32 {
 
 // PHONE TAKEN?
 PhoneTaken :: proc(phone: i32) -> i32 {
-	value: i32 = 0
 	for v in 1..=no_plays {
-		if pPhone[v] == phone do value = 1
+		if pPhone[v] == phone do return 1
 	}
-	return value
+	return 0
 }
 
 // ON COMPUTER?
 OnComputer :: proc(cyc: i32) -> i32 {
-	value: i32 = 0
-	if gamLocation[slot] == 4 && pSeat[cyc] == 5 do value = 1
-	if gamLocation[slot] == 6 && pSeat[cyc] == 5 do value = 1
-	if gamLocation[slot] == 9 && pSeat[cyc] == 7 do value = 1
-	return value
+	if gamLocation[slot] == 4 && pSeat[cyc] == 5 do return 1
+	if gamLocation[slot] == 6 && pSeat[cyc] == 5 do return 1
+	if gamLocation[slot] == 9 && pSeat[cyc] == 7 do return 1
+	return 0
 }
 
 // NEAR BASKET
@@ -1399,8 +1426,8 @@ NearBasket :: proc(cyc: i32) -> i32 {
 	value: i32 = 0
 	if gamLocation[slot] == 2 && pWeapon[cyc] > 0 {
 		limb: i32 = bb.FindChild(world, "Rim")
-		if pX[cyc] > bb.EntityX(limb, 1)-100 && pX[cyc] < bb.EntityX(limb, 1)+100 &&
-		   pZ[cyc] > bb.EntityZ(limb, 1)-100 && pZ[cyc] < bb.EntityZ(limb, 1)+100 {
+		if pX[cyc] > bb.EntityX(limb, 1)-100 && pX[cyc] < bb.EntityX(limb, 1)+100 \
+		&& pZ[cyc] > bb.EntityZ(limb, 1)-100 && pZ[cyc] < bb.EntityZ(limb, 1)+100 {
 			if cast(bool)InLine(cyc, limb, 60) do value = 1
 		}
 	}

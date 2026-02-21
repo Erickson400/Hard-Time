@@ -288,7 +288,7 @@ RedefineKeys :: proc() {
 				// leave
 				if cast(bool)bb.KeyDown(1) do go = -1
 				// proceed
-				if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() || bb.MouseDown(1) {
+				if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() || cast(bool)bb.MouseDown(1) {
 					if foc == 6 do go = -1
 				}
 			}
@@ -419,7 +419,7 @@ RedefineGamepad :: proc() {
 				// leave
 				if cast(bool)bb.KeyDown(1) do go = -1
 				// proceed
-				if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() || bb.MouseDown(1) {
+				if cast(bool)bb.KeyDown(28) ||cast(bool)ButtonPressed() || cast(bool)bb.MouseDown(1) {
 					if foc == 6 do go = -1
 				}
 			}
@@ -868,7 +868,7 @@ AssignButton :: proc(current: i32) -> i32 {
 	value: i32 = 28
 	for value == 28 {
 		for v in i32(1)..=12 {
-			if bb.JoyDown(v) && keytim == 0 {
+			if cast(bool)bb.JoyDown(v) && keytim == 0 {
 				value = v
 				screenCall = 0
 				bb.PlaySound(sMenuSelect)

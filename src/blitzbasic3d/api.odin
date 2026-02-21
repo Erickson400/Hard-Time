@@ -158,10 +158,10 @@ LightColor :: proc(light: i32, r, g, b: f32) {}
 KeyDown :: proc(key: i32) -> i32 { return 0}
 JoyYDir :: proc() -> i32 { return 0}
 JoyXDir :: proc() -> i32 { return 0}
-JoyDown :: proc(something: i32) -> bool { return false}
+JoyDown :: proc(something: i32) -> i32 { return 0}
 KeyHit :: proc(key: i32) -> i32 { return 1}
 MoveMouse :: proc(x, y: i32) {}
-MouseDown :: proc(button: i32) -> bool { return false}
+MouseDown :: proc(button: i32) -> i32 { return 0}
 MouseXSpeed :: proc() -> i32 { return 0}
 MouseYSpeed :: proc() -> i32 { return 0}
 MouseX :: proc() -> i32 { return 0}
