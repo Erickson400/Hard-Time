@@ -226,7 +226,7 @@ Animations :: proc(cyc: i32) {
 		if pInjured[cyc] > 0 || pHealth[cyc] < 10 do anim = 14
 		if pDazed[cyc] > 0 do anim = 15
 		if pAnimTim[cyc] == 0 || anim != pState[cyc] {
-			randy: i32 = bb.Rnd(-1, 1)
+			randy: i32 = bb.RndI(-1, 1)
 			if randy == -1 do bb.Animate(p[cyc], 1, -3.0, pSeq[cyc][anim], 5)
 			if randy >= 0 do bb.Animate(p[cyc], 1, 3.0, pSeq[cyc][anim], 5)
 			pState[cyc] = anim
@@ -248,7 +248,7 @@ Animations :: proc(cyc: i32) {
 	if pAnim[cyc] == 11 {
 		anim: i32 = 11
 		if pAnimTim[cyc] == 0 || anim != pState[cyc] {
-			randy: i32 = bb.Rnd(-1, 1)
+			randy: i32 = bb.RndI(-1, 1)
 			if randy == -1 do bb.Animate(p[cyc], 1, -3.0, pSeq[cyc][anim], 5)
 			if randy >= 0 do bb.Animate(p[cyc], 1, 3.0, pSeq[cyc][anim], 5)
 			pState[cyc] = anim
@@ -959,8 +959,8 @@ Animations :: proc(cyc: i32) {
 							pHealth[v] -= GetPower(cyc)
 							pHP[v] -= GetPower(cyc)
 							pDT[v] += (weapDamage[weapType[pWeapon[cyc]]] * 10)
-							pHealth[v] -= bb.Rnd(1, weapDamage[weapType[pWeapon[cyc]]])
-							pHP[v] -= bb.Rnd(1, weapDamage[weapType[pWeapon[cyc]]])
+							pHealth[v] -= bb.RndI(1, weapDamage[weapType[pWeapon[cyc]]])
+							pHP[v] -= bb.RndI(1, weapDamage[weapType[pWeapon[cyc]]])
 							if weapName[weapType[pWeapon[cyc]]] == "Syringe" && pInjured[v] < 100 {
 								pInjured[v] = bb.RndI(100, 500)
 							}
@@ -1032,8 +1032,8 @@ Animations :: proc(cyc: i32) {
 							pHealth[v] -= GetPower(cyc)
 							pHP[v] -= GetPower(cyc)
 							pDT[v] += (weapDamage[weapType[pWeapon[cyc]]] * 10)
-							pHealth[v] -= bb.Rnd(1, weapDamage[weapType[pWeapon[cyc]]])
-							pHP[v] -= bb.Rnd(1, weapDamage[weapType[pWeapon[cyc]]])
+							pHealth[v] -= bb.RndI(1, weapDamage[weapType[pWeapon[cyc]]])
+							pHP[v] -= bb.RndI(1, weapDamage[weapType[pWeapon[cyc]]])
 							if weapName[weapType[pWeapon[cyc]]] == "Syringe" && pInjured[v] < 100 {
 								pInjured[v] = bb.RndI(100, 500)
 							}
@@ -1100,7 +1100,7 @@ Animations :: proc(cyc: i32) {
 					GroundReaction(v)
 					pDT[v] -= 10
 					pHealth[v] -= GetPower(cyc)
-					pHealth[v] -= bb.Rnd(1, weapDamage[weapType[pWeapon[cyc]]])
+					pHealth[v] -= bb.RndI(1, weapDamage[weapType[pWeapon[cyc]]])
 					if weapName[weapType[pWeapon[cyc]]] == "Syringe" && pInjured[v] < 100 {
 						pInjured[v] = bb.RndI(100, 500)
 					}
@@ -1565,7 +1565,7 @@ Animations :: proc(cyc: i32) {
 				}
 			}
 			if pAnimTim[cyc] > i32(115 / animSpd) do ChangeAnim(cyc, 0)
-			pHP[cyc] = bb.Rnd(1, charStrength[pChar[cyc]] / 5)
+			pHP[cyc] = bb.RndI(1, charStrength[pChar[cyc]] / 5)
 		}
 		//fall onto front (turn)
 		if pAnim[cyc] == 83 {
@@ -1636,7 +1636,7 @@ Animations :: proc(cyc: i32) {
 		if pAnimTim[cyc] >i32(75 / pAnimSpeed[cyc]) {
 			ChangeAnim(cyc, 0)
 		}
-		pHP[cyc] = bb.Rnd(1, charStrength[pChar[cyc]] / 5)
+		pHP[cyc] = bb.RndI(1, charStrength[pChar[cyc]] / 5)
 	}
 	//fall onto front (direct)
 	if pAnim[cyc] == 86 {
@@ -2007,7 +2007,7 @@ Animations :: proc(cyc: i32) {
 			speeder = bb.RndF(0.5, 1.0)
 		}
 		if cast(bool)OnComputer(cyc) {
-			if pAnimTim[cyc] == 0 do gamFile = bb.Rnd(1, no_chars)
+			if pAnimTim[cyc] == 0 do gamFile = bb.RndI(1, no_chars)
 			if charIntelligence[pChar[cyc]] >= 70 {
 				anim = 109
 				speeder = bb.RndF(0.25, 0.5)
@@ -2486,11 +2486,11 @@ SittingEffects :: proc(cyc: i32) {
 			charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] + bb.RndI(0, 1)
 			ProduceSound(p[cyc], weapSound[kitType[pSeat[cyc]]], 22050, bb.RndF(0.1, 0.3))
 			//limb = bb.FindChild(world, "Table" + bb.Dig$(pSeat[cyc], 10))
-			//bb.PositionEntity(kit[pSeat[cyc]], bb.EntityX(limb, 1) + bb.Rnd(-0.10, 0.10), bb.EntityY(limb, 1), bb.EntityZ(limb, 1) + bb.Rnd(-0.10, 0.10))
+			//bb.PositionEntity(kit[pSeat[cyc]], bb.EntityX(limb, 1) + bb.RndF(-0.10, 0.10), bb.EntityY(limb, 1), bb.EntityZ(limb, 1) + bb.RndF(-0.10, 0.10))
 		}
 		chance := (150 - charStrength[pChar[cyc]]) + (150 - charIntelligence[pChar[cyc]])
 		chance = chance * 4
-		randy = bb.Rnd(0, chance)
+		randy = bb.RndI(0, chance)
 		if randy == 0 && pAnimTim[cyc] > 50 && kitState[pSeat[cyc]] > 0 {
 			if pChar[cyc] == gamChar[slot] && cast(bool)LockDown() == false {
 				bb.PlaySound(sCash)
