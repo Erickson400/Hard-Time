@@ -70,7 +70,7 @@ LoadPlayers :: proc() {
 		pSubZ[cyc] = 9999
 		pEyes[cyc] = 2
 		pOldEyes[cyc] = -1
-		pHealth[cyc] = cast(f32)charHealth[pChar[cyc]]
+		pHealth[cyc] = charHealth[pChar[cyc]]
 		pHP[cyc] = charHP[pChar[cyc]]
 		pInjured[cyc] = charInjured[pChar[cyc]]
 		pWeapon[cyc] = 0
@@ -533,7 +533,7 @@ ManageScars :: proc(cyc: i32) {
 					bb.EntityTexture(pLimb[cyc][limb], tLegScar[pScar[cyc][limb]], 0, 5)
 				}
 				if pScar[cyc][limb] < pOldScar[cyc][limb] && pOldScar[cyc][limb] > 1 && gamLocation[slot] == 11 && pX[cyc] > 50 && pZ[cyc] > 30 {
-					pHealth[cyc] += bb.Rnd(0.0, 1.0)
+					pHealth[cyc] += bb.RndI(0, 1)
 					charHappiness[pChar[cyc]] += bb.Rnd(0, 1)
 				}
 			}

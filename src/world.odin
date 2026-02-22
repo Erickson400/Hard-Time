@@ -380,7 +380,7 @@ ManageAtmos :: proc() {
 		}
 		for v in 1..=no_plays {
 			if pChar[v] != gamChar[slot] {
-				pHealth[v] = f32(charHealth[pChar[cyc2]])
+				pHealth[v] = charHealth[pChar[cyc2]]
 				pInjured[v] = charInjured[pChar[cyc2]]
 			}
 		}

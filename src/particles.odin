@@ -271,7 +271,7 @@ ExplosionCycle :: proc() {
 						}
 						pHealth[v] -= 10
 						pHP[v] = 0
-						if AttackViable(v) != 3 do pDT[v] = (150 - cast(i32)pHealth[v]) * 2
+						if AttackViable(v) != 3 do pDT[v] = (150 - pHealth[v]) * 2
 						if AttackViable(v) >= 1 && AttackViable(v) <= 2 do ChangeAnim(v, 70)
 						if AttackViable(v) == 3 do GroundReaction(v)
 						if cast(bool)BlastProximity(cyc, pX[v], pY[v], pZ[v], 15.0) {
@@ -284,7 +284,7 @@ ExplosionCycle :: proc() {
 								RiskInjury(v, 25)
 								pHealth[v] -= 10
 							}
-							if AttackViable(v) != 3 do pDT[v] = (200 - cast(i32)pHealth[v]) * 2
+							if AttackViable(v) != 3 do pDT[v] = (200 - pHealth[v]) * 2
 						}
 						if exSource[cyc] > 0 {
 							RiskAnger(i32(exSource[cyc]), v)

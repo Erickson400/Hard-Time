@@ -247,9 +247,9 @@ pCharge: [optPlayLim + 1]f32
 // status
 pSting: [optPlayLim + 1]i32
 pMultiSting: [optPlayLim + 1][optPlayLim + 1]i32
-pHealth: [optPlayLim + 1]f32
-pHealthLimit: [optPlayLim + 1]f32
-pOldHealth: [optPlayLim + 1]f32
+pHealth: [optPlayLim + 1]i32
+pHealthLimit: [optPlayLim + 1]i32
+pOldHealth: [optPlayLim + 1]i32
 pInjured: [optPlayLim + 1]i32
 pDazed: [optPlayLim + 1]i32
 pHP: [optPlayLim + 1]i32
