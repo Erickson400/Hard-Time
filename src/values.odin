@@ -586,8 +586,8 @@ exType: [no_explodes + 1]i32
 exX: [no_explodes + 1]f32
 exY: [no_explodes + 1]f32
 exZ: [no_explodes + 1]f32
-exTim: [no_explodes + 1]f32
-exSource: [no_explodes + 1]f32
+exTim: [no_explodes + 1]i32
+exSource: [no_explodes + 1]i32
 exHurt: [no_explodes + 1][optPlayLim + 1]i32
 // Pools
 // This variable is assigned again in Gameplay.bb (probably a bug), 

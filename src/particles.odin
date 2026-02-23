@@ -9,7 +9,6 @@ import bb "blitzbasic3d"
 //-----------------------------------------------------------------
 ///////////////////////// PARTICLE EFFECTS ////////////////////////
 //-----------------------------------------------------------------
-
 LoadParticles :: proc() {
 	for cyc in 1..=no_particles {
 		part[cyc] = bb.LoadSprite("World/Sprites/Particle.bmp", 0)
@@ -19,7 +18,8 @@ LoadParticles :: proc() {
 	}
 }
 
-CreateParticle :: proc(x: f32, y: f32, z: f32, style: i32) {
+
+CreateParticle :: proc(x, y, z: f32, style: i32) {
 	if optFX > 0 {
 		// find empty spot
 		cyc: i32 = 0
@@ -134,6 +134,7 @@ CreateParticle :: proc(x: f32, y: f32, z: f32, style: i32) {
 	}
 }
 
+
 CreateSpurt :: proc(x, y, z, spread: f32, density, style: i32) {
 	density := density
 	if optFX > 0 {
@@ -151,6 +152,7 @@ CreateSpurt :: proc(x, y, z, spread: f32, density, style: i32) {
 		}
 	}
 }
+
 
 ParticleCycle :: proc() {
 	for cyc in 1..=no_particles {
@@ -182,10 +184,10 @@ ParticleCycle :: proc() {
 	}
 }
 
+
 //-----------------------------------------------------------------
 /////////////////////////// EXPLOSIONS ////////////////////////////
 //-----------------------------------------------------------------
-
 CreateExplosion :: proc(source, entity: i32, x, y, z: f32, style: i32) {
 	if optFX > 0 {
 		// find empty slot
@@ -201,7 +203,7 @@ CreateExplosion :: proc(source, entity: i32, x, y, z: f32, style: i32) {
 		} else {
 			ProduceSound(entity, sExplosion, 0, 1.0)
 		}
-		exSource[cyc] = f32(source)
+		exSource[cyc] = source
 		exType[cyc] = style
 		exTim[cyc] = 20
 		exX[cyc] = x
@@ -223,6 +225,7 @@ CreateExplosion :: proc(source, entity: i32, x, y, z: f32, style: i32) {
 		}
 	}
 }
+
 
 ExplosionCycle :: proc() {
 	for cyc in i32(1)..=no_explodes {
@@ -287,12 +290,13 @@ ExplosionCycle :: proc() {
 							if AttackViable(v) != 3 do pDT[v] = (200 - pHealth[v]) * 2
 						}
 						if exSource[cyc] > 0 {
-							RiskAnger(i32(exSource[cyc]), v)
-							DamageRep(i32(exSource[cyc]), v, 1)
-							if exType[cyc] == 10 do DamageRep(i32(exSource[cyc]), v, 1)
-							if i32(exSource[cyc]) == gamPlayer[slot] && gamMission[slot] != 11 && gamMission[slot] != 12 {
+							RiskAnger(exSource[cyc], v)
+							DamageRep(exSource[cyc], v, 1)
+							if exType[cyc] == 10 do DamageRep(exSource[cyc], v, 1)
+							if exSource[cyc] == gamPlayer[slot] && gamMission[slot] != 11 && gamMission[slot] != 12 {
 								for count in 1..=no_plays {
-									if charRole[pChar[count]] == 1 && Friendly(count, gamPlayer[slot]) == 0 && charBribeTim[pChar[count]] == 0 && AttackViable(count) >= 1 && AttackViable(count) <= 2 {
+									if charRole[pChar[count]] == 1 && Friendly(count, gamPlayer[slot]) == 0 \
+									&& charBribeTim[pChar[count]] == 0 && AttackViable(count) >= 1 && AttackViable(count) <= 2 {
 										if cast(bool)InLine(count, p[gamPlayer[slot]], 60.0) || cast(bool)InLine(count, p[v], 60.0) {
 											randy := bb.RndI(0, 20)
 											if exType[cyc] == 10 do randy = bb.RndI(0, 5)
@@ -319,18 +323,20 @@ ExplosionCycle :: proc() {
 	}
 }
 
+
 BlastProximity :: proc(cyc: i32, x, y, z, range: f32) -> i32 {
-	value: i32 = 0
-	if x > exX[cyc] - range && x < exX[cyc] + range && z > exZ[cyc] - range && z < exZ[cyc] + range && y > exY[cyc] - 50 && y < exY[cyc] + 50 {
-		value = 1
+	if x > exX[cyc] - range && x < exX[cyc] + range \
+	&& z > exZ[cyc] - range && z < exZ[cyc] + range \
+	&& y > exY[cyc] - 50 && y < exY[cyc] + 50 {
+		return 1
 	}
-	return value
+	return 0
 }
+
 
 //-----------------------------------------------------------------
 ////////////////////////////// POOLS //////////////////////////////
 //-----------------------------------------------------------------
-
 LoadPools :: proc() {
 	for cyc in 1..=no_pools {
 		pool[cyc] = bb.LoadSprite("World/Sprites/Pool.png", 4)
@@ -339,6 +345,7 @@ LoadPools :: proc() {
 		poolState[cyc] = 0
 	}
 }
+
 
 CreatePool :: proc(x, y, z, size: f32, layers, style: i32) {
 	if optGore >= 2 {
@@ -354,8 +361,8 @@ CreatePool :: proc(x, y, z, size: f32, layers, style: i32) {
 			poolX[cyc] = x
 			poolZ[cyc] = z
 			if count > 1 {
-				poolX[cyc] = x + f32(bb.RndI(-5, 5))
-				poolZ[cyc] = z + f32(bb.RndI(-5, 5))
+				poolX[cyc] = x + bb.RndF(-5, 5)
+				poolZ[cyc] = z + bb.RndF(-5, 5)
 			}
 			poolA[cyc] = bb.RndF(0.0, 360.0)
 			poolY[cyc] = y
@@ -365,13 +372,16 @@ CreatePool :: proc(x, y, z, size: f32, layers, style: i32) {
 			bb.ShowEntity(pool[cyc])
 			// colour variations
 			poolType[cyc] = style
-			if style == 1 do bb.EntityColor(pool[cyc], bb.RndI(150, 220), 0, 0) // blood
-			if style == 2 do bb.EntityColor(pool[cyc], 255, 255, 255) // foam
-			if style == 3 do bb.EntityColor(pool[cyc], 100, 200, 255) // water
-			if style == 4 do bb.EntityColor(pool[cyc], 150, 50, 0) // beer
+			switch style {
+			case 1: bb.EntityColor(pool[cyc], bb.RndI(150, 220), 0, 0) // blood
+			case 2: bb.EntityColor(pool[cyc], 255, 255, 255) // foam
+			case 3: bb.EntityColor(pool[cyc], 100, 200, 255) // water
+			case 4: bb.EntityColor(pool[cyc], 150, 50, 0) // beer
+			}
 		}
 	}
 }
+
 
 PoolCycle :: proc() {
 	for cyc in 1..=no_pools {
