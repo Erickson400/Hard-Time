@@ -22,7 +22,7 @@ lines_translated% =  scored_rows_total / total_line_count
 | World.bb        | Feb 21, 2025      | 10/10    | 1172          |
 | Weapons.bb      | Feb 22, 2025      | 10/10    | 625           |
 | Particles.bb    | Feb 23, 2025      | 10/10    | 367           |
-| Players.bb      | Nov 18, 2025      | 8/10     | 635           |
+| Players.bb      | Feb 23, 2025      | 10/10    | 635           |
 | Anims.bb        | Dec 11, 2025      | 5/10     | 2055          |
 | Moves.bb        |     .., 2025      | ./10     | 482           |
 | AI.bb           |     .., 2025      | ./10     | 1094          |

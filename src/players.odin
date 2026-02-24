@@ -13,8 +13,14 @@ import bb "blitzbasic3d"
 LoadPlayers :: proc() {
 	for cyc in 1..=no_plays {
 		// generate model
-		Loader("Please Wait", fmt.tprintf("Loading Character %d of %d", cyc, no_plays))
-		p[cyc] = bb.LoadAnimMesh(fmt.tprintf("Characters/Models/Model%d.3ds", Dig(charModel[pChar[cyc]], 10)))
+		loader_string := fmt.aprintf("Loading Character %d of %d", cyc, no_plays)
+		Loader("Please Wait", loader_string)
+		digit := Dig(charModel[pChar[cyc]], 10)
+		mesh_string := fmt.aprintf("Characters/Models/Model%d.3ds", digit)
+		p[cyc] = bb.LoadAnimMesh(mesh_string)
+		delete(loader_string)
+		delete(digit)
+		delete(mesh_string)
 		LoadSequences(cyc)
 		// appearance
 		ApplyCostume(cyc)
@@ -91,7 +97,10 @@ LoadPlayers :: proc() {
 		// shadows
 		for limb in 1..=40 {
 			pShadow[cyc][limb] = 0
-			if limb == 30 || (optShadows == 2 && (limb == 1 || (limb >= 4 && limb <= 6) || (limb >= 17 && limb <= 19) || limb == 32 || limb == 33 || limb == 35 || limb == 36)) {
+			if limb == 30 || (optShadows == 2 \
+			&& (limb == 1 || (limb >= 4 && limb <= 6) \
+			|| (limb >= 17 && limb <= 19) || limb == 32 \
+			|| limb == 33 || limb == 35 || limb == 36)) {
 				pShadow[cyc][limb] = bb.LoadSprite("World/Sprites/Shadow.png", 2)
 				bb.ScaleSprite(pShadow[cyc][limb], 13, 13)
 				if limb != 30 do bb.ScaleSprite(pShadow[cyc][limb], 10, 10)
@@ -112,6 +121,7 @@ LoadPlayers :: proc() {
 		}
 	}
 }
+
 
 //-----------------------------------------------------------------
 /////////////////////////// PLAYER CYCLE //////////////////////////
@@ -183,11 +193,13 @@ PlayerCycle :: proc() {
 			}
 			if pDT[cyc] < 50 do pDT[cyc] = 150 - i32(pHealth[cyc])
 		}
-		if gotim > 0 && pY[cyc] > pGround[cyc] + 5 && pAnim[cyc] != 87 && pGrappling[cyc] == 0 && pGrappler[cyc] == 0 && pSeat[cyc] == 0 && pBed[cyc] == 0 {
+		if gotim > 0 && pY[cyc] > pGround[cyc] + 5 && pAnim[cyc] != 87 \
+		&& pGrappling[cyc] == 0 && pGrappler[cyc] == 0 && pSeat[cyc] == 0 && pBed[cyc] == 0 {
 			ChangeAnim(cyc, 87)
 		}
 		// trigger breakdown
-		if gotim > 0 && charHappiness[pChar[cyc]] <= 0 && charBreakdown[pChar[cyc]] == 0 && pGrappling[cyc] == 0 && pGrappler[cyc] == 0 {
+		if gotim > 0 && charHappiness[pChar[cyc]] <= 0 && charBreakdown[pChar[cyc]] == 0 \
+		&& pGrappling[cyc] == 0 && pGrappler[cyc] == 0 {
 			if pHealth[cyc] > 0 && AttackViable(cyc) >= 1 && AttackViable(cyc) <= 2 && pAnim[cyc] != 87 {
 				ChangeAnim(cyc, 96)
 			}
@@ -213,7 +225,11 @@ PlayerCycle :: proc() {
 				pSeatA[cyc] = pLeaveA[cyc]
 			} else {
 				if pSeat[cyc] > 0 {
-					target := bb.FindChild(world, fmt.tprintf("Chair%d", Dig(pSeat[cyc], 10)))
+					digit := Dig(pSeat[cyc], 10)
+					chair_string := fmt.tprintf("Chair%d", digit)
+					target := bb.FindChild(world, chair_string)
+					delete(digit)
+					delete(chair_string)
 					pSeatX[cyc] = bb.EntityX(target, 1)
 					pSeatZ[cyc] = bb.EntityZ(target, 1)
 					pSeatY[cyc] = bb.EntityY(target, 1) - 13
@@ -223,7 +239,11 @@ PlayerCycle :: proc() {
 					}
 				}
 				if pBed[cyc] > 0 {
-					target := bb.FindChild(world, fmt.tprintf("Mat%d", Dig(pBed[cyc], 10)))
+					digit := Dig(pBed[cyc], 10)
+					mat_string := fmt.tprintf("Mat%d", digit)
+					target := bb.FindChild(world, mat_string)
+					delete(digit)
+					delete(mat_string)
 					pSeatX[cyc] = bb.EntityX(target, 1)
 					pSeatZ[cyc] = bb.EntityZ(target, 1)
 					pSeatY[cyc] = bb.EntityY(target, 1) - 10
@@ -253,10 +273,10 @@ PlayerCycle :: proc() {
 	}
 }
 
+
 //-----------------------------------------------------------------
 //////////////////////// RELATED FUNCTIONS ////////////////////////
 //-----------------------------------------------------------------
-
 DisplayPlayers :: proc() {
 	for cyc in 1..=no_plays {
 		// manage scars
@@ -265,8 +285,8 @@ DisplayPlayers :: proc() {
 		if cast(bool)GrimaceViable(cyc) {
 			pSpeaking[cyc] = 1
 			pEyes[cyc] = 1
-			if pAnim[cyc] == 91 || pAnim[cyc] == 93 || pAnim[cyc] == 95 {
-				pEyes[cyc] = 3
+			switch pAnim[cyc] {
+			case 91, 93, 95: pEyes[cyc] = 3
 			}
 		}
 		FacialExpressions(cyc)
@@ -330,13 +350,15 @@ DisplayPlayers :: proc() {
 	}
 }
 
-FindChar :: proc(char: i32) -> i32 {
-	value: i32 = 0
-	for v in 1..=no_plays {
-		if pChar[v] == char do value = v
-	}
-	return value
-}
+// Unused
+// FindChar :: proc(char: i32) -> i32 {
+// 	value: i32 = 0
+// 	for v in 1..=no_plays {
+// 		if pChar[v] == char do value = v
+// 	}
+// 	return value
+// }
+
 
 ScarLimb :: proc(cyc, limb, chance: i32) {
 	chance := chance
@@ -360,7 +382,11 @@ ScarLimb :: proc(cyc, limb, chance: i32) {
 			randy = bb.RndI(0, 8)
 			if randy == 0 && charSpecs[pChar[cyc]] > 0 do bb.HideEntity(bb.FindChild(p[cyc], "Specs"))
 			if randy >= 1 && randy <= 2 && charSpecs[pChar[cyc]] > 0 {
-				bb.HideEntity(bb.FindChild(p[cyc], fmt.tprintf("Lens0%d", Dig(randy, 10))))
+				digit := Dig(randy, 10)
+				lens_string := fmt.aprintf("Lens0%d", digit)
+				bb.HideEntity(bb.FindChild(p[cyc], lens_string))
+				delete(digit)
+				delete(lens_string)
 			} 
 			pDazed[cyc] = bb.RndI(50, 200)
 		}
@@ -369,6 +395,7 @@ ScarLimb :: proc(cyc, limb, chance: i32) {
 	randy = bb.RndI(0, 100)
 	if randy == 0 && limb == 1 do pDazed[cyc] = bb.RndI(50, 200)
 }
+
 
 ScarArea :: proc(cyc: i32, x, y, z: f32, chance: i32) {
 	for limb in i32(0)..=40 {
@@ -381,13 +408,16 @@ ScarArea :: proc(cyc: i32, x, y, z: f32, chance: i32) {
 				limbX := bb.EntityX(pLimb[cyc][limb], 1)
 				limbY := bb.EntityY(pLimb[cyc][limb], 1)
 				limbZ := bb.EntityZ(pLimb[cyc][limb], 1)
-				if x > limbX - 10 && x < limbX + 10 && z > limbZ - 10 && z < limbZ + 10 && y > limbY - 10 && y < limbY + 10 {
+				if x > limbX - 10 && x < limbX + 10 \
+				&& z > limbZ - 10 && z < limbZ + 10 \
+				&& y > limbY - 10 && y < limbY + 10 {
 					ScarLimb(cyc, limb, chance)
 				}
 			}
 		}
 	}
 }
+
 
 SeverLimbs :: proc(cyc: i32) {
 	// ears
@@ -437,6 +467,7 @@ SeverLimbs :: proc(cyc: i32) {
 	}
 }
 
+
 LoseLimb :: proc(cyc, limb, chance: i32) {
 	chance := chance
 	// assess significance
@@ -444,12 +475,14 @@ LoseLimb :: proc(cyc, limb, chance: i32) {
 	// risk loss
 	if chance < 5 do chance = 5
 	if major == 1 do chance *= 2
-	if (limbPrecede[limb] > 0 && pScar[cyc][limbPrecede[limb]] <= 1) || (limbSource[limb] > 0 && pScar[cyc][limbSource[limb]] <= 1) {
+	if (limbPrecede[limb] > 0 && pScar[cyc][limbPrecede[limb]] <= 1) \
+	|| (limbSource[limb] > 0 && pScar[cyc][limbSource[limb]] <= 1) {
 		chance *= 2
 	}
 	randy := bb.RndI(0, chance)
 	if randy == 0 && optGore >= 3 && limbSource[limb] > 0 && pScar[cyc][limbSource[limb]] <= 4 {
-		if (pScar[cyc][limbPrecede[limb]] >= 2 || limbPrecede[limb] == 0) && (pScar[cyc][limbSource[limb]] >= 2 || limbSource[limb] == 0) {
+		if (pScar[cyc][limbPrecede[limb]] >= 2 || limbPrecede[limb] == 0) \
+		&& (pScar[cyc][limbSource[limb]] >= 2 || limbSource[limb] == 0) {
 			// pain and mess
 			ProduceSound(p[cyc], sBleed, 22050, 1.0)
 			limbX := bb.EntityX(pLimb[cyc][limb], 1)
@@ -465,8 +498,8 @@ LoseLimb :: proc(cyc, limb, chance: i32) {
 				if pHealth[cyc] > 0 do ProduceSound(p[cyc], sAgony[bb.RndI(1, 3)], 22050, 1.0)
 				CreateSpurt(limbX, limbY, limbZ, 3, 15, 3)
 				CreatePool(limbX, pGround[cyc], limbZ, bb.RndF(5.0, 15.0), 5, 1)
-				pHealth[cyc] = pHealth[cyc] / 2
-				charHappiness[pChar[cyc]] = charHappiness[pChar[cyc]] / 2
+				pHealth[cyc] /= 2
+				charHappiness[pChar[cyc]] /= 2
 				if pInjured[cyc] < 1000 do pInjured[cyc] = 1000
 			}
 			DropWeapon(cyc, 0)
@@ -481,7 +514,10 @@ LoseLimb :: proc(cyc, limb, chance: i32) {
 			if charAttacker[pChar[cyc]] == gamChar[slot] {
 				if charPromo[pChar[cyc]][gamChar[slot]] == 0 do charPromo[pChar[cyc]][gamChar[slot]] = 54
 				for v in 1..=no_plays {
-					if charRole[pChar[v]] == 1 && (Friendly(v, gamPlayer[slot]) == 0 || cast(bool)Friendly(v, cyc)) && charBribeTim[pChar[v]] == 0 && gamBlackout[slot] == 0 && cast(bool)InProximity(v, gamPlayer[slot], 50) && AttackViable(v) >= 1 && AttackViable(v) <= 2 && pDazed[v] == 0 {
+					if charRole[pChar[v]] == 1 && (Friendly(v, gamPlayer[slot]) == 0 \
+					|| cast(bool)Friendly(v, cyc)) && charBribeTim[pChar[v]] == 0 \
+					&& gamBlackout[slot] == 0 && cast(bool)InProximity(v, gamPlayer[slot], 50) \
+					&& AttackViable(v) >= 1 && AttackViable(v) <= 2 && pDazed[v] == 0 {
 						if cast(bool)InLine(v, p[gamPlayer[slot]], 60) || cast(bool)InLine(v, p[cyc], 60) {
 							randy = bb.RndI(0, 2)
 							if (randy == 0 || major == 1) && gamWarrant[slot] < 11 {
@@ -496,6 +532,7 @@ LoseLimb :: proc(cyc, limb, chance: i32) {
 	}
 }
 
+
 ManageScars :: proc(cyc: i32) {
 	for limb in i32(0)..=40 {
 		if pScar[cyc][limb] == 5 && cast(bool)MajorLimb(limb) && pInjured[cyc] < 1000 {
@@ -503,7 +540,7 @@ ManageScars :: proc(cyc: i32) {
 		}
 		if pScar[cyc][limb] <= 4 && pLimb[cyc][limb] > 0 {
 			// heal scars
-			randy := bb.RndI(0, i32(5000 / gamSpeed[slot]))
+			randy := bb.RndI(0, 5000 / gamSpeed[slot])
 			if gamLocation[slot] == 11 && pX[cyc] > 50 && pZ[cyc] > 30 {
 				randy = bb.RndI(0, i32(50 / gamSpeed[slot]))
 			}
@@ -532,7 +569,8 @@ ManageScars :: proc(cyc: i32) {
 				if limb >= 30 && limb <= 36 {
 					bb.EntityTexture(pLimb[cyc][limb], tLegScar[pScar[cyc][limb]], 0, 5)
 				}
-				if pScar[cyc][limb] < pOldScar[cyc][limb] && pOldScar[cyc][limb] > 1 && gamLocation[slot] == 11 && pX[cyc] > 50 && pZ[cyc] > 30 {
+				if pScar[cyc][limb] < pOldScar[cyc][limb] && pOldScar[cyc][limb] > 1 \
+				&& gamLocation[slot] == 11 && pX[cyc] > 50 && pZ[cyc] > 30 {
 					pHealth[cyc] += bb.RndI(0, 1)
 					charHappiness[pChar[cyc]] += bb.RndI(0, 1)
 				}
@@ -543,34 +581,34 @@ ManageScars :: proc(cyc: i32) {
 	}
 }
 
+
 CountScars :: proc(cyc: i32) -> i32 {
 	value: i32 = 0
 	for limb in 1..=40 {
-		if pLimb[cyc][limb] > 0 && pScar[cyc][limb] >= 2 && limbSource[limb] != 6 && limbSource[limb] != 19 {
-			if limb == 3 {
-				value += 2
-			} else {
-				value += 1
-			}
+		if pLimb[cyc][limb] > 0 && pScar[cyc][limb] >= 2 \
+		&& limbSource[limb] != 6 && limbSource[limb] != 19 {
+			value += 2 if limb == 3 else 1
 		}
 	}
 	return value
 }
 
-RiskInjury :: proc(cyc: i32, chance: i32) {
-	randy: i32 = bb.RndI(0, chance)
+
+RiskInjury :: proc(cyc, chance: i32) {
+	randy := bb.RndI(0, chance)
 	if randy == 0 && pInjured[cyc] == 0 {
 		if pHealth[cyc] > 0 {
 			ProduceSound(p[cyc], sAgony[bb.RndI(1, 3)], 22050, 1)
 		}
 		pHealth[cyc] /= 2
 		charHappiness[pChar[cyc]] /= 2
-		charStrength[pChar[cyc]] -= (charStrength[pChar[cyc]] / 5)
-		charAgility[pChar[cyc]] -= (charAgility[pChar[cyc]] / 5)
+		charStrength[pChar[cyc]] -= charStrength[pChar[cyc]] / 5
+		charAgility[pChar[cyc]] -= charAgility[pChar[cyc]] / 5
 		pInjured[cyc] = bb.RndI(1000, 100000) // 3600=hour, 86400=day
 		if gamMission[slot] == 14 && pChar[cyc] == gamTarget[slot] do CompleteMission(1)
 	}
 }
+
 
 MonitorStatus :: proc(cyc: i32) {
 	// monitor attributes
@@ -591,7 +629,8 @@ MonitorStatus :: proc(cyc: i32) {
 		randy = bb.RndI(0, 25000)
 		if randy == 0 && gamGrowth[slot] == 0 do gamGrowth[slot] = bb.RndI(-1, 1)
 		randy = bb.RndI(0, 300)
-		if randy == 0 && gamLocation[slot] == 2 && pAnim[cyc] == 13 && pAnimTim[cyc] > 20 && pNowhere[cyc] == 0 {
+		if randy == 0 && gamLocation[slot] == 2 && pAnim[cyc] == 13 \
+		&& pAnimTim[cyc] > 20 && pNowhere[cyc] == 0 {
 			charAgility[pChar[cyc]] += 1
 			charHappiness[pChar[cyc]] += bb.RndI(1, 2)
 			pHealth[cyc] -= 1
@@ -601,8 +640,8 @@ MonitorStatus :: proc(cyc: i32) {
 	}
 	// monitor happiness
 	if pChar[cyc] == gamChar[slot] && pAnim[cyc] != 93 && pAnim[cyc] != 95 && pAnim[cyc] != 103 {
-		randy: i32 = bb.RndI(1, 400)
-		entertain: i32 = 0
+		randy := bb.RndI(1, 400)
+		entertain: i32
 		if gamLocation[slot] == 9 && pAnim[cyc] == 102 && pSeat[cyc] >= 1 && pSeat[cyc] <= 6 {
 			entertain = 1
 		}
@@ -631,7 +670,8 @@ MonitorStatus :: proc(cyc: i32) {
 	if charBreakdown[pChar[cyc]] == gamSpeed[slot] do pHP[cyc] = 0
 	if gamPromo == 0 do charBreakdown[pChar[cyc]] -= gamSpeed[slot]
 	if charBreakdown[pChar[cyc]] < 0 do charBreakdown[pChar[cyc]] = 0
-	if (pInjured[cyc] > 0 || charBreakdown[pChar[cyc]] > 0) && (pHealth[cyc] > 1 || pChar[cyc] == gamChar[slot]) && pAnim[cyc] != 103 {
+	if (pInjured[cyc] > 0 || charBreakdown[pChar[cyc]] > 0) && (pHealth[cyc] > 1 \
+	|| pChar[cyc] == gamChar[slot]) && pAnim[cyc] != 103 {
 		randy := bb.RndI(0, 300)
 		if randy <= gamSpeed[slot] {
 			pHealth[cyc] -= 1
@@ -697,12 +737,16 @@ MonitorStatus :: proc(cyc: i32) {
 	// weightlifting
 	if gamLocation[slot] == 2 && pAnim[cyc] == 102 && pState[cyc] == 108 && pAnimTim[cyc] > 10 {
 		bb.ShowEntity(bb.FindChild(p[cyc], "Barbell"))
-		if gamLocation[slot] == 2 do bb.HideEntity(bb.FindChild(world, fmt.tprint("Barbell0", pSeat[cyc])))
+		barbell_string := fmt.aprint("Barbell0", pSeat[cyc])
+		if gamLocation[slot] == 2 do bb.HideEntity(bb.FindChild(world, barbell_string))
+		delete(barbell_string)
 	} else {
 		bb.HideEntity(bb.FindChild(p[cyc], "Barbell"))
 		for count in i32(1)..=3 {
 			if gamLocation[slot] == 2 && (ChairTaken(count) == 0 || pSeat[cyc] == count) {
-				bb.ShowEntity(bb.FindChild(world, fmt.tprint("Barbell0", count)))
+				barbell_string := fmt.aprint("Barbell0", count)
+				bb.ShowEntity(bb.FindChild(world, barbell_string))
+				delete(barbell_string)
 			}
 		}
 	}
@@ -714,22 +758,25 @@ MonitorStatus :: proc(cyc: i32) {
 	if pWeapon[cyc] > 0 do pWeaponTim[cyc][pWeapon[cyc]] = 20
 }
 
+
 GainStrength :: proc(cyc, chance: i32) {
-	randy: i32 = bb.RndI(0, chance)
+	randy := bb.RndI(0, chance)
 	if randy <= 1 {
 		charStrength[pChar[cyc]] += 1
 		charHappiness[pChar[cyc]] += bb.RndI(1, 5)
 	}
 }
 
+
 DamageRep :: proc(cyc, v, level: i32) {
 	charHappiness[pChar[v]] -= 1 + level
 	if pHealth[v] > 0 && charWitness[pChar[cyc]] > 0 {
-		randy: i32 = bb.RndI(0, 1)
+		randy := bb.RndI(0, 1)
 		if randy == 0 do charReputation[pChar[v]] -= bb.RndI(level, 1)
 		charReputation[pChar[cyc]] += bb.RndI(level, (1 + charRole[pChar[v]]))
 	}
 }
+
 
 LimitStats :: proc(char: i32) {
 	// physical 
