@@ -16,7 +16,7 @@ MainMenu :: proc() {
 	timer := bb.CreateTimer(30)
 	// MAIN LOOP
 	foc: i32 = 1
-	//oldfoc: i32 = foc // Unused
+	//oldfoc := foc // Unused
 	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		bb.Cls()
@@ -98,7 +98,7 @@ Options :: proc() {
 	timer := bb.CreateTimer(30)
 	// MAIN LOOP
 	foc: i32 = 9
-	//oldfoc: i32 = foc // Unused
+	//oldfoc := foc // Unused
 	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		bb.Cls()
@@ -271,7 +271,7 @@ RedefineKeys :: proc() {
 
 	// MAIN LOOP
 	foc: i32 = 6
-	//oldfoc: i32 = foc //Unused
+	//oldfoc := foc //Unused
 	screenCall: i32 = 0
 	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
@@ -402,7 +402,7 @@ RedefineGamepad :: proc() {
 
 	// MAIN LOOP
 	foc: i32 = 6
-	//oldfoc: i32 = foc // Unused
+	//oldfoc := foc // Unused
 	screenCall: i32 = 0
 	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
@@ -684,7 +684,7 @@ EditSelect :: proc() {
 	timer := bb.CreateTimer(30)
 	// MAIN LOOP
 	foc: i32 = 1
-	//oldfoc: i32 = foc // Unused
+	//oldfoc := foc // Unused
 	go, gotim, keytim: i32 = 0, 0, 20
 	for go == 0 {
 		bb.Cls()
@@ -827,7 +827,7 @@ DrawOption :: proc(box: i32, x: f32, y: f32, scriptA: string, scriptB: string) {
 
 // SQUEEZE FONT INTO BOX
 SqueezeFont :: proc(script: string, width, start: i32) {
-	f: i32 = start
+	f := start
 	bb.SetFont(font[f])
 	for f > 0 && bb.StringWidth(script) > width {
 		f -= 1

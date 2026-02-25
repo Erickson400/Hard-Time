@@ -797,7 +797,7 @@ ResetDummy :: proc(cyc: i32) {
 //ENTER DOOR
 EnterDoor :: proc(cyc: i32, door: i32) {
 	//store current location
-	//oldLocation: i32 = gamLocation[slot] // Unused
+	//oldLocation := gamLocation[slot] // Unused
 	//north >>> hall
 	if gamLocation[slot] == 1 {
 		charX[pChar[cyc]] = -150
@@ -945,8 +945,8 @@ RelocateChars :: proc() {
 		if char != gamChar[slot] && charRole[char] <= 1 && charLocation[char] > 0 {
 			//get new destination
 			target: i32 = 0
-			source: i32 = charLocation[char]
-			randy: i32 = bb.RndI(0, 20)
+			source := charLocation[char]
+			randy := bb.RndI(0, 20)
 			if charRole[char] == 1 && AreaPopulation(charLocation[char], 1) > 2 {
 				randy = bb.RndI(0, 10)
 			}
@@ -1144,7 +1144,7 @@ RelocateChars :: proc() {
 			if charWeapon[char] > 0 do weapLocation[charWeapon[char]] = charLocation[char]
 		}
 		//introduce new characters
-		randy: i32 = bb.RndI(0, 10)
+		randy := bb.RndI(0, 10)
 		if randy == 0 && char != gamChar[slot] && charRole[char] <= 1 &&
 		charLocation[char] == 0 && char != gamFatality[slot] &&
 		char != gamRelease[slot] && gamArrival[slot] == 0 {
@@ -1367,7 +1367,7 @@ BedProximity :: proc(cyc: i32, bed: i32) -> i32 {
 	digit := Dig(bed, 10)
 	bed_string := fmt.aprint("Mat%d", digit)
 	value: i32 = 0
-	limb: i32 = bb.FindChild(world, bed_string)
+	limb := bb.FindChild(world, bed_string)
 	if pX[cyc] > bb.EntityX(limb, 1)-25 && pX[cyc] < bb.EntityX(limb, 1)+25 \
 	&& pY[cyc] > bb.EntityY(limb, 1)-25 && pY[cyc] < bb.EntityY(limb, 1) \
 	&& pZ[cyc] > bb.EntityZ(limb, 1)-25 && pZ[cyc] < bb.EntityZ(limb, 1)+25 {
@@ -1393,7 +1393,7 @@ PhoneProximity :: proc(cyc: i32) -> i32 {
 		for v in i32(1)..=4 {
 			digit := Dig(v, 10)
 			pad_string := fmt.aprint("Pad%d", digit)
-			limb: i32 = bb.FindChild(world, pad_string)
+			limb := bb.FindChild(world, pad_string)
 			if pX[cyc] > bb.EntityX(limb, 1)-20 && pX[cyc] < bb.EntityX(limb, 1)+20 \
 			&& pZ[cyc] > bb.EntityZ(limb, 1)-15 && pZ[cyc] < bb.EntityZ(limb, 1)+15 {
 				value = v
@@ -1425,7 +1425,7 @@ OnComputer :: proc(cyc: i32) -> i32 {
 NearBasket :: proc(cyc: i32) -> i32 {
 	value: i32 = 0
 	if gamLocation[slot] == 2 && pWeapon[cyc] > 0 {
-		limb: i32 = bb.FindChild(world, "Rim")
+		limb := bb.FindChild(world, "Rim")
 		if pX[cyc] > bb.EntityX(limb, 1)-100 && pX[cyc] < bb.EntityX(limb, 1)+100 \
 		&& pZ[cyc] > bb.EntityZ(limb, 1)-100 && pZ[cyc] < bb.EntityZ(limb, 1)+100 {
 			if cast(bool)InLine(cyc, limb, 60) do value = 1

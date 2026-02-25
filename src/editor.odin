@@ -375,6 +375,7 @@ Editor :: proc() {
 				bb.Color(255, 255, 255)
 				bb.SetFont(font[3])
 				oldName := charName[char]
+				delete(charName[char])
 				charName[char] = bb.Left(bb.Input(""), 20)
 				if charName[char] == "" do charName[char] = oldName
 			} else {

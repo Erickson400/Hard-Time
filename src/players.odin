@@ -613,7 +613,7 @@ RiskInjury :: proc(cyc, chance: i32) {
 MonitorStatus :: proc(cyc: i32) {
 	// monitor attributes
 	if pChar[cyc] == gamChar[slot] {
-		randy: i32 = bb.RndI(0, 15000)
+		randy := bb.RndI(0, 15000)
 		if randy == 1 && pState[cyc] != 108 && pAnim[cyc] != 132 {
 			charStrength[pChar[cyc]] -= 1
 		}

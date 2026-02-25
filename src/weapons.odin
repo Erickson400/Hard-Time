@@ -506,8 +506,8 @@ AttainWeapon :: proc(cyc, v: i32) {
 
 
 DropWeapon :: proc(cyc, chance: i32) {
-	v: i32 = pWeapon[cyc]
-	randy: i32 = bb.RndI(0, chance)
+	v := pWeapon[cyc]
+	randy := bb.RndI(0, chance)
 	if randy == 0 && v > 0 {
 		ProduceSound(p[cyc], sShuffle[bb.RndI(1, 3)], 44100, 0.5)
 		if weapY[v] < pY[cyc] + 10 do weapY[v] = pY[cyc] + 10
@@ -538,7 +538,7 @@ DropWeapon :: proc(cyc, chance: i32) {
 
 
 ThrowWeapon :: proc(cyc: i32) {
-	v: i32 = pWeapon[cyc]
+	v := pWeapon[cyc]
 	if v > 0 {
 		// reset state
 		weapFlightA[v] = pA[cyc]
@@ -569,7 +569,7 @@ ThrowWeapon :: proc(cyc: i32) {
 
 
 ScarWeapon :: proc(cyc, chance: i32) {
-	randy: i32 = bb.RndI(0, chance)
+	randy := bb.RndI(0, chance)
 	if randy == 0 do weapScar[cyc] += 1
 	if weapScar[cyc] > 4 do weapScar[cyc] = 4
 }

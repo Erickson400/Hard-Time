@@ -590,7 +590,7 @@ exTim: [no_explodes + 1]i32
 exSource: [no_explodes + 1]i32
 exHurt: [no_explodes + 1][optPlayLim + 1]i32
 // Pools
-// This variable is assigned again in Gameplay.bb (probably a bug), 
+// NOTE: Likely a bug. no_pools is assigned again in Gameplay.bb, 
 // so I have to manually set the arrays below to a length of 51
 no_pools: i32 = 50
 pool: [51]i32

@@ -45,7 +45,7 @@ CreateParticle :: proc(x, y, z: f32, style: i32) {
 				bb.EntityColor(part[cyc], 220, bb.RndI(0, 100), 0)
 			}
 			if partType[cyc] == 2 { // smoke
-				randy: i32 = bb.RndI(0, 100)
+				randy := bb.RndI(0, 100)
 				bb.EntityColor(part[cyc], randy, randy, randy)
 				partSize[cyc] = bb.RndF(1.0, 3.0)
 				partFlight[cyc] = 0.1
@@ -278,7 +278,7 @@ ExplosionCycle :: proc() {
 						if AttackViable(v) >= 1 && AttackViable(v) <= 2 do ChangeAnim(v, 70)
 						if AttackViable(v) == 3 do GroundReaction(v)
 						if cast(bool)BlastProximity(cyc, pX[v], pY[v], pZ[v], 15.0) {
-							randy: i32 = bb.RndI(1, 3)
+							randy := bb.RndI(1, 3)
 							if randy == 1 && pHealth[v] > 0 do ChangeAnim(v, 80)
 							if randy == 2 && pHealth[v] > 0 do ChangeAnim(v, 83)
 							if randy == 3 && pHealth[v] > 0 do ChangeAnim(v, 86)
