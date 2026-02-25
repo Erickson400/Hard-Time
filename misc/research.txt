@@ -1,5 +1,7 @@
-The entry point is on Gameplay.bb
+The entry point is Gameplay.bb
 
 There are memory leaks. e.g. charPhoto is set to LoadImage, but then set to 0 without freeing. 
+
+Most functions are only used once.
 
 

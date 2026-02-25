@@ -40,7 +40,7 @@ SoundPitch :: proc(sound: i32, pitch: i32) {}
 SoundVolume :: proc(sound: i32, volume: f32) {}
 EmitSound :: proc(sound: i32, entity: i32) -> i32 { return 0}
 PlaySound :: proc(sound: i32) {}
-CreateListener :: proc(entity: i32, roll, dopp, dist: f32) -> i32{ return 1}
+CreateListener :: proc(entity: i32, roll, dopp, dist: f32) -> i32 { return 1}
 
 // ------Images/Textures-----
 CreateImage :: proc(width, height: i32) -> i32 { return 1}

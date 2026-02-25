@@ -522,7 +522,7 @@ camMouseX, camMouseY: f32
 // Smooth co-ordination
 speedX, speedY, speedZ: f32
 // Camera presets
-camShortcut := [11]i32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0} // Unused
+//camShortcut := [11]i32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0} // Unused
 // Lighting
 light: [11]i32
 no_lights: i32
