@@ -1,49 +1,47 @@
+#+vet !unused-imports
 package main
 
 import bb "blitzbasic3d"
 import "core:fmt"
 import "core:log"
-import "core:os"
 import "core:mem"
-
-
-LEAK_CHECKING :: true
-
-file_for_loging: os.Handle
-logger: log.Logger
-
+import "core:os"
 
 main :: proc() {
-	when LEAK_CHECKING {
-		track: mem.Tracking_Allocator
-		mem.tracking_allocator_init(&track, context.allocator)
-		defer mem.tracking_allocator_destroy(&track)
-		context.allocator = mem.tracking_allocator(&track)
+	// Create tracking allocator
+	when ODIN_DEBUG {
+		tracker: mem.Tracking_Allocator
+		mem.tracking_allocator_init(&tracker, context.allocator)
+		context.allocator = mem.tracking_allocator(&tracker)
 		defer {
-			total := 0
-			for _, leak in track.allocation_map {
-				fmt.printf("%v leaked %m\n", leak.location, leak.size)
-				total += 1
+			if len(tracker.allocation_map) > 0 {
+				total_size := 0
+				for _, leak in tracker.allocation_map {
+					fmt.printf("%v leaked %m\n", leak.location, leak.size)
+					total_size += leak.size
+				}
+				fmt.printf("Total leaks: %v\nTotal leak Size: %m", len(tracker.allocation_map), total_size)
 			}
-			fmt.println("Total leaks: ", total)
+			mem.tracking_allocator_destroy(&tracker)
 		}
 	}
-	err: os.Error
-	file_for_loging, err = os.open("logs.txt", os.O_CREATE | os.O_WRONLY | os.O_TRUNC, 0o600)
-	assert(err==nil)
-	defer os.close(file_for_loging)
 
-	logger = log.create_file_logger(file_for_loging)
-	context.logger = logger
-	defer log.destroy_file_logger(logger)
-
+	// Create file logger. (Info level for debug, Error level for release)
+	// TODO: Replace with os2 in march
+	log_file, _ := os.open("logs.txt", os.O_CREATE | os.O_WRONLY, 0o777)
+	context.logger = log.create_file_logger(log_file)
+	context.logger.lowest_level = .Info when ODIN_DEBUG else .Error
+	defer os.close(log_file)
+	defer log.destroy_file_logger(context.logger )
+	
+	// Initialize BlitzBasic3D
 	bb.init()
 	defer bb.destroy()
 
-	// Includes
-	// Note: Make sure its in the same order as the include commands in Gameplay.bb.
+	// NOTE: Make sure its in the same order as the include commands in Gameplay.bb.
 	// If the ported file has no init function then its because there is no global code execution,
-	// they only define constants & functions.
+	// they only define functions.
+	// Gameplay.bb include files.
 	init_values()
 	free_all(context.temp_allocator) // Cleanup tprints
 

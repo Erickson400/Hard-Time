@@ -1,9 +1,13 @@
+Build commands:
+(For active dev and debugging) ---- odin build ./src -o:none -debug -vet -vet-tabs -strict-style
+(No release command as of yet) ----
+
 ---- Writing conventions Odin code ----
 - Comment out unused variables/functions and put an "Unused" comment next to them.
 - Game source code should be PascalCase just like the original. Only the BlitzBasic API should use the Odin naming convention. The code should still use the other Odin style points.
 - If a variable is only read, then make it constant or rodata.
 - Import statements should be right below the package name, no comments between.
-- Make sure all files follow -vet, -strict-style, and -vet-tabs.
+- Make sure all files follow -vet, -vet-tabs, and -strict-style.
 
 
 ---- Translaton Guide ----

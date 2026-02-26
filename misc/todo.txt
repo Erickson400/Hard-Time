@@ -1,5 +1,5 @@
-\---- Tasks ----
-(In March) Replace os/os2 to os on the next Odin upgrade.
+---- Tasks ----
+(In March) Replace os/os2 to os on the next Odin upgrade. That also includes it's use in main.odin
 
 Go through .odin and give it 10/10.
 
