@@ -14,22 +14,22 @@ import "core:fmt"
 ////////////////////////////////////////////////////////
 version :: 4
 screen: i32
-oldScreen: i32 // Unused
-screenSource: i32 // Unused
-screenAgenda: i32 // Unused
+//oldScreen: i32 // Unused
+//screenSource: i32 // Unused
+//screenAgenda: i32 // Unused
 screenCall: i32
 callX: i32
 callY: i32
 go: i32
 gotim: i32
 foc: i32
-subfoc: i32 // Unused
+//subfoc: i32 // Unused
 timer: i32
 keytim: i32
 file: i32
-saver: i32 // Unused
-loader: i32 // Unused
-tester: i32 // Unused
+//saver: i32 // Unused
+//loader: i32 // Unused
+//tester: i32 // Unused
 
 ////////////////////////////////////////////////////////
 //------------------- PROGRESS -------------------------
@@ -302,9 +302,9 @@ pOldEyes: [optPlayLim + 1]i32
 pMouth: [optPlayLim + 1]i32
 pSpeaking: [optPlayLim + 1]i32
 pShadow: [optPlayLim + 1][41]i32
-pControlTim: [optPlayLim + 1]i32 // Unused
-pTag: [3]i32 // Unused
-pHighlight: [3]i32 // Unused
+//pControlTim: [optPlayLim + 1]i32 // Unused
+//pTag: [3]i32 // Unused
+//pHighlight: [3]i32 // Unused
 
 /////////////////////////////////////////////////////////
 //----------------------- LIMBS -------------------------

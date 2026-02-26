@@ -24,7 +24,7 @@ lines_translated% =  scored_rows_total / total_line_count
 | Particles.bb    | Feb 23, 2026      | 10/10    | 367           |
 | Players.bb      | Feb 23, 2026      | 10/10    | 635           |
 | Anims.bb        | Feb 25, 2026      | 10/10    | 2055          |
-| Moves.bb        |     .., 2026      | ./10     | 482           |
+| Moves.bb        | Feb 26, 2026      | 9/10     | 482           |
 | AI.bb           |     .., 2026      | ./10     | 1094          |
 | Promos.bb       |     .., 2026      | ./10     | 4890          |
 | Crimes.bb       |     .., 2026      | ./10     | 1384          |
