@@ -31,7 +31,6 @@ GetInput :: proc(cyc: i32) {
 		if cast(bool)bb.KeyDown(keyThrow) do cThrow[cyc] = 1
 		if cast(bool)bb.KeyDown(keyPickUp) do cPickUp[cyc] = 1
 	}
-
 	// get gamepad input
 	if (pControl[cyc] == 2 || pControl[cyc] == 3) && charBreakdown[pChar[cyc]] == 0 {
 		if bb.JoyYDir() == -1 do cUp[cyc] = 1
@@ -43,7 +42,6 @@ GetInput :: proc(cyc: i32) {
 		if cast(bool)bb.JoyDown(buttThrow) do cThrow[cyc] = 1
 		if cast(bool)bb.JoyDown(buttPickUp) do cPickUp[cyc] = 1
 	}
-
 	// get CPU input
 	if pControl[cyc] == 0 || charBreakdown[pChar[cyc]] > 0 {
 		AI(cyc)
@@ -558,40 +556,25 @@ AI :: proc(cyc: i32) {
 	// ATTACKING
 	// find victims
 	v = pFoc[cyc]
-	if v > 0 &&
-	   (charAngerTim[pChar[cyc]][pChar[v]] > 0 ||
-		charBreakdown[pChar[cyc]] > 0) &&
-	   AttackViable(v) > 0 && pHealth[v] > 0 &&
-	   charGang[pChar[cyc]] != 6 {
+	if v > 0 && (charAngerTim[pChar[cyc]][pChar[v]] > 0 \
+	|| charBreakdown[pChar[cyc]] > 0) && AttackViable(v) > 0 \
+	&& pHealth[v] > 0 && charGang[pChar[cyc]] != 6 {
 		// assess range
 		range = 22
-		if pWeapon[cyc] > 0 {
-			range += i32(weapRange[weapType[pWeapon[cyc]]] * 2)
-		}
-		if AttackViable(v) == 3 {
-			range = range - (range / 3)
-		}
-		if weapStyle[weapType[pWeapon[cyc]]] >= 3 &&
-		   weapStyle[weapType[pWeapon[cyc]]] <= 4 {
+		if pWeapon[cyc] > 0 do range += i32(weapRange[weapType[pWeapon[cyc]]] * 2)
+		if AttackViable(v) == 3 do range = range - (range / 3)
+		if weapStyle[weapType[pWeapon[cyc]]] >= 3 \
+		&& weapStyle[weapType[pWeapon[cyc]]] <= 4 {
 			range = 500
 		}
 		// assess intensity
-		intensity = (100 - charReputation(pChar[cyc])) * 3
-		if charBreakdown(pChar[cyc]) > 0 {
-			intensity = intensity / 2
-		}
-		if intensity < 10 {
-			intensity = 10
-		}
-		if pHealth[v] <= 5 {
-			intensity = intensity * 5
-		}
-		if range >= 250 &&
-		   InProximity(cyc, v, 30) == 0 {
-			intensity = intensity * 10
-		}
+		intensity = (100 - charReputation[pChar[cyc]]) * 3
+		if charBreakdown[pChar[cyc]] > 0 do intensity /= 2
+		if intensity < 10 do intensity = 10
+		if pHealth[v] <= 5 do intensity *= 5
+		if range >= 250 && InProximity(cyc, v, 30) == 0 do intensity *= 10
 		// basic attacks
-		if InProximity(cyc, v, range) != 0 {
+		if cast(bool)InProximity(cyc, v, range) {
 			randy = bb.RndI(0, intensity)
 			if randy <= 4 {
 				cAttack[cyc] = 1
@@ -603,11 +586,8 @@ AI :: proc(cyc: i32) {
 				cDefend[cyc] = 1
 				cThrow[cyc] = 0
 			}
-			if randy >= 7 && randy <= 8 &&
-			   InProximity(cyc, v, 30) != 0 &&
-			   pGrappling[v] == 0 &&
-			   pGrappler[v] == 0 &&
-			   pSeat[v] == 0 && pBed[v] == 0 {
+			if randy >= 7 && randy <= 8 && cast(bool)InProximity(cyc, v, 30) \
+			&& pGrappling[v] == 0 && pGrappler[v] == 0 && pSeat[v] == 0 && pBed[v] == 0 {
 				cAttack[cyc] = 0
 				cDefend[cyc] = 0
 				cThrow[cyc] = 1
@@ -621,51 +601,35 @@ AI :: proc(cyc: i32) {
 			cRight[cyc] = 0
 		}
 		// force rear
-		if cAttack[cyc] == 1 && AttackViable(v) == 1 &&
-		   InProximity(cyc, v, 50) != 0 {
+		if cAttack[cyc] == 1 && AttackViable(v) == 1 \
+		&& cast(bool)InProximity(cyc, v, 50) {
 			if InLine(cyc, p[v], 115) == 0 {
 				cAttack[cyc] = 1
 				cThrow[cyc] = 1
 			}
 		}
 		// don't shoot if not in sight
-		if cAttack[cyc] == 1 &&
-		   weapStyle[weapType[pWeapon[cyc]]] >= 3 &&
-		   weapStyle[weapType[pWeapon[cyc]]] <= 4 {
-			if InLine(cyc, p[v], 60) == 0 {
-				cAttack[cyc] = 0
-			}
+		if cAttack[cyc] == 1 && weapStyle[weapType[pWeapon[cyc]]] >= 3 \
+		&& weapStyle[weapType[pWeapon[cyc]]] <= 4 {
+			if InLine(cyc, p[v], 60) == 0 do cAttack[cyc] = 0
 		}
 	}
-
 	// DEFENDING
 	intensity = (100 - charIntelligence[pChar[cyc]]) * 3
-	if intensity < 10 {
-		intensity = 10
-	}
-	if charBreakdown[pChar[cyc]] > 0 {
-		intensity *= 5
-	}
-	if AttackViable(cyc) >= 1 && AttackViable(cyc) <= 2 &&
-	   cThrow[cyc] == 0 {
+	if intensity < 10 do intensity = 10
+	if charBreakdown[pChar[cyc]] > 0 do intensity *= 5
+	if AttackViable(cyc) >= 1 && AttackViable(cyc) <= 2 && cThrow[cyc] == 0 {
 		for v in 1..=no_plays {
-			if cyc != v && cyc == pFoc[v] &&
-			   charAngerTim[pChar[cyc]][pChar[v]] > 0 {
+			if cyc != v && cyc == pFoc[v] && charAngerTim[pChar[cyc]][pChar[v]] > 0 {
 				// hand-to-hand threats
 				range = 30
-				if pWeapon[v] > 0 {
-					range = range +
-						(weapRange[weapType[pWeapon[v]]] * 2)
-				}
-				if InProximity(cyc, v, range) != 0 &&
-				   pAnim[v] >= 30 && pAnim[v] <= 49 &&
-				   pAnim[v] != 35 && pSting[v] == 1 {
-					if InLine(v, p[cyc], 90) != 0 {
+				if pWeapon[v] > 0 do range += i32(weapRange[weapType[pWeapon[v]]] * 2)
+				if cast(bool)InProximity(cyc, v, range) && pAnim[v] >= 30 \
+				&& pAnim[v] <= 49 && pAnim[v] != 35 && pSting[v] == 1 {
+					if cast(bool)InLine(v, p[cyc], 90) {
 						randy = bb.RndI(0, intensity)
-						if randy <= 5 ||
-						   (randy <= 10 &&
-							InProximity(cyc, v, range / 2)) ||
-						   (pAnim[cyc] >= 74 && pAnim[cyc] <= 75) {
+						if randy <= 5 || (randy <= 10 && cast(bool)InProximity(cyc, v, range / 2)) \
+						|| (pAnim[cyc] >= 74 && pAnim[cyc] <= 75) {
 							cDefend[cyc] = 1
 							cAttack[cyc] = 0
 							cUp[cyc] = 0
@@ -676,11 +640,9 @@ AI :: proc(cyc: i32) {
 					}
 				}
 				// gun threats
-				if InProximity(cyc, v, 500) != 0 &&
-				   pAnim[v] >= 60 && pAnim[v] <= 61 { // && pFireTim(v)>5
+				if cast(bool)InProximity(cyc, v, 500) && pAnim[v] >= 60 && pAnim[v] <= 61 { // && pFireTim(v)>5
 					randy = bb.RndI(0, intensity)
-					if randy <= 10 ||
-					   (pAnim[cyc] >= 74 && pAnim[cyc] <= 75) {
+					if randy <= 10 || (pAnim[cyc] >= 74 && pAnim[cyc] <= 75) {
 						cDefend[cyc] = 1
 						cAttack[cyc] = 0
 						cUp[cyc] = 0
@@ -694,30 +656,26 @@ AI :: proc(cyc: i32) {
 	}
 }
 
+
 //----------------------------------------------------------------
 //////////////////// TRANSLATE INPUT /////////////////////////////
 //----------------------------------------------------------------
 TranslateInput :: proc(cyc: i32) {
 	blocker, nearest, picker, phone, anim, v: i32
-
 	// declaw
-	if gamPromo > 0 ||
-	   (cyc == gamPlayer[slot] && promoUsed[71] == 0) {
+	if gamPromo > 0 || (cyc == gamPlayer[slot] && promoUsed[71] == 0) {
 		cAttack[cyc] = 0
 		cDefend[cyc] = 0
 		cThrow[cyc] = 0
 		cPickUp[cyc] = 0
-		if cyc == promoActor[1] || cyc == promoActor[2] ||
-		   (gamMission[slot] == 18 &&
-			pChar[cyc] == gamClient[slot]) ||
-		   (cyc == gamPlayer[slot] && promoUsed[71] == 0) {
+		if cyc == promoActor[1] || cyc == promoActor[2] || (gamMission[slot] == 18 \
+		&& pChar[cyc] == gamClient[slot]) || (cyc == gamPlayer[slot] && promoUsed[71] == 0) {
 			cUp[cyc] = 0
 			cDown[cyc] = 0
 			cLeft[cyc] = 0
 			cRight[cyc] = 0
 		}
 	}
-
 	// force turn
 	if gamPromo > 0 && pAnim[cyc] < 20 && pDazed[cyc] == 0 {
 		if cyc == promoActor[1] {
@@ -727,12 +685,10 @@ TranslateInput :: proc(cyc: i32) {
 				pTA[cyc] = CleanAngle(bb.EntityYaw(dummy))
 			}
 			if promoActor[2] < 0 {
-				tmp := Dig(i32(MakePositive(f32(promoActor[2]))), 10)
-				padName := fmt.aprint("Pad", tmp)
-				delete(tmp)
-				bb.PointEntity(dummy,
-					bb.FindChild(world,
-						padName))
+				digit := Dig(i32(MakePositive(f32(promoActor[2]))), 10)
+				padName := fmt.aprint("Pad", digit)
+				delete(digit)
+				bb.PointEntity(dummy, bb.FindChild(world, padName))
 				delete(padName)
 				pTA[cyc] = CleanAngle(bb.EntityYaw(dummy) + 180)
 			}
@@ -744,71 +700,40 @@ TranslateInput :: proc(cyc: i32) {
 				pTA[cyc] = CleanAngle(bb.EntityYaw(dummy))
 			}
 			if promoActor[1] < 0 {
-				tmp := Dig(i32(MakePositive(f32(promoActor[1]))), 10)
-				padName := fmt.aprint("Pad", tmp)
-				delete(tmp)
-				bb.PointEntity(dummy,
-					bb.FindChild(world,
-						padName))
+				digit := Dig(i32(MakePositive(f32(promoActor[1]))), 10)
+				padName := fmt.aprint("Pad", digit)
+				delete(digit)
+				bb.PointEntity(dummy, bb.FindChild(world, padName))
 				delete(padName)
 				pTA[cyc] = CleanAngle(bb.EntityYaw(dummy) + 180)
 			}
 		}
 		if SatisfiedAngle(pA[cyc], pTA[cyc], 15) == 0 {
-			if ReachAngle(pA[cyc], pTA[cyc], 1) > 0 {
-				cLeft[cyc] = 1
-			}
-			if ReachAngle(pA[cyc], pTA[cyc], 1) < 0 {
-				cRight[cyc] = 1
-			}
+			if ReachAngle(pA[cyc], pTA[cyc], 1) > 0 do cLeft[cyc] = 1
+			if ReachAngle(pA[cyc], pTA[cyc], 1) < 0 do cRight[cyc] = 1
 		}
 	}
-
 	// turn
-	if pAnim[cyc] < 10 && HorizontalPressed(cyc) != 0 &&
-	   VerticalPressed(cyc) == 0 {
-		if pAnim[cyc] != 1 {
-			ChangeAnim(cyc, 10)
-		}
-		if pAnim[cyc] == 1 {
-			ChangeAnim(cyc, 11)
-		}
+	if pAnim[cyc] < 10 && cast(bool)HorizontalPressed(cyc)&& VerticalPressed(cyc) == 0 {
+		if pAnim[cyc] != 1 do ChangeAnim(cyc, 10)
+		if pAnim[cyc] == 1 do ChangeAnim(cyc, 11)
 	}
 	// advance
-	if pAnim[cyc] < 12 && VerticalPressed(cyc) != 0 {
-		ChangeAnim(cyc, 12)
-	}
+	if pAnim[cyc] < 12 && cast(bool)VerticalPressed(cyc) do ChangeAnim(cyc, 12)
 	// attacks
 	if cAttack[cyc] == 1 && pAnim[cyc] < 20 && pDazed[cyc] == 0 {
-		if DirPressed(cyc) != 0 {
-			ChangeAnim(cyc, 30) // upper attack
-		}
-		if DirPressed(cyc) == 0 {
-			ChangeAnim(cyc, 31) // lower attack
-		}
-		if cDefend[cyc] == 1 {
-			ChangeAnim(cyc, 33) // big attack
-		}
-		if AttackViable(pFoc[cyc]) == 3 {
-			ChangeAnim(cyc, 32) // stomp
-		}
-		if cThrow[cyc] == 1 {
-			ChangeAnim(cyc, 34) // rear attack
-		}
-		if pWeapon[cyc] > 0 &&
-		   InProximity(cyc, pFoc[cyc], 25) == 0 &&
-		   cThrow[cyc] == 0 {
-			if weapStyle[weapType[pWeapon[cyc]]] == 3 {
-				ChangeAnim(cyc, 61) // pistol
-			}
-			if weapStyle[weapType[pWeapon[cyc]]] == 4 {
-				ChangeAnim(cyc, 60) // machine gun
-			}
+		if cast(bool)DirPressed(cyc) do ChangeAnim(cyc, 30) // upper attack
+		if DirPressed(cyc) == 0 do ChangeAnim(cyc, 31) // lower attack
+		if cDefend[cyc] == 1 do ChangeAnim(cyc, 33) // big attack
+		if AttackViable(pFoc[cyc]) == 3 do ChangeAnim(cyc, 32) // stomp
+		if cThrow[cyc] == 1 do ChangeAnim(cyc, 34) // rear attack
+		if pWeapon[cyc] > 0 && InProximity(cyc, pFoc[cyc], 25) == 0 && cThrow[cyc] == 0 {
+			if weapStyle[weapType[pWeapon[cyc]]] == 3 do ChangeAnim(cyc, 61) // pistol
+			if weapStyle[weapType[pWeapon[cyc]]] == 4 do ChangeAnim(cyc, 60) // machine gun
 		}
 	}
 	// blocks
-	if cDefend[cyc] == 1 && DirPressed(cyc) == 0 &&
-	   pAnim[cyc] < 20 && pDazed[cyc] == 0 {
+	if cDefend[cyc] == 1 && DirPressed(cyc) == 0 && pAnim[cyc] < 20 && pDazed[cyc] == 0 {
 		if pAnim[cyc] == 1 || pAnim[cyc] == 11 {
 			blocker = 75
 		} else {
@@ -817,27 +742,19 @@ TranslateInput :: proc(cyc: i32) {
 		ChangeAnim(cyc, blocker)
 	}
 	// weapon interaction
-	if cPickUp[cyc] == 1 && pAnim[cyc] < 20 &&
-	   pDazed[cyc] == 0 {
+	if cPickUp[cyc] == 1 && pAnim[cyc] < 20 && pDazed[cyc] == 0 {
 		nearest = NearestWeapon(cyc)
 		picker	= 0
-		if nearest > 0 &&
-		   WeaponProximity(cyc, nearest, 20) &&
-		   weapCarrier[nearest] == 0 &&
-		   pWeapon[cyc] == 0 {
+		if nearest > 0 && cast(bool)WeaponProximity(cyc, nearest, 20) \
+		&& weapCarrier[nearest] == 0 && pWeapon[cyc] == 0 {
 			picker = 1
 		}
 		phone = PhoneProximity(cyc)
-		if picker == 0 && phone > 0 &&
-		   PhoneTaken(phone) == 0 && pPhone[cyc] == 0 {
+		if picker == 0 && phone > 0 && PhoneTaken(phone) == 0 && pPhone[cyc] == 0 {
 			AnswerPhone(cyc, phone, 28)
 		} else {
-			if pPhone[cyc] > 0 {
-				AnswerPhone(cyc, pPhone[cyc], 29)
-			}
-			if pWeapon[cyc] > 0 && pPhone[cyc] == 0 {
-				ChangeAnim(cyc, 21)
-			}
+			if pPhone[cyc] > 0 do AnswerPhone(cyc, pPhone[cyc], 29)
+			if pWeapon[cyc] > 0 && pPhone[cyc] == 0 do ChangeAnim(cyc, 21)
 			if pWeapon[cyc] == 0 && pPhone[cyc] == 0 {
 				if nearest > 0 {
 					bb.PointEntity(pPivot[cyc], weap[nearest])
@@ -845,52 +762,38 @@ TranslateInput :: proc(cyc: i32) {
 				}
 				anim = 20
 				v = weapCarrier[nearest]
-				if nearest > 0 && v > 0 &&
-				   AttackViable(v) >= 1 && AttackViable(v) <= 2 {
+				if nearest > 0 && v > 0 && AttackViable(v) >= 1 && AttackViable(v) <= 2 {
 					anim = 23
 				}
-				if nearest > 0 &&
-				   weapY[nearest] > pY[cyc] + 10 {
-					anim = 23
-				}
+				if nearest > 0 && weapY[nearest] > pY[cyc] + 10 do anim = 23
 				ChangeAnim(cyc, anim)
 			}
 		}
 	}
 	// throw/grab
-	if cThrow[cyc] == 1 && pAnim[cyc] < 20 &&
-	   pDazed[cyc] == 0 {
-		if pWeapon[cyc] > 0 &&
-		   (InProximity(cyc, pFoc[cyc], 30) == 0 ||
-			NearBasket(cyc)) {
-			if NearBasket(cyc) {
+	if cThrow[cyc] == 1 && pAnim[cyc] < 20 && pDazed[cyc] == 0 {
+		if pWeapon[cyc] > 0 && (InProximity(cyc, pFoc[cyc], 30) == 0 || cast(bool)NearBasket(cyc)) {
+			if cast(bool)NearBasket(cyc) {
 				ChangeAnim(cyc, 27)
 			} else {
 				ChangeAnim(cyc, 22)
 			}
 		} else {
-			if AttackViable(pFoc[cyc]) != 3 {
-				ChangeAnim(cyc, 200)
-			}
-			if AttackViable(pFoc[cyc]) == 3 {
-				ChangeAnim(cyc, 201)
-			}
+			if AttackViable(pFoc[cyc]) != 3 do ChangeAnim(cyc, 200)
+			if AttackViable(pFoc[cyc]) == 3 do ChangeAnim(cyc, 201)
 		}
 	}
 	// automatic hang‑up
-	if pPhone[cyc] > 0 &&
-	   PhoneProximity(cyc) != pPhone[cyc] &&
-	   pAnim[cyc] != 29 {
+	if pPhone[cyc] > 0 && PhoneProximity(cyc) != pPhone[cyc] && pAnim[cyc] != 29 {
 		if pAnim[cyc] < 20 {
 			AnswerPhone(cyc, pPhone[cyc], 29)
 		} else {
 			ProduceSound(p[cyc], sPhone, 22050, 0)
 			bb.HideEntity(bb.FindChild(p[cyc], "Phone"))
-			tmp := Dig(pPhone[cyc], 10)
-			phoneName := bb.aprintf("Phone%s", tmp)
-			delete(tmp)
-			bb.ShowEntity(bb.FindChild(world,
-									  phoneName))
+			digit := Dig(pPhone[cyc], 10)
+			phoneName := fmt.aprintf("Phone%s", digit)
+			delete(digit)
+			bb.ShowEntity(bb.FindChild(world, phoneName))
 			delete(phoneName)
 			pPhone[cyc] = 0
 		}
@@ -903,11 +806,8 @@ TranslateInput :: proc(cyc: i32) {
 			if pSeatFriction[cyc][chair] < 0 {
 				pSeatFriction[cyc][chair] = 0
 			}
-			if ChairProximity(cyc, chair) &&
-			   ChairTaken[chair] == 0 {
-				if cUp[cyc] != 0 {
-					pSeatFriction[cyc][chair] += 2
-				}
+			if cast(bool)ChairProximity(cyc, chair) && ChairTaken(chair) == 0 {
+				if cast(bool)cUp[cyc] do pSeatFriction[cyc][chair] += 2
 			}
 			if pSeatFriction[cyc][chair] > 10 {
 				ChangeAnim(cyc, 100)
@@ -915,33 +815,25 @@ TranslateInput :: proc(cyc: i32) {
 				pLeaveX[cyc] = pX[cyc]
 				pLeaveZ[cyc] = pZ[cyc]
 				pLeaveY[cyc] = pY[cyc] + 5
-				pLeaveA[cyc] =
-					CleanAngle(pA[cyc] + 180)
-				if gamLocation(slot) == 11 {
+				pLeaveA[cyc] = CleanAngle(pA[cyc] + 180)
+				if gamLocation[slot] == 11 {
 					ResetDummy(cyc)
 					bb.MoveEntity(dummy, 0, 0, -5)
 					pLeaveX[cyc] = bb.EntityX(dummy)
 					pLeaveZ[cyc] = bb.EntityZ(dummy)
 					pLeaveY[cyc] = pY[cyc] + 5
-					pLeaveA[cyc] =
-						CleanAngle(pA[cyc] + 180)
+					pLeaveA[cyc] = CleanAngle(pA[cyc] + 180)
 				}
 			}
 		}
 	}
 	// bed interaction
-	if no_beds > 0 && pAnim[cyc] < 20 &&
-	   pDazed[cyc] == 0 {
+	if no_beds > 0 && pAnim[cyc] < 20 && pDazed[cyc] == 0 {
 		for bed in 1..=no_beds {
 			pBedFriction[cyc][bed] -= 1
-			if pBedFriction[cyc][bed] < 0 {
-				pBedFriction[cyc][bed] = 0
-			}
-			if BedProximity(cyc, bed) &&
-			   BedTaken[bed] == 0 {
-				if cUp[cyc] != 0 {
-					pBedFriction[cyc][bed] += 2
-				}
+			if pBedFriction[cyc][bed] < 0 do pBedFriction[cyc][bed] = 0
+			if cast(bool)BedProximity(cyc, bed) && BedTaken(bed) == 0 {
+				if cast(bool)cUp[cyc] do pBedFriction[cyc][bed] += 2
 			}
 			if pBedFriction[cyc][bed] > 10 {
 				ChangeAnim(cyc, 100)
@@ -951,35 +843,26 @@ TranslateInput :: proc(cyc: i32) {
 				pLeaveX[cyc] = bb.EntityX(dummy)
 				pLeaveZ[cyc] = bb.EntityZ(dummy)
 				pLeaveY[cyc] = pY[cyc] + 5
-				pLeaveA[cyc] =
-					CleanAngle(pA[cyc] + 180)
+				pLeaveA[cyc] = CleanAngle(pA[cyc] + 180)
 			}
 		}
 	}
 	// leave bed/seat if interrupted
 	if pSeat[cyc] > 0 || pBed[cyc] > 0 {
-		if pAnim[cyc] < 100 || pAnim[cyc] > 110 {
-			ChangeAnim(cyc, 101)
-		}
+		if pAnim[cyc] < 100 || pAnim[cyc] > 110 do ChangeAnim(cyc, 101)
 	}
 	// door interaction
-	if pChar[cyc] == gamChar[slot] && gamDoor == 0 &&
-	   pAnim[cyc] < 20 && pDazed[cyc] == 0 {
+	if pChar[cyc] == gamChar[slot] && gamDoor == 0 && pAnim[cyc] < 20 && pDazed[cyc] == 0 {
 		for door in 1..=no_doors {
 			pDoorFriction[cyc][door] -= 1
-			if pDoorFriction[cyc][door] < 0 {
-				pDoorFriction[cyc][door] = 0
-			}
-			if pX[cyc] > doorX1[gamLocation[slot]][door] &&
-			   pX[cyc] < doorX2[gamLocation[slot]][door] &&
-			   pY[cyc] > doorY1[gamLocation[slot]][door] &&
-			   pY[cyc] < doorY2[gamLocation[slot]][door] &&
-			   pZ[cyc] > doorZ1[gamLocation[slot]][door] &&
-			   pZ[cyc] < doorZ2[gamLocation[slot]][door] {
-				if cUp[cyc] != 0 &&
-				   SatisfiedAngle(pA[cyc],
-								  doorA[gamLocation[slot]][door],
-								  45) != 0 {
+			if pDoorFriction[cyc][door] < 0 do pDoorFriction[cyc][door] = 0
+			if pX[cyc] > doorX1[gamLocation[slot]][door] \
+			&& pX[cyc] < doorX2[gamLocation[slot]][door] \
+			&& pY[cyc] > doorY1[gamLocation[slot]][door] \
+			&& pY[cyc] < doorY2[gamLocation[slot]][door] \
+			&& pZ[cyc] > doorZ1[gamLocation[slot]][door] \
+			&& pZ[cyc] < doorZ2[gamLocation[slot]][door] {
+				if cUp[cyc] != 0 && cast(bool)SatisfiedAngle(pA[cyc], doorA[gamLocation[slot]][door], 45) {
 					pDoorFriction[cyc][door] += 2
 				}
 			}
@@ -991,52 +874,51 @@ TranslateInput :: proc(cyc: i32) {
 	}
 }
 
+
 //--------------------------------------------------------------
 //////////////////// RELATED FUNCTIONS /////////////////////////
 //--------------------------------------------------------------
 DirPressed :: proc(cyc: i32) -> i32 {
-	value: i32 = 0
-	if cUp[cyc] == 1 || cDown[cyc] == 1 ||
-	   cLeft[cyc] == 1 || cRight[cyc] == 1 {
-		value = 1
+	if cUp[cyc] == 1 || cDown[cyc] == 1 || cLeft[cyc] == 1 || cRight[cyc] == 1 {
+		return 1
 	}
-	return value
+	return 0
 }
+
 
 VerticalPressed :: proc(cyc: i32) -> i32 {
-	value: i32 = 0
 	if cUp[cyc] == 1 || cDown[cyc] == 1 {
-		value = 1
+		return 1
 	}
-	return value
+	return 0
 }
+
 
 HorizontalPressed :: proc(cyc: i32) -> i32 {
-	value: i32 = 0
 	if cLeft[cyc] == 1 || cRight[cyc] == 1 {
-		value = 1
+		return 1
 	}
-	return value
+	return 0
 }
+
 
 ActionPressed :: proc(cyc: i32) -> i32 {
-	value: i32 = 0
-	if cAttack[cyc] == 1 || cDefend[cyc] == 1 ||
-	   cThrow[cyc] == 1 || cPickUp[cyc] == 1 {
-		value = 1
+	if cAttack[cyc] == 1 || cDefend[cyc] == 1 || cThrow[cyc] == 1 || cPickUp[cyc] == 1 {
+		return 1
 	}
-	return value
+	return 0
 }
 
+
 ButtonPressed :: proc() -> i32 {
-	value: i32 = 0
 	for count in i32(1)..=12 {
 		if cast(bool)bb.JoyDown(count) {
-			value = 1
+			return 1
 		}
 	}
-	return value
+	return 0
 }
+
 
 EnforceBlocks :: proc(cyc: i32) {
 	v, width, height, trapped: i32
@@ -1044,8 +926,7 @@ EnforceBlocks :: proc(cyc: i32) {
 
 	// enemy bumping
 	for v in 1..=no_plays {
-		if cyc != v && pGrappling[cyc] != v &&
-		   pGrappler[cyc] != v {
+		if cyc != v && pGrappling[cyc] != v && pGrappler[cyc] != v {
 			width = 8
 			height = 35
 			checkX = pX[v]
@@ -1054,60 +935,47 @@ EnforceBlocks :: proc(cyc: i32) {
 				checkX = bb.EntityX(pLimb[v][30], 1)
 				checkZ = bb.EntityZ(pLimb[v][30], 1)
 			}
-			if pOldX[cyc] > checkX - f32(width) &&
-			   pOldX[cyc] < checkX + f32(width) &&
-			   pOldZ[cyc] > checkZ - f32(width) &&
-			   pOldZ[cyc] < checkZ + f32(width) {
+			if pOldX[cyc] > checkX - f32(width) \
+			&& pOldX[cyc] < checkX + f32(width) \
+			&& pOldZ[cyc] > checkZ - f32(width) \
+			&& pOldZ[cyc] < checkZ + f32(width) {
 				trapped = 1
 			} else {
-				if pX[cyc] > checkX - f32(width) &&
-				   pX[cyc] < checkX + f32(width) &&
-				   pZ[cyc] > checkZ - f32(width) &&
-				   pZ[cyc] < checkZ + f32(width) &&
-				   pY[cyc] > pY[v] - cast(f32)height &&
-				   pY[cyc] < pY[v] + cast(f32)height {
-					if pOldX[cyc] > checkX - f32(width) &&
-					   pOldX[cyc] < checkX + f32(width) {
+				if pX[cyc] > checkX - f32(width) \
+				&& pX[cyc] < checkX + f32(width) \
+				&& pZ[cyc] > checkZ - f32(width) \
+				&& pZ[cyc] < checkZ + f32(width) \
+				&& pY[cyc] > pY[v] - cast(f32)height \
+				&& pY[cyc] < pY[v] + cast(f32)height {
+					if pOldX[cyc] > checkX - f32(width) && pOldX[cyc] < checkX + f32(width) {
 						pZ[cyc] = pOldZ[cyc]
 					}
-					if pOldZ[cyc] > checkZ - f32(width) &&
-					   pOldZ[cyc] < checkZ + width {
+					if pOldZ[cyc] > checkZ - f32(width) && pOldZ[cyc] < checkZ + f32(width) {
 						pX[cyc] = pOldX[cyc]
 					}
-					bb.PositionEntity(pPivot[cyc],
-									  pX[cyc],
-									  bb.EntityY(pPivot[cyc]),
-									  pZ[cyc])
-					if pAnim[cyc] < 20 &&
-					   VerticalPressed(cyc) != 0 {
-						pNowhere[cyc] += 2
-					}
+					bb.PositionEntity(pPivot[cyc], pX[cyc], bb.EntityY(pPivot[cyc]), pZ[cyc])
+					if pAnim[cyc] < 20 && cast(bool)VerticalPressed(cyc) do pNowhere[cyc] += 2
 				}
 			}
 		}
 	}
 	// clock nowhere
 	ranger = pSpeed[cyc] / 2
-	if pX[cyc] > pOldX[cyc] - ranger &&
-	   pX[cyc] < pOldX[cyc] + ranger &&
-	   pZ[cyc] > pOldZ[cyc] - ranger &&
-	   pZ[cyc] < pOldZ[cyc] + ranger {
-		if pAnim[cyc] < 20 && VerticalPressed(cyc) != 0 {
-			pNowhere[cyc] += 2
-		}
+	if pX[cyc] > pOldX[cyc] - ranger \
+	&& pX[cyc] < pOldX[cyc] + ranger \
+	&& pZ[cyc] > pOldZ[cyc] - ranger \
+	&& pZ[cyc] < pOldZ[cyc] + ranger {
+		if pAnim[cyc] < 20 && cast(bool)VerticalPressed(cyc) do pNowhere[cyc] += 2
 	}
 }
 
+
 ReachedHeight :: proc(y, tY: f32, range: i32) -> i32 {
-	value: i32 = 0
-	if y >= tY - range && y <= tY + range {
-		value = 1
-	}
-	if tY == 9999.0 {
-		value = 1
-	}
-	return value
+	if y >= tY - f32(range) && y <= tY + f32(range) do return 1
+	if tY == 9999.0 do return 1
+	return 0
 }
+
 
 NearestEnemy :: proc(cyc: i32) -> i32 {
 	value: i32 = 0
@@ -1115,33 +983,14 @@ NearestEnemy :: proc(cyc: i32) -> i32 {
 	distance: f32
 	if cyc > 0 {
 		for v in 1..=no_plays {
-			distance = GetDistance(pX[cyc], pZ[cyc],
-									pX[v], pZ[v])
-			if pY[v] < pY[cyc] - 30 ||
-			   pY[v] > pY[cyc] + 30 {
-				distance += 100
-			}
-			if charAngerTim[pChar[cyc]][pChar[v]] > 0 {
-				distance /= 2
-			}
-			if pAgenda[cyc] == 2 &&
-			   v == pFollowFoc[cyc] {
-				distance /= 2
-			}
-			if Friendly(cyc, v) != 0 {
-				distance *= 2
-			}
-			if cyc == gamPlayer[slot] &&
-			   charFollowTim[pChar[v]] > 0 {
-				distance *= 2
-			}
-			if v == gamPlayer[slot] &&
-			   charFollowTim[pChar[cyc]] > 0 {
-				distance *= 2
-			}
-			if pGrappler[v] > 0 {
-				distance *= 2
-			}
+			distance = GetDistance(pX[cyc], pZ[cyc], pX[v], pZ[v])
+			if pY[v] < pY[cyc] - 30 || pY[v] > pY[cyc] + 30 do distance += 100
+			if charAngerTim[pChar[cyc]][pChar[v]] > 0 do distance /= 2
+			if pAgenda[cyc] == 2 && v == pFollowFoc[cyc] do distance /= 2
+			if Friendly(cyc, v) != 0 do distance *= 2
+			if cyc == gamPlayer[slot] && charFollowTim[pChar[v]] > 0 do distance *= 2
+			if v == gamPlayer[slot] && charFollowTim[pChar[cyc]] > 0 do distance *= 2
+			if pGrappler[v] > 0 do distance *= 2
 			if cyc != v && distance < hi {
 				value = v
 				hi = distance
@@ -1151,11 +1000,11 @@ NearestEnemy :: proc(cyc: i32) -> i32 {
 	return value
 }
 
+
+// In proximity of enemy
 InProximity :: proc(cyc, v, range: i32) -> i32 {
-	value: i32 = 0
-	if pSeat[cyc] > 0 && pSeat[v] > 0 {
-		range *= 2
-	}
+	range := range
+	if pSeat[cyc] > 0 && pSeat[v] > 0 do range *= 2
 	if pY[v] > pY[cyc] - 30 && pY[v] < pY[cyc] + 30 {
 		checkX, checkZ: f32
 		checkX = pX[cyc]
@@ -1164,24 +1013,25 @@ InProximity :: proc(cyc, v, range: i32) -> i32 {
 			checkX = bb.EntityX(pLimb[cyc][30], 1)
 			checkZ = bb.EntityZ(pLimb[cyc][30], 1)
 		}
-		if checkX > pX[v] - f32(range) && checkX < pX[v] + f32(range) &&
-		   checkZ > pZ[v] - f32(range) && checkZ < pZ[v] + f32(range) {
-			value = 1
+		if checkX > pX[v] - f32(range) && checkX < pX[v] + f32(range) \
+		&& checkZ > pZ[v] - f32(range) && checkZ < pZ[v] + f32(range) {
+			return 1
 		}
 	}
-	return value
+	return 0
 }
 
+
 LimbProximity :: proc(limb: i32, x, z: f32, range: i32) -> i32 {
-	value: i32 = 0
-	if x > bb.EntityX(limb, 1) - range &&
-	   x < bb.EntityX(limb, 1) + range &&
-	   z > bb.EntityZ(limb, 1) - range &&
-	   z < bb.EntityZ(limb, 1) + range {
-		value = 1
+	if x > bb.EntityX(limb, 1) - f32(range) \
+	&& x < bb.EntityX(limb, 1) + f32(range) \
+	&& z > bb.EntityZ(limb, 1) - f32(range) \
+	&& z < bb.EntityZ(limb, 1) + f32(range) {
+		return 1
 	}
-	return value
+	return 0
 }
+
 
 InRange :: proc(cyc, v, range: i32) -> i32 {
 	value: i32 = 0
@@ -1189,14 +1039,14 @@ InRange :: proc(cyc, v, range: i32) -> i32 {
 		ResetDummy(cyc)
 		for depth in 1..=range {
 			if value == 0 {
-				span := 6 + f32(depth * 2)
+				span := f32(6 + (depth * 2))
 				bb.MoveEntity(dummy, 0, 0, 4)
 				checkX := bb.EntityX(dummy)
 				checkZ := bb.EntityZ(dummy)
-				if checkX > pX[v] - span &&
-				   checkX < pX[v] + span &&
-				   checkZ > pZ[v] - span &&
-				   checkZ < pZ[v] + span {
+				if checkX > pX[v] - span \
+				&& checkX < pX[v] + span \
+				&& checkZ > pZ[v] - span \
+				&& checkZ < pZ[v] + span {
 					value = depth
 				}
 			}
@@ -1205,46 +1055,45 @@ InRange :: proc(cyc, v, range: i32) -> i32 {
 	return value
 }
 
+
 InLine :: proc(cyc, entity, range: i32) -> i32 {
 	ResetDummy(cyc)
 	bb.PointEntity(dummy, entity)
 	tA := CleanAngle(bb.EntityYaw(dummy))
-	value: i32 = 0
-	if SatisfiedAngle(pA[cyc], tA, range) != 0 {
-		value = 1
+	if cast(bool)SatisfiedAngle(pA[cyc], tA, range) {
+		return 1
 	}
-	return value
+	return 0
 }
+
 
 Isolated :: proc(cyc, range: i32) -> i32 {
-	value: i32 = 1
 	for v in 1..=no_plays {
-		if cyc != v && Friendly(cyc, v) == 0 &&
-		   InProximity(cyc, v, range) != 0 &&
-		   AttackViable(v) != 3 {
-			value = 0
+		if cyc != v && Friendly(cyc, v) == 0 \
+		&& cast(bool)InProximity(cyc, v, range) \
+		&& AttackViable(v) != 3 {
+			return 0
 		}
 	}
-	return value
+	return 1
 }
 
-FindThreat :: proc(cyc: i32) -> i32 {
+
+FindThreat :: proc(cyc: i32) -> i32 { // 1=high, 2=low
 	threat: i32 = 0
 	range: i32
 	if AttackViable(cyc) >= 1 && AttackViable(cyc) <= 2 {
 		for v in 1..=no_plays {
 			if cyc != v && cyc == pFoc[v] {
+				// hand-to-hand threats
 				range = 30
 				if pWeapon[v] > 0 {
-					range = range +
-						(weapRange[weapType[pWeapon[v]]] * 2)
+					range += i32(weapRange[weapType[pWeapon[v]]] * 2)
 				}
-				if InProximity(cyc, v, range) != 0 &&
-				   pAnim[v] >= 30 && pAnim[v] <= 49 &&
-				   pSting[v] == 1 {
-					if InLine(v, p[cyc], 90) != 0 {
-						if pAnim[v] == 31 || pAnim[v] == 35 ||
-						   pAnim[v] == 41 {
+				if InProximity(cyc, v, range) != 0 && pAnim[v] >= 30 \
+				&& pAnim[v] <= 49 && pSting[v] == 1 {
+					if cast(bool)InLine(v, p[cyc], 90) {
+						if pAnim[v] == 31 || pAnim[v] == 35 || pAnim[v] == 41 {
 							threat = 2
 						} else {
 							threat = 1
@@ -1252,42 +1101,45 @@ FindThreat :: proc(cyc: i32) -> i32 {
 						pFoc[cyc] = v
 					}
 				}
-				// gun threats are disabled in original
+				//If InProximity(cyc,v,500) And pAnim(v)=>60 And pAnim(v)=<61 And pFireTim(v)=>5
+				//If pY#(cyc)<pY#(v)-5 Or pY#(cyc)>pY#(v)+5 Then threat=2 Else threat=1
+				//pFoc(cyc)=v 
+				//EndIf  
 			}
 		}
 	}
 	return threat
 }
 
+
+// IDENTIFY FRIENDLY RELATIONSHIP (between players)
 Friendly :: proc(cyc, v: i32) -> i32 {
 	friendly: i32 = 0
-	if charAngerTim[pChar[cyc]][pChar[v]] == 0 &&
-	   charRelation[pChar[cyc]][pChar[v]] >= 0 {
+	if charAngerTim[pChar[cyc]][pChar[v]] == 0 \
+	&& charRelation[pChar[cyc]][pChar[v]] >= 0 {
 		if charRelation[pChar[cyc]][pChar[v]] == 1 {
 			friendly = 1
 		}
-		if charGang[pChar[cyc]] > 0 &&
-		   charGang[pChar[cyc]] == charGang[pChar[v]] {
+		if charGang[pChar[cyc]] > 0 && charGang[pChar[cyc]] == charGang[pChar[v]] {
 			friendly = 1
 		}
-		if pChar[cyc] == gamChar[slot] &&
-		   (charFollowTim[pChar[v]] > 0 ||
-			charBribeTim[pChar[v]] > 0) {
+		if pChar[cyc] == gamChar[slot] && (charFollowTim[pChar[v]] > 0 \
+		|| charBribeTim[pChar[v]] > 0) {
 			friendly = 1
 		}
-		if pChar[v] == gamChar[slot] &&
-		   (charFollowTim[pChar[cyc]] > 0 ||
-			charBribeTim[pChar[cyc]] > 0) {
+		if pChar[v] == gamChar[slot] && (charFollowTim[pChar[cyc]] > 0 \
+		|| charBribeTim[pChar[cyc]] > 0) {
 			friendly = 1
 		}
 	}
 	return friendly
 }
 
+
+// IDENTIFY FRIENDLY RELATIONSHIP (between characters)
 FriendlyChars :: proc(char, v: i32) -> i32 {
 	friendly: i32 = 0
-	if charAngerTim[char][ v] == 0 &&
-	   charRelation[char][v] >= 0 {
+	if charAngerTim[char][v] == 0 && charRelation[char][v] >= 0 {
 		if charRelation[char][v] == 1 {
 			friendly = 1
 		}
@@ -1298,6 +1150,7 @@ FriendlyChars :: proc(char, v: i32) -> i32 {
 	return friendly
 }
 
+/*
 RiskAnger :: proc(cyc, v: i32) {
 	randy: i32
 	if pChar[cyc] == gamChar[slot] &&
@@ -1702,3 +1555,17 @@ RiskAnger :: proc(cyc, v: i32) {
 		}
 	}
 }
+*/
+
+GetResponse :: proc(cyc, v, chance: i32) -> i32 {
+	return 0
+}
+
+TradingRisk :: proc(cyc, weapon: i32) {
+
+}
+
+AssessRelationships :: proc(cyc: i32) {
+
+}
+
