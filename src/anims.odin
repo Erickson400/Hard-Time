@@ -327,7 +327,7 @@ Animations :: proc(cyc: i32) {
 	if pAnim[cyc] == 20 {
 		if pAnimTim[cyc] == 0 do bb.Animate(p[cyc], 3, 3.0, pSeq[cyc][20], 5)
 		// NOTE. Likely a bug. v is undeclared in this function scope.
-		// Blitz creates it here with 0 by default.
+		// Blitz creates it with 0 by default.
 		// Original call: WeaponProximity(cyc, v, 5) == 0
 		if pAnimTim[cyc] <= 11 && WeaponProximity(cyc, 0, 5) == 0 {
 			bb.RotateEntity(pPivot[cyc], 0, pA[cyc], 0)

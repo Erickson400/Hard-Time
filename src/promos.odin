@@ -13,3 +13,7 @@ FacialExpressions :: proc(cyc: i32) {
 ChangeGang :: proc(char, gang: i32) {
     
 }
+
+RiskPromo :: proc(cyc, v: i32) {
+    
+}

@@ -355,7 +355,7 @@ ManageAtmos :: proc() {
 	if gamHours[slot] == 7 && gamMins[slot] == 0 && gamSecs[slot] == 0 {
 		// NOTE: Likely a bug. Mat uses the cyc local variable again at the last loop
 		// of this if statement. Any variable used in a Basic function becomes a local variable
-		// of that function. After the loop below finishes using cyc, it will be 6 till the
+		// of that function. Technically its shadowing. After the loop below finishes using cyc, it will be 6 till the
 		// function exits. I made a variable called cyc2 to replicate this behaviour.
 		// The intended code might've been to use the v index instead of cyc for the last loop
 		// in this scope.
@@ -785,7 +785,7 @@ ResetDummy :: proc(cyc: i32) {
 // Unused function
 //CAMERA vs CONTROL CONFLICTS?
 // CamConflict :: proc(command: i32) -> i32 {
-	// NOTE: Likely a bug. These variables are never declared.
+	// These variables are never declared.
 	// It'll just return 1 if command is 0
 // 	keyShoot, keyPass, keyLob: i32 = 0, 0, 0
 // 	if command == keyShoot || command == keyPass || command == keyLob {
@@ -1127,7 +1127,6 @@ RelocateChars :: proc() {
 					if v != gamChar[slot] && charPromo[v][gamChar[slot]] == 0 && charRelation[v][gamChar[slot]] >= 0 && charAngerTim[v][gamChar[slot]] == 0 {
 						// NOTE: Likely a bug. cyc is undefined in this function scope.
 						// Blitz will interpret it as being 0. I'm not sure what was the intended behaviour.
-
 						cyc := 0
 						if charRelation[gamChar[slot]][pChar[cyc]] > 0 && charRelation[v][pChar[cyc]] > 0 {
 							charPromo[v][gamChar[slot]] = 219

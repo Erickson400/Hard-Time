@@ -54,10 +54,8 @@ GetInput :: proc(cyc: i32) {
 //----------------------------------------------------------------
 AI :: proc(cyc: i32) {
 	randy, its, satisfied, v, cell, current, target: i32
-	width, height: i32
-	alert, anim, oldPromo: i32
-	checkX, checkZ, ranger, distance: f32
-	range, intensity, threat, value: i32
+	alert:i32
+	range, intensity: i32
 
 	// DETERMINE AGENDA
 	pOldAgenda[cyc] = pAgenda[cyc]
@@ -507,9 +505,9 @@ AI :: proc(cyc: i32) {
 		   weapHabitat[weapType[pWeapon[cyc]]] < 99 &&
 		   weapHabitat[weapType[pWeapon[cyc]]] !=
 			   gamLocation[slot] {
-			for v in 1..=no_plays {
-				if charRole[pChar[v]] == 1 && cast(bool)InProximity(v, cyc, 20) {
-					if cast(bool)InLine(cyc, p[v], 60) && cast(bool)InLine(v, p[cyc], 60) {
+			for v2 in 1..=no_plays {
+				if charRole[pChar[v2]] == 1 && cast(bool)InProximity(v2, cyc, 20) {
+					if cast(bool)InLine(cyc, p[v2], 60) && cast(bool)InLine(v2, p[cyc], 60) {
 						randy = bb.RndI(0, 100 - charIntelligence[pChar[cyc]])
 					}
 				}
@@ -619,16 +617,16 @@ AI :: proc(cyc: i32) {
 	if intensity < 10 do intensity = 10
 	if charBreakdown[pChar[cyc]] > 0 do intensity *= 5
 	if AttackViable(cyc) >= 1 && AttackViable(cyc) <= 2 && cThrow[cyc] == 0 {
-		for v in 1..=no_plays {
-			if cyc != v && cyc == pFoc[v] && charAngerTim[pChar[cyc]][pChar[v]] > 0 {
+		for v2 in 1..=no_plays {
+			if cyc != v2 && cyc == pFoc[v2] && charAngerTim[pChar[cyc]][pChar[v2]] > 0 {
 				// hand-to-hand threats
 				range = 30
-				if pWeapon[v] > 0 do range += i32(weapRange[weapType[pWeapon[v]]] * 2)
-				if cast(bool)InProximity(cyc, v, range) && pAnim[v] >= 30 \
-				&& pAnim[v] <= 49 && pAnim[v] != 35 && pSting[v] == 1 {
-					if cast(bool)InLine(v, p[cyc], 90) {
+				if pWeapon[v2] > 0 do range += i32(weapRange[weapType[pWeapon[v2]]] * 2)
+				if cast(bool)InProximity(cyc, v2, range) && pAnim[v2] >= 30 \
+				&& pAnim[v2] <= 49 && pAnim[v2] != 35 && pSting[v2] == 1 {
+					if cast(bool)InLine(v2, p[cyc], 90) {
 						randy = bb.RndI(0, intensity)
-						if randy <= 5 || (randy <= 10 && cast(bool)InProximity(cyc, v, range / 2)) \
+						if randy <= 5 || (randy <= 10 && cast(bool)InProximity(cyc, v2, range / 2)) \
 						|| (pAnim[cyc] >= 74 && pAnim[cyc] <= 75) {
 							cDefend[cyc] = 1
 							cAttack[cyc] = 0
@@ -640,7 +638,7 @@ AI :: proc(cyc: i32) {
 					}
 				}
 				// gun threats
-				if cast(bool)InProximity(cyc, v, 500) && pAnim[v] >= 60 && pAnim[v] <= 61 { // && pFireTim(v)>5
+				if cast(bool)InProximity(cyc, v2, 500) && pAnim[v2] >= 60 && pAnim[v2] <= 61 { // && pFireTim(v2)>5
 					randy = bb.RndI(0, intensity)
 					if randy <= 10 || (pAnim[cyc] >= 74 && pAnim[cyc] <= 75) {
 						cDefend[cyc] = 1
@@ -921,7 +919,7 @@ ButtonPressed :: proc() -> i32 {
 
 
 EnforceBlocks :: proc(cyc: i32) {
-	v, width, height, trapped: i32
+	width, height, trapped: i32
 	checkX, checkZ, ranger: f32
 
 	// enemy bumping
@@ -1150,105 +1148,99 @@ FriendlyChars :: proc(char, v: i32) -> i32 {
 	return friendly
 }
 
-/*
+
 RiskAnger :: proc(cyc, v: i32) {
 	randy: i32
-	if pChar[cyc] == gamChar[slot] &&
-	   charPromo(pChar[v], pChar[cyc]) == 0 {
-		if GetResponse(cyc, v, 0) > 0 &&
-		   charRole(pChar[v]) == 1 &&
-		   (pWeapon[cyc] == 0 || promoUsed[1] != 0) {
-			charPromo(pChar[v], pChar[cyc]) = 5
+	if pChar[cyc] == gamChar[slot] \
+	   && charPromo[pChar[v]][pChar[cyc]] == 0 {
+		if GetResponse(cyc, v, 0) > 0 \
+		   && charRole[pChar[v]] == 1 \
+		   && (pWeapon[cyc] == 0 || promoUsed[1] != 0) {
+			charPromo[pChar[v]][pChar[cyc]] = 5
 		}
-		if GetResponse(cyc, v, 0) > 0 &&
-		   charRole(pChar[v]) == 0 &&
-		   charAngerTim[pChar[v]][pChar[cyc]] == 0 &&
-		   charRelation[pChar[v]][pChar[cyc]] >= 0 {
-			charPromo(pChar[v], pChar[cyc]) = 14
-			if charGang[pChar[v]] > 0 &&
-			   charGang[pChar[v]] != 6 &&
-			   charGang[pChar[v]] !=
+		if GetResponse(cyc, v, 0) > 0 \
+		   && charRole[pChar[v]] == 0 \
+		   && charAngerTim[pChar[v]][pChar[cyc]] == 0 \
+		   && charRelation[pChar[v]][pChar[cyc]] >= 0 {
+			charPromo[pChar[v]][pChar[cyc]] = 14
+			if charGang[pChar[v]] > 0 \
+			   && charGang[pChar[v]] != 6 \
+			   && charGang[pChar[v]] !=
 				   charGang[pChar[cyc]] {
-				charPromo(pChar[v], pChar[cyc]) = 40
+				charPromo[pChar[v]][pChar[cyc]] = 40
 			}
-			if charGang[pChar[v]] > 0 &&
-			   charGang[pChar[v]] != 6 &&
-			   charGang[pChar[v]] ==
+			if charGang[pChar[v]] > 0 \
+			   && charGang[pChar[v]] != 6 \
+			   && charGang[pChar[v]] ==
 				   charGang[pChar[cyc]] {
-				charPromo(pChar[v], pChar[cyc]) = 41
+				charPromo[pChar[v]][pChar[cyc]] = 41
 			}
 			if charRelation[pChar[v]][pChar[cyc]] > 0 {
-				charPromo(pChar[v], pChar[cyc]) = 80
+				charPromo[pChar[v]][pChar[cyc]] = 80
 			}
 			if charGang[pChar[v]] == 6 {
-				charPromo(pChar[v], pChar[cyc]) = 43
+				charPromo[pChar[v]][pChar[cyc]] = 43
 			}
 		}
-		if GetResponse(cyc, v, 0) > 0 &&
-		   pSeat[v] > 0 && charGang[pChar[v]] != 6 {
-			charPromo(pChar[v], pChar[cyc]) = 9
+		if GetResponse(cyc, v, 0) > 0 \
+		   && pSeat[v] > 0 && charGang[pChar[v]] != 6 {
+			charPromo[pChar[v]][pChar[cyc]] = 9
 		}
-		if GetResponse(cyc, v, 0) > 0 &&
-		   pBed[v] > 0 && charGang[pChar[v]] != 6 {
-			charPromo(pChar[v], pChar[cyc]) = 10
+		if GetResponse(cyc, v, 0) > 0 \
+		   && pBed[v] > 0 && charGang[pChar[v]] != 6 {
+			charPromo[pChar[v]][pChar[cyc]] = 10
 		}
 		randy = bb.RndI(0, 20)
-		if randy == 0 && charRole(pChar[v]) == 1 &&
-		   gamWarrant(slot) < 9 &&
-		   charBribeTim[pChar[v]] == 0 {
-			gamWarrant(slot) = 9
+		if randy == 0 && charRole[pChar[v]] == 1 \
+		   && gamWarrant[slot] < 9 \
+		   && charBribeTim[pChar[v]] == 0 {
+			gamWarrant[slot] = 9
 		}
 		// beg for mercy
-		if charReputation(pChar[v]) <
-		   charReputation(pChar[cyc]) &&
-		   promoUsed[258] == 0 {
+		if charReputation[pChar[v]] <
+		   charReputation[pChar[cyc]] \
+		   && promoUsed[258] == 0 {
 			randy = bb.RndI(0, pHealth[v] * 2)
-			if randy == 0 && pHealth[v] > 0 &&
-			   pHealth[v] < 20 {
-				charPromo(pChar[v], pChar[cyc]) = 258
+			if randy == 0 && pHealth[v] > 0 \
+			   && pHealth[v] < 20 {
+				charPromo[pChar[v]][pChar[cyc]] = 258
 			}
-			randy = bb.RndI(0,
-						 charHappiness(pChar[v]) * 2)
-			if randy == 0 &&
-			   charHappiness(pChar[v]) > 0 &&
-			   charHappiness(pChar[v]) < 20 {
-				charPromo(pChar[v], pChar[cyc]) = 258
+			randy = bb.RndI(0, charHappiness[pChar[v]] * 2)
+			if randy == 0 \
+			   && charHappiness[pChar[v]] > 0 \
+			   && charHappiness[pChar[v]] < 20 {
+				charPromo[pChar[v]][pChar[cyc]] = 258
 			}
 		}
 		// response to intervening
 		for count in 1..=no_plays {
-			if count != cyc && count != v &&
-			   charPromo[pChar[count]][pChar[cyc]] == 0 &&
-			   charAttacker(pChar[count]) ==
-				   pChar[v] &&
-			   charAngerTim[pChar[count]][pChar[cyc]] == 0 &&
-			   charAngerTim(pChar[cyc],
-							pChar[v]) == 0 &&
-			   charAngerTim[pChar[v]][pChar[cyc]] == 0 {
-				if charAngerTim(pChar[count],
-								pChar[v]) > 0 ||
-				   charAngerTim(pChar[v],
-								pChar[count]) > 0 {
-					if InProximity(count, cyc, 30) != 0 ||
-					   InProximity(count, v, 30) != 0 {
+			if count != cyc && count != v \
+			   && charPromo[pChar[count]][pChar[cyc]] == 0 \
+			   && charAttacker[pChar[count]] ==
+				   pChar[v] \
+			   && charAngerTim[pChar[count]][pChar[cyc]] == 0 \
+			   && charAngerTim[pChar[cyc]][pChar[v]] == 0 \
+			   && charAngerTim[pChar[v]][pChar[cyc]] == 0 {
+				if charAngerTim[pChar[count]][pChar[v]] > 0 \
+				   || charAngerTim[pChar[v]][pChar[count]] > 0 {
+					if InProximity(count, cyc, 30) != 0 \
+					   || InProximity(count, v, 30) != 0 {
 						randy = bb.RndI(0, 6)
-						if randy == 0 ||
-						   (randy == 1 &&
-							charRelation[pChar[count]][
+						if randy == 0 \
+						   || (randy == 1 \
+							&& charRelation[pChar[count]][
 										 pChar[cyc]] > 0) {
-							charPromo(pChar[count],
-									  pChar[cyc]) = 78
+							charPromo[pChar[count]][pChar[cyc]] = 78
 						}
-						if (randy == 2 &&
-							charRelation[pChar[count]][
-										 pChar[cyc]] <= 0) ||
-						   (randy == 3 &&
-							charRelation[pChar[count]][
+						if (randy == 2 \
+							&& charRelation[pChar[count]][
+										 pChar[cyc]] <= 0) \
+						   || (randy == 3 \
+							&& charRelation[pChar[count]][
 										 pChar[cyc]] < 0) {
-							charPromo(pChar[count],
-									  pChar[cyc]) = 79
+							charPromo[pChar[count]][pChar[cyc]] = 79
 						}
-						charPromoRef(pChar[count]) =
+						charPromoRef[pChar[count]] =
 							pChar[v]
 					}
 				}
@@ -1256,29 +1248,29 @@ RiskAnger :: proc(cyc, v: i32) {
 		}
 	}
 	// offer mercy
-	if pChar[v] == gamChar[slot] &&
-	   gamMoney(slot) > 0 &&
-	   charPromo(pChar[cyc], pChar[v]) == 0 &&
-	   charReputation(pChar[v]) <
-		   charReputation(pChar[cyc]) &&
-	   promoUsed[259] == 0 {
+	if pChar[v] == gamChar[slot] \
+	   && gamMoney[slot] > 0 \
+	   && charPromo[pChar[cyc]][pChar[v]] == 0 \
+	   && charReputation[pChar[v]] <
+		   charReputation[pChar[cyc]] \
+	   && promoUsed[259] == 0 {
 		randy = bb.RndI(0, pHealth[v] * 2)
-		if randy == 0 && pHealth[v] > 0 &&
-		   pHealth[v] < 20 {
-			charPromo(pChar[cyc], pChar[v]) = 259
+		if randy == 0 && pHealth[v] > 0 \
+		   && pHealth[v] < 20 {
+			charPromo[pChar[cyc]][pChar[v]] = 259
 		}
-		randy = bb.RndI(0, charHappiness(pChar[v]) * 2)
-		if randy == 0 &&
-		   charHappiness(pChar[v]) > 0 &&
-		   charHappiness(pChar[v]) < 20 {
-			charPromo(pChar[cyc], pChar[v]) = 259
+		randy = bb.RndI(0, charHappiness[pChar[v]] * 2)
+		if randy == 0 \
+		   && charHappiness[pChar[v]] > 0 \
+		   && charHappiness[pChar[v]] < 20 {
+			charPromo[pChar[cyc]][pChar[v]] = 259
 		}
 	}
 	// anger victim
 	if charGang[pChar[v]] != 6 {
-		reaction := (charStrength(pChar[v]) - 30) +
-					(100 - charIntelligence(pChar[v])) +
-					(charReputation(pChar[v]) - 30)
+		reaction := (charStrength[pChar[v]] - 30) +
+					(100 - charIntelligence[pChar[v]]) +
+					(charReputation[pChar[v]] - 30)
 		charAngerTim[pChar[v]][pChar[cyc]] =
 			bb.RndI(reaction/2, reaction*4)
 		pAgenda[v] = 2
@@ -1286,58 +1278,53 @@ RiskAnger :: proc(cyc, v: i32) {
 		pSubX[v] = 9999
 		pSubZ[v] = 9999
 		randy = bb.RndI(0, 10)
-		if randy == 0 &&
-		   charRelation[pChar[v]][
+		if randy == 0 \
+		   && charRelation[pChar[v]][
 						pChar[cyc]] >= 0 {
 			ChangeRelationship(pChar[v],
 							   pChar[cyc], -1)
 		}
 	}
 	// reset witnesses
-	charWitness(pChar[cyc]) = 0
-	if charRole(pChar[v]) == 1 && pHealth[v] > 0 {
-		charWitness(pChar[cyc]) = pChar[v]
+	charWitness[pChar[cyc]] = 0
+	if charRole[pChar[v]] == 1 && pHealth[v] > 0 {
+		charWitness[pChar[cyc]] = pChar[v]
 	}
 	// affect others
 	for count in 1..=no_plays {
-		if count != cyc && count != v &&
-		   pChar[count] != gamChar[slot] &&
-		   gamBlackout(slot) == 0 {
+		if count != cyc && count != v \
+		   && pChar[count] != gamChar[slot] \
+		   && gamBlackout[slot] == 0 {
 			// find witnesses
-			if charWitness(pChar[cyc]) == 0 &&
-			   (Friendly(count, cyc) == 0 ||
-				Friendly(count, v) != 0) &&
-			   charBribeTim[pChar[count]] == 0 &&
-			   InProximity(count, cyc, 100) != 0 &&
-			   AttackViable(count) >= 1 &&
-			   AttackViable(count) <= 2 &&
-			   pDazed[count] == 0 {
-				if InLine(count, p[cyc], 60) != 0 ||
-				   InLine(count, p[v], 60) != 0 {
-					charWitness(pChar[cyc]) = pChar[v]
+			if charWitness[pChar[cyc]] == 0 \
+			   && (Friendly(count, cyc) == 0 \
+				|| Friendly(count, v) != 0) \
+			   && charBribeTim[pChar[count]] == 0 \
+			   && InProximity(count, cyc, 100) != 0 \
+			   && AttackViable(count) >= 1 \
+			   && AttackViable(count) <= 2 \
+			   && pDazed[count] == 0 {
+				if InLine(count, p[cyc], 60) != 0 \
+				   || InLine(count, p[v], 60) != 0 {
+					charWitness[pChar[cyc]] = pChar[v]
 				}
 			}
 			// include friends
-			if Friendly(count, v) != 0 &&
-			   Friendly(count, cyc) == 0 &&
-			   AttackViable(count) >= 1 &&
-			   AttackViable(count) <= 2 &&
-			   pDazed[count] == 0 {
-				if InLine(count, p[cyc], 60) != 0 ||
-				   InLine(count, p[v], 60) != 0 {
-					if charAngerTim(pChar[count],
-									pChar[cyc]) == 0 {
-						charAngerTim(pChar[count],
-									 pChar[cyc]) =
-							charAngerTim(pChar[v],
-										 pChar[cyc]) / 2
+			if Friendly(count, v) != 0 \
+			   && Friendly(count, cyc) == 0 \
+			   && AttackViable(count) >= 1 \
+			   && AttackViable(count) <= 2 \
+			   && pDazed[count] == 0 {
+				if InLine(count, p[cyc], 60) != 0 \
+				   || InLine(count, p[v], 60) != 0 {
+					if charAngerTim[pChar[count]][pChar[cyc]] == 0 {
+						charAngerTim[pChar[count]][pChar[cyc]] =
+							charAngerTim[pChar[v]][pChar[cyc]] / 2
 					}
-					if charRole(pChar[cyc]) == 0 &&
-					   charRole(pChar[count]) == 1 {
-						charAngerTim(pChar[count],
-									 pChar[cyc]) =
-							charAngerTim(pChar[count],
-										 pChar[cyc]) / 2
+					if charRole[pChar[cyc]] == 0 \
+					   && charRole[pChar[count]] == 1 {
+						charAngerTim[pChar[count]][pChar[cyc]] =
+							charAngerTim[pChar[count]][pChar[cyc]] / 2
 					}
 					if pFollowFoc[count] != cyc {
 						pSubX[count] = 9999
@@ -1345,54 +1332,46 @@ RiskAnger :: proc(cyc, v: i32) {
 					}
 					pAgenda[count] = 2
 					pFollowFoc[count] = cyc
-					if GetResponse(cyc, count, 0) > 0 &&
-					   pChar[cyc] == gamChar[slot] &&
-					   charPromo(pChar[count],
-								 pChar[cyc]) == 0 &&
-					   charGang[pChar[count]] != 6 {
+					if GetResponse(cyc, count, 0) > 0 \
+					   && pChar[cyc] == gamChar[slot] \
+					   && charPromo[pChar[count]][pChar[cyc]] == 0 \
+					   && charGang[pChar[count]] != 6 {
 						if charRelation[pChar[count]][
 										pChar[v]] == 1 {
-							charPromo(pChar[count],
-									  pChar[cyc]) = 15
+							charPromo[pChar[count]][pChar[cyc]] = 15
 						}
-						if charGang[pChar[v]] > 0 &&
-						   charGang[pChar[v]] ==
+						if charGang[pChar[v]] > 0 \
+						   && charGang[pChar[v]] ==
 							   charGang[pChar[count]] {
-							charPromo(pChar[count],
-									  pChar[cyc]) = 39
+							charPromo[pChar[count]][pChar[cyc]] = 39
 						}
-						charPromoRef(pChar[count]) =
+						charPromoRef[pChar[count]] =
 							pChar[v]
 					}
-					if GetResponse(cyc, count, 0) > 0 &&
-					   pChar[v] == gamChar[slot] &&
-					   charPromo(pChar[count],
-								 pChar[v]) == 0 &&
-					   charGang[pChar[count]] != 6 {
-						charPromo(pChar[count],
-								  pChar[v]) = 77
-						charPromoRef(pChar[count]) =
+					if GetResponse(cyc, count, 0) > 0 \
+					   && pChar[v] == gamChar[slot] \
+					   && charPromo[pChar[count]][pChar[v]] == 0 \
+					   && charGang[pChar[count]] != 6 {
+						charPromo[pChar[count]][pChar[v]] = 77
+						charPromoRef[pChar[count]] =
 							pChar[cyc]
 					}
 				}
 			}
 			// clock civil war
-			if charGang[pChar[count]] > 0 &&
-			   charGang[pChar[cyc]] ==
-				   charGang[pChar[count]] &&
-			   charGang[pChar[v]] ==
-				   charGang[pChar[count]] &&
-			   AttackViable(count) >= 1 &&
-			   AttackViable(count) <= 2 &&
-			   pDazed[count] == 0 {
-				if InLine(count, p[cyc], 60) != 0 ||
-				   InLine(count, p[v], 60) != 0 {
-					if charAngerTim(pChar[count],
-									pChar[cyc]) == 0 {
-						charAngerTim(pChar[count],
-									 pChar[cyc]) =
-							charAngerTim(pChar[v],
-										 pChar[cyc]) / 2
+			if charGang[pChar[count]] > 0 \
+			   && charGang[pChar[cyc]] ==
+				   charGang[pChar[count]] \
+			   && charGang[pChar[v]] ==
+				   charGang[pChar[count]] \
+			   && AttackViable(count) >= 1 \
+			   && AttackViable(count) <= 2 \
+			   && pDazed[count] == 0 {
+				if InLine(count, p[cyc], 60) != 0 \
+				   || InLine(count, p[v], 60) != 0 {
+					if charAngerTim[pChar[count]][pChar[cyc]] == 0 {
+						charAngerTim[pChar[count]][pChar[cyc]] =
+							charAngerTim[pChar[v]][pChar[cyc]] / 2
 					}
 					if pFollowFoc[count] != cyc {
 						pSubX[count] = 9999
@@ -1400,33 +1379,29 @@ RiskAnger :: proc(cyc, v: i32) {
 					}
 					pAgenda[count] = 2
 					pFollowFoc[count] = cyc
-					if GetResponse(cyc, count, 0) > 0 &&
-					   pChar[cyc] == gamChar[slot] &&
-					   charPromo(pChar[count],
-								 pChar[cyc]) == 0 &&
-					   charGang[pChar[count]] != 6 {
-						charPromo(pChar[count],
-								  pChar[cyc]) = 41
-						charPromoRef(pChar[count]) =
+					if GetResponse(cyc, count, 0) > 0 \
+					   && pChar[cyc] == gamChar[slot] \
+					   && charPromo[pChar[count]][pChar[cyc]] == 0 \
+					   && charGang[pChar[count]] != 6 {
+						charPromo[pChar[count]][pChar[cyc]] = 41
+						charPromoRef[pChar[count]] =
 							pChar[v]
 					}
 				}
 			}
 			// include guards
-			if charRole(pChar[count]) == 1 &&
-			   charRole(pChar[cyc]) == 0 &&
-			   (Friendly(count, cyc) == 0 ||
-				Friendly(count, v) != 0) &&
-			   charBribeTim[pChar[count]] == 0 &&
-			   AttackViable(count) >= 1 &&
-			   AttackViable(count) <= 2 &&
-			   pDazed[count] == 0 {
-				if InLine(count, p[cyc], 60) != 0 ||
-				   InLine(count, p[v], 60) != 0 {
-					if charAngerTim(pChar[count],
-									pChar[cyc]) < 100 {
-						charAngerTim(pChar[count],
-									 pChar[cyc]) = 100
+			if charRole[pChar[count]] == 1 \
+			   && charRole[pChar[cyc]] == 0 \
+			   && (Friendly(count, cyc) == 0 \
+				|| Friendly(count, v) != 0) \
+			   && charBribeTim[pChar[count]] == 0 \
+			   && AttackViable(count) >= 1 \
+			   && AttackViable(count) <= 2 \
+			   && pDazed[count] == 0 {
+				if InLine(count, p[cyc], 60) != 0 \
+				   || InLine(count, p[v], 60) != 0 {
+					if charAngerTim[pChar[count]][pChar[cyc]] < 100 {
+						charAngerTim[pChar[count]][pChar[cyc]] = 100
 					}
 					if pFollowFoc[count] != cyc {
 						pSubX[count] = 9999
@@ -1434,69 +1409,65 @@ RiskAnger :: proc(cyc, v: i32) {
 					}
 					pAgenda[count] = 2
 					pFollowFoc[count] = cyc
-					if pChar[cyc] == gamChar[slot] &&
-					   charPromo(pChar[count],
-								 pChar[cyc]) == 0 &&
-					   charBribeTim[pChar[count]] == 0 {
+					if pChar[cyc] == gamChar[slot] \
+					   && charPromo[pChar[count]][pChar[cyc]] == 0 \
+					   && charBribeTim[pChar[count]] == 0 {
 						if GetResponse(cyc, count, 0) > 0 {
-							if charRole(pChar[v]) == 0 {
-								charPromo(pChar[count],
-										  pChar[cyc]) = 4
+							if charRole[pChar[v]] == 0 {
+								charPromo[pChar[count]][pChar[cyc]] = 4
 							}
-							if charRole(pChar[v]) == 1 {
-								charPromo(pChar[count],
-										  pChar[cyc]) = 5
+							if charRole[pChar[v]] == 1 {
+								charPromo[pChar[count]][pChar[cyc]] = 5
 							}
-							if pWeapon[cyc] > 0 &&
-							   promoUsed[72] == 0 {
-								charPromo(pChar[count],
-										  pChar[cyc]) = 72
-								charPromoRef(pChar[count]) =
+							if pWeapon[cyc] > 0 \
+							   && promoUsed[72] == 0 {
+								charPromo[pChar[count]][pChar[cyc]] = 72
+								charPromoRef[pChar[count]] =
 									pChar[v]
 							}
 						}
 						randy = bb.RndI(0, 50)
-						if randy <= 1 &&
-						   charRole(pChar[v]) == 1 &&
-						   gamWarrant(slot) < 9 {
-							gamWarrant(slot) = 9
+						if randy <= 1 \
+						   && charRole[pChar[v]] == 1 \
+						   && gamWarrant[slot] < 9 {
+							gamWarrant[slot] = 9
 						}
-						if randy == 2 &&
-						   charRole(pChar[v]) == 0 &&
-						   gamWarrant(slot) < 8 {
-							gamWarrant(slot) = 8
-							gamItem(slot) = pWeapon[cyc]
+						if randy == 2 \
+						   && charRole[pChar[v]] == 0 \
+						   && gamWarrant[slot] < 8 {
+							gamWarrant[slot] = 8
+							gamItem[slot] = pWeapon[cyc]
 						}
-						if pWeapon[cyc] > 0 &&
-						   pAnim[cyc] != 23 &&
-						   gamMission[slot] != 11 &&
-						   gamMission[slot] != 12 {
+						if pWeapon[cyc] > 0 \
+						   && pAnim[cyc] != 23 \
+						   && gamMission[slot] != 11 \
+						   && gamMission[slot] != 12 {
 							randy = bb.RndI(0, 50)
-							if ((weapType[pWeapon[cyc]] >= 7 &&
-								 weapType[pWeapon[cyc]] <= 9) ||
-								weapType[pWeapon[cyc]] == 23) {
+							if ((weapType[pWeapon[cyc]] >= 7 \
+								 && weapType[pWeapon[cyc]] <= 9) \
+								|| weapType[pWeapon[cyc]] == 23) {
 								randy = bb.RndI(0, 25)
 							}
-							if randy <= 1 &&
-							   gamWarrant(slot) < 10 {
-								gamWarrant(slot) = 10
-								gamItem(slot) = pWeapon[cyc]
+							if randy <= 1 \
+							   && gamWarrant[slot] < 10 {
+								gamWarrant[slot] = 10
+								gamItem[slot] = pWeapon[cyc]
 							}
-							if randy == 2 &&
-							   gamWarrant(slot) < 4 {
-								gamWarrant(slot) = 4
-								gamItem(slot) = pWeapon[cyc]
+							if randy == 2 \
+							   && gamWarrant[slot] < 4 {
+								gamWarrant[slot] = 4
+								gamItem[slot] = pWeapon[cyc]
 							}
 						}
 						randy = bb.RndI(0, 5)
-						if randy == 0 &&
-						   pAnim[cyc] == 23 &&
-						   pWeapon[cyc] > 0 &&
-						   gamMission[slot] != 11 &&
-						   gamMission[slot] != 12 {
-							if gamWarrant(slot) < 7 {
-								gamWarrant(slot) = 7
-								gamItem(slot) = pWeapon[cyc]
+						if randy == 0 \
+						   && pAnim[cyc] == 23 \
+						   && pWeapon[cyc] > 0 \
+						   && gamMission[slot] != 11 \
+						   && gamMission[slot] != 12 {
+							if gamWarrant[slot] < 7 {
+								gamWarrant[slot] = 7
+								gamItem[slot] = pWeapon[cyc]
 							}
 						}
 					}
@@ -1504,45 +1475,41 @@ RiskAnger :: proc(cyc, v: i32) {
 			}
 		}
 		// friend asks for help
-		if count != cyc && count != v &&
-		   pChar[count] == gamChar[slot] &&
-		   Friendly(count, v) != 0 &&
-		   charAngerTim(pChar[count],
-						pChar[cyc]) == 0 &&
-		   charAngerTim(pChar[cyc],
-						pChar[count]) == 0 &&
-		   InProximity(count, v, 50) != 0 &&
-		   gamBlackout(slot) == 0 {
+		if count != cyc && count != v \
+		   && pChar[count] == gamChar[slot] \
+		   && Friendly(count, v) != 0 \
+		   && charAngerTim[pChar[count]][pChar[cyc]] == 0 \
+		   && charAngerTim[pChar[cyc]][pChar[count]] == 0 \
+		   && InProximity(count, v, 50) != 0 \
+		   && gamBlackout[slot] == 0 {
 			randy = bb.RndI(0, 5)
-			if randy == 0 &&
-			   charPromo(pChar[v], pChar[count]) == 0 &&
-			   promoUsed[249] == 0 {
-				charPromo(pChar[v], pChar[count]) = 249
-				charPromoRef(pChar[v]) = pChar[cyc]
+			if randy == 0 \
+			   && charPromo[pChar[v]][pChar[count]] == 0 \
+			   && promoUsed[249] == 0 {
+				charPromo[pChar[v]][pChar[count]] = 249
+				charPromoRef[pChar[v]] = pChar[cyc]
 			}
 		}
 		// calm down after intervention
-		if charRole(pChar[cyc]) == 1 &&
-		   charRole(pChar[v]) == 0 {
+		if charRole[pChar[cyc]] == 1 \
+		   && charRole[pChar[v]] == 0 {
 			charAngerTim[pChar[v]][ count] =
 				charAngerTim[pChar[v]][ count] / 2
 		}
 	}
 
 	// pursue warrant
-	if charRole(pChar[cyc]) == 1 &&
-	   gamWarrant(slot) > 0 &&
-	   charBribeTim[pChar[cyc]] == 0 {
+	if charRole[pChar[cyc]] == 1 \
+	   && gamWarrant[slot] > 0 \
+	   && charBribeTim[pChar[cyc]] == 0 {
 		if pAgenda[cyc] != 2 {
 			pSubX[cyc] = 9999
 			pSubZ[cyc] = 9999
 		}
 		pAgenda[cyc] = 2
 		pFollowFoc[cyc] = gamPlayer[slot]
-		if charAngerTim(pChar[cyc],
-						gamChar[slot]) < 10 {
-			charAngerTim(pChar[cyc],
-						 gamChar[slot]) = 10
+		if charAngerTim[pChar[cyc]][gamChar[slot]] < 10 {
+			charAngerTim[pChar[cyc]][gamChar[slot]] = 10
 		}
 	}
 	// promo override
@@ -1555,17 +1522,308 @@ RiskAnger :: proc(cyc, v: i32) {
 		}
 	}
 }
-*/
+
 
 GetResponse :: proc(cyc, v, chance: i32) -> i32 {
-	return 0
+	chance := chance
+	// establish likelihood
+	if chance == 0 {
+		chance = (charReputation[pChar[cyc]] / 5) - (charReputation[pChar[v]] / 5)
+		if chance < 1 || charRelation[pChar[v]][pChar[cyc]] == -1 || charRole[pChar[v]] == 1 {
+			chance = 1
+		}
+	}
+	// risk response
+	response: i32 = 0
+	randy := bb.RndI(0, chance)
+	if randy == 0 do response = 1
+	return response
 }
+
 
 TradingRisk :: proc(cyc, weapon: i32) {
-
+	for v in 1..=no_plays {
+		if charRole[pChar[v]] == 1 && v != pFoc[cyc] && Friendly(v, cyc) == 0 \
+		&& charBribeTim[pChar[v]] == 0 && gamBlackout[slot] == 0 \
+		&& AttackViable(v) >= 1 && AttackViable(v) <= 2 \
+		&& pDazed[v] == 0 && cast(bool)InProximity(v, cyc, 50) {
+			if cast(bool)InLine(v, p[cyc], 60) {
+				randy := bb.RndI(0, 5)
+				if randy == 0 && pChar[cyc] == gamChar[slot] \
+				&& gamMission[slot] != 11 && gamMission[slot] != 12 {
+					if gamWarrant[slot] < 6 {
+						gamWarrant[slot] = 6
+						gamItem[slot] = weapon
+					}
+				}
+				pAgenda[v] = 4
+				pWeapFoc[v] = weapon
+				pSubX[v] = 9999
+				pSubZ[v] = 9999
+			}
+		}
+	}
 }
+
 
 AssessRelationships :: proc(cyc: i32) {
-
+	if cast(bool)FocViable(cyc) {
+		// look at nearest by default
+		pFoc[cyc] = NearestEnemy(cyc)
+		// consider relationships
+		for v in 1..=no_plays {
+			// guarantee racial friction
+			if pChar[cyc] != gamChar[slot] {
+				if charGang[pChar[cyc]] >= 1 && charGang[pChar[cyc]] <= 3 \
+				&& charGang[pChar[cyc]] != charGang[pChar[v]] \
+				&& GetRace(pChar[cyc]) != GetRace(pChar[v]) \
+				&& Friendly(cyc, v) == 0 {
+					charRelation[pChar[cyc]][pChar[v]] = -1
+				}
+			}
+			// calm down
+			if gamPromo == 0 {
+				charAngerTim[pChar[cyc]][pChar[v]] -= 1
+				if AttackViable(cyc) == 3 || AttackViable(v) == 3 {
+					charAngerTim[pChar[cyc]][pChar[v]] -= 1
+				}
+				if charRole[pChar[cyc]] == 0 && charRole[pChar[v]] == 0 \
+				&& charReputation[pChar[cyc]] < charReputation[pChar[v]] {
+					charAngerTim[pChar[cyc]][pChar[v]] -= 1
+				}
+				if charRole[pChar[cyc]] == 0 && charRole[pChar[v]] == 1 \
+				&& cast(bool)InProximity(cyc, v, 100) {
+					charAngerTim[pChar[cyc]][pChar[v]] -= 1
+				}
+			}
+			if charAngerTim[pChar[cyc]][pChar[v]] < 0 {
+				charAngerTim[pChar[cyc]][pChar[v]] = 0
+			}
+			// spontaneous anger
+			if charAngerTim[pChar[cyc]][pChar[v]] == 0 {
+				randy := bb.RndI(0, 10000)
+				if randy == 0 && charRelation[pChar[cyc]][pChar[v]] == 0 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 10
+				}
+				if randy <= 5 && charRelation[pChar[cyc]][pChar[v]] == -1 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 10
+				}
+			}
+			// law enforcement
+			if charRole[pChar[cyc]] == 1 && charRole[pChar[v]] == 0 \
+			&& Friendly(cyc, v) == 0 && charBribeTim[pChar[cyc]] == 0 \
+			&& gamBlackout[slot] == 0 && AttackViable(cyc) >= 1 \
+			&& AttackViable(cyc) <= 2 && pDazed[cyc] == 0 {
+				// confiscate weapons
+				if pWeapon[v] > 0 && weapHabitat[weapType[pWeapon[v]]] < 99 \
+				&& weapHabitat[weapType[pWeapon[v]]] != gamLocation[slot] \
+				&& cast(bool)InProximity(cyc, v, i32(weapSize[weapType[pWeapon[v]]] * 5)) {
+					if cast(bool)InLine(cyc, p[v], 60) {
+						randy := bb.RndI(0, 100)
+						if randy == 0 || pChar[v] == gamChar[slot] {
+							if pAgenda[cyc] != 4 {
+								pSubX[cyc] = 9999
+								pSubZ[cyc] = 9999
+							}
+							pAgenda[cyc] = 4
+							pWeapFoc[cyc] = pWeapon[v]
+							if charAngerTim[pChar[cyc]][pChar[v]] < 10 {
+								charAngerTim[pChar[cyc]][pChar[v]] = 10
+							}
+						}
+						randy = bb.RndI(0, 1000)
+						if (weapType[pWeapon[v]] >= 7 && weapType[pWeapon[v]] <= 9) \
+						|| weapType[pWeapon[v]] == 23 {
+							randy = bb.RndI(0, 500)
+						}
+						if randy == 0 || (randy == 1 && weapHabitat[weapType[pWeapon[v]]] == 0) {
+							if pChar[v] == gamChar[slot] && gamPromo == 0 \
+							&& gamMission[slot] != 11 && gamMission[slot] != 12 {
+								if gamWarrant[slot] < 4 {
+									gamWarrant[slot] = 4
+									gamItem[slot] = pWeapon[v]
+								}
+							}
+						}
+					}
+				}
+				// clock drug abuse
+				if pAnim[v] >= 93 && pAnim[v] <= 95 \
+				&& weapHabitat[weapType[pWeapon[v]]] != gamLocation[slot] \
+				&& cast(bool)InProximity(cyc, v, 50) {
+					if cast(bool)InLine(cyc, p[v], 60) {
+						randy := bb.RndI(0, 100)
+						if randy == 0 || pChar[v] == gamChar[slot] {
+							if pAgenda[cyc] != 4 {
+								pSubX[cyc] = 9999
+								pSubZ[cyc] = 9999
+							}
+							pAgenda[cyc] = 4
+							pWeapFoc[cyc] = pWeapon[v]
+							if charAngerTim[pChar[cyc]][pChar[v]] < 10 {
+								charAngerTim[pChar[cyc]][pChar[v]] = 10
+							}
+						}
+						randy = bb.RndI(0, 500)
+						if randy <= 1 && pChar[v] == gamChar[slot] \
+						&& gamWarrant[slot] < 5 && gamPromo == 0 {
+							gamWarrant[slot] = 5
+						}
+					}
+				}
+				// clock gang membership
+				if pChar[v] == gamChar[slot] && charGang[pChar[v]] > 0 \
+				&& cast(bool)InProximity(cyc, v, 30) {
+					if cast(bool)InLine(cyc, p[v], 60) {
+						randy := bb.RndI(0, 5000)
+						if randy == 0 && gamWarrant[slot] < 2 && gamPromo == 0 {
+							gamWarrant[slot] = 2
+						}
+					}
+				}
+				// out of block during lock down
+				if cast(bool)LockDown() && pChar[v] == gamChar[slot] \
+				&& GetBlock(gamLocation[slot]) != charBlock[pChar[v]] {
+					if cast(bool)InLine(cyc, p[v], 60) {
+						if pAgenda[cyc] != 2 {
+							pSubX[cyc] = 9999
+							pSubZ[cyc] = 9999
+						}
+						pAgenda[cyc] = 2
+						pFollowFoc[cyc] = v
+						randy := bb.RndI(0, 100)
+						if randy == 0 && charAngerTim[pChar[cyc]][pChar[v]] < 10 {
+							charAngerTim[pChar[cyc]][pChar[v]] = 10
+						}
+						randy = bb.RndI(0, 5000)
+						if randy == 0 && cast(bool)InProximity(cyc, v, 100) \
+						&& (gamHours[slot] > 22 || gamHours[slot] < 7) \
+						&& gamWarrant[slot] < 1 && gamPromo == 0 {
+							gamWarrant[slot] = 1
+						}
+						if randy <= 50 && cast(bool)InProximity(cyc, v, 100) \
+						&& gamEscape[slot] == 1 && gamWarrant[slot] < 3 && gamPromo == 0 {
+							gamWarrant[slot] = 3
+						}
+					}
+				}
+				// out of cell during lock down
+				if cast(bool)LockDown() && pChar[v] == gamChar[slot] \
+				&& GetBlock(gamLocation[slot]) == charBlock[pChar[v]] \
+				&& InsideCell(pX[v], pY[v], pZ[v]) != charCell[pChar[v]] \
+				&& pAnim[v] != 12 && pAnim[v] != 13 {
+					if cast(bool)InLine(cyc, p[v], 60) {
+						if pAgenda[cyc] != 2 {
+							pSubX[cyc] = 9999
+							pSubZ[cyc] = 9999
+						}
+						pAgenda[cyc] = 2
+						pFollowFoc[cyc] = v
+						randy := bb.RndI(0, 100)
+						if randy == 0 && charAngerTim[pChar[cyc]][pChar[v]] < 10 {
+							charAngerTim[pChar[cyc]][pChar[v]] = 10
+						}
+						randy = bb.RndI(0, 5000)
+						if randy == 0 && cast(bool)InProximity(cyc, v, 100) \
+						&& (gamHours[slot] > 22 || gamHours[slot] < 7) \
+						&& gamWarrant[slot] < 1 && gamPromo == 0 {
+							gamWarrant[slot] = 1
+						}
+						if randy <= 50 && cast(bool)InProximity(cyc, v, 100) \
+						&& gamEscape[slot] == 1 && gamWarrant[slot] < 3 && gamPromo == 0 {
+							gamWarrant[slot] = 3
+						}
+					}
+				}
+				// out of cell during lock down
+				if cast(bool)LockDown() && pChar[v] == gamChar[slot] \
+				&& GetBlock(gamLocation[slot]) == charBlock[pChar[v]] \
+				&& InsideCell(pX[v], pY[v], pZ[v]) != charCell[pChar[v]] \
+				&& pAnim[v] != 12 && pAnim[v] != 13 {
+					if cast(bool)InLine(cyc, p[v], 60) {
+						if pAgenda[cyc] != 2 {
+							pSubX[cyc] = 9999
+							pSubZ[cyc] = 9999
+						}
+						pAgenda[cyc] = 2
+						pFollowFoc[cyc] = v
+						randy := bb.RndI(0, 100)
+						if randy == 0 && charAngerTim[pChar[cyc]][pChar[v]] < 10 {
+							charAngerTim[pChar[cyc]][pChar[v]] = 10
+						}
+						randy = bb.RndI(0, 5000)
+						if randy == 0 && cast(bool)InProximity(cyc, v, 100) \
+						&& (gamHours[slot] > 22 || gamHours[slot] < 7) \
+						&& gamWarrant[slot] < 1 && gamPromo == 0 {
+							gamWarrant[slot] = 1
+						}
+					}
+				}
+			}
+			// wave to friends
+			cellConflict: i32 = 0
+			cell := InsideCell(pX[v], pY[v], pZ[v])
+			if cell > 0 && CellVisible(pX[cyc], pY[cyc], pZ[cyc], cell) == 0 {
+				cellConflict = 1
+			}
+			if cellConflict == 0 && cyc != v && cast(bool)InProximity(cyc, v, 100) \
+			&& pInteract[cyc][v] == 0 && cast(bool)Friendly(cyc, v) \
+			&& cast(bool)Friendly(v, cyc) && pAnim[cyc] < 20 && pAnim[v] < 20 \
+			&& pDazed[cyc] == 0 && pDazed[v] == 0 && v != promoActor[1] \
+			&& v != promoActor[2] {
+				if (charFollowTim[pChar[cyc]] == 0 || v != gamPlayer[slot]) \
+				&& (charFollowTim[pChar[v]] == 0 || cyc != gamPlayer[slot]) {
+					if cast(bool)InLine(cyc, p[v], 60) && cast(bool)InLine(v, p[cyc], 60) {
+						pFoc[cyc] = v
+						ChangeAnim(cyc, 91)
+						pFoc[v] = cyc
+						ChangeAnim(v, 91)
+						pInteract[cyc][v] = 1
+						pInteract[v][cyc] = 1
+					}
+				}
+			}
+			// trigger promos
+			if charPromo[pChar[cyc]][pChar[v]] >= 202 \
+			&& charPromo[pChar[cyc]][pChar[v]] <= 204 {
+				if GetBlock(gamLocation[slot]) != charBlock[pChar[cyc]] \
+				|| InsideCell(pX[cyc], pY[cyc], pZ[cyc]) != charCell[pChar[cyc]] \
+				|| InsideCell(pX[v], pY[v], pZ[v]) != charCell[pChar[v]] {
+					cellConflict = 1
+				}
+			}
+			if gotim > 50 && gamPromo == 0 && promoTim == 0 && cellConflict == 0 \
+			&& cyc != v && pHealth[cyc] > 0 && pHealth[v] > 0 && pPhone[cyc] == 0 \
+			&& pPhone[v] == 0 && pAnim[v] != 90 {
+				oldPromo := charPromo[pChar[cyc]][pChar[v]]
+				RiskPromo(cyc, v)
+				if charPromo[pChar[cyc]][pChar[v]] > 0 {
+					if cast(bool)InProximity(cyc, v, 50) \
+					|| (cast(bool)InProximity(cyc, v, 100) \
+					&& oldPromo != charPromo[pChar[cyc]][pChar[v]]) {
+						TriggerPromo(cyc, v, charPromo[pChar[cyc]][pChar[v]])
+						charPromo[pChar[cyc]][pChar[v]] = 0
+					}
+				}
+			}
+		}
+	}
+	// pursue warrant
+	if charRole[pChar[cyc]] == 1 && gamWarrant[slot] > 0 \
+	&& charBribeTim[pChar[cyc]] == 0 {
+		if pAgenda[cyc] != 2 {
+			pSubX[cyc] = 9999
+			pSubZ[cyc] = 9999
+		}
+		pAgenda[cyc] = 2
+		pFollowFoc[cyc] = gamPlayer[slot]
+		if charAngerTim[pChar[cyc]][gamChar[slot]] < 10 {
+			charAngerTim[pChar[cyc]][gamChar[slot]] = 10
+		}
+	}
+	// promo override
+	if gamPromo > 0 {
+		if cyc == promoActor[1] && promoActor[2] > 0 do pFoc[cyc] = promoActor[2]
+		if cyc == promoActor[2] && promoActor[1] > 0 do pFoc[cyc] = promoActor[1]
+	}
 }
-

@@ -882,7 +882,8 @@ init_values :: proc() {
 	cellZ1[n] = -140; cellZ2[n] = -55
 	cellDoorX[n] = 195; cellDoorZ[n] = -100
 	// Upper translations
-	for m in 11..=20 { // NOTE: Used m instead of n to distinguish it from n from parent scope
+	// NOTE: Used m instead of n to distinguish it from shadowing n from parent scope
+	for m in 11..=20 { 
 		cellX1[m] = cellX1[m - 10]; cellX2[m] = cellX2[m - 10]
 		cellY1[m] = cellY1[m - 10]; cellY2[m] = cellY2[m - 10]
 		cellZ1[m] = cellZ1[m - 10]; cellZ2[m] = cellZ2[m - 10]
