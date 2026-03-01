@@ -959,7 +959,6 @@ RiskPromo :: proc(cyc, v: i32) {
 }
 
 
-// Placeholder
 DisplayPromo :: proc() {
 
 }
