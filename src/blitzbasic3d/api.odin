@@ -32,7 +32,7 @@ Locate :: proc(x, y: i32) {}
 Graphics3D :: proc(width, height, color, fullscreen: i32) {}
 
 // ------Audio-----
-ChannelPlaying :: proc(channel: i32) -> bool { return false }
+ChannelPlaying :: proc(channel: i32) -> i32 { return 0 }
 StopChannel :: proc(channel: i32) {}
 LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
 Load3DSound :: proc(filename: string) -> i32 { return load_sound(filename, true) }

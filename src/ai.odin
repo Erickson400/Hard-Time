@@ -1033,7 +1033,7 @@ LimbProximity :: proc(limb: i32, x, z: f32, range: i32) -> i32 {
 
 InRange :: proc(cyc, v, range: i32) -> i32 {
 	value: i32 = 0
-	if InProximity(cyc, v, range * 3) != 0 {
+	if cast(bool)InProximity(cyc, v, range * 3) {
 		ResetDummy(cyc)
 		for depth in 1..=range {
 			if value == 0 {
@@ -1088,7 +1088,7 @@ FindThreat :: proc(cyc: i32) -> i32 { // 1=high, 2=low
 				if pWeapon[v] > 0 {
 					range += i32(weapRange[weapType[pWeapon[v]]] * 2)
 				}
-				if InProximity(cyc, v, range) != 0 && pAnim[v] >= 30 \
+				if cast(bool)InProximity(cyc, v, range) && pAnim[v] >= 30 \
 				&& pAnim[v] <= 49 && pSting[v] == 1 {
 					if cast(bool)InLine(v, p[cyc], 90) {
 						if pAnim[v] == 31 || pAnim[v] == 35 || pAnim[v] == 41 {
@@ -1223,8 +1223,8 @@ RiskAnger :: proc(cyc, v: i32) {
 			   && charAngerTim[pChar[v]][pChar[cyc]] == 0 {
 				if charAngerTim[pChar[count]][pChar[v]] > 0 \
 				   || charAngerTim[pChar[v]][pChar[count]] > 0 {
-					if InProximity(count, cyc, 30) != 0 \
-					   || InProximity(count, v, 30) != 0 {
+					if cast(bool)InProximity(count, cyc, 30) \
+					   || cast(bool)InProximity(count, v, 30) {
 						randy = bb.RndI(0, 6)
 						if randy == 0 \
 						   || (randy == 1 \
@@ -1300,7 +1300,7 @@ RiskAnger :: proc(cyc, v: i32) {
 			   && (Friendly(count, cyc) == 0 \
 				|| Friendly(count, v) != 0) \
 			   && charBribeTim[pChar[count]] == 0 \
-			   && InProximity(count, cyc, 100) != 0 \
+			   && cast(bool)InProximity(count, cyc, 100) \
 			   && AttackViable(count) >= 1 \
 			   && AttackViable(count) <= 2 \
 			   && pDazed[count] == 0 {
@@ -1480,7 +1480,7 @@ RiskAnger :: proc(cyc, v: i32) {
 		   && Friendly(count, v) != 0 \
 		   && charAngerTim[pChar[count]][pChar[cyc]] == 0 \
 		   && charAngerTim[pChar[cyc]][pChar[count]] == 0 \
-		   && InProximity(count, v, 50) != 0 \
+		   && cast(bool)InProximity(count, v, 50) \
 		   && gamBlackout[slot] == 0 {
 			randy = bb.RndI(0, 5)
 			if randy == 0 \

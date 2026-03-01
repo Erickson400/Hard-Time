@@ -1517,7 +1517,7 @@ Animations :: proc(cyc: i32) {
 		if randy > 1 && pControl[cyc] > 0 && pAnimTim[cyc] > 70 do randy = bb.RndI(0, 150)
 		if randy > 1 && pControl[cyc] > 0 && pAnimTim[cyc] > 100 do randy = bb.RndI(0, 100)
 		if (randy <= 1 || pHealth[cyc] > 0) && pAnimTim[cyc] > 30 && pAnimTim[cyc] < 130 {
-			if bb.ChannelPlaying(chDeath) do bb.StopChannel(chDeath)
+			if cast(bool)bb.ChannelPlaying(chDeath) do bb.StopChannel(chDeath)
 			if pAnim[cyc] == 76 do ChangeAnim(cyc, 82)
 			if pAnim[cyc] == 77 {
 				SharpTransition(cyc, 85, 180)
