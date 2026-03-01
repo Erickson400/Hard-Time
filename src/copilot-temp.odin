@@ -5,10 +5,7 @@ package main
 
 TEMP_RiskPromo :: proc(cyc, v: i32) {
 
-
 }
-
-
 
 
 

@@ -862,9 +862,100 @@ RiskPromo :: proc(cyc, v: i32) {
 		}
 	}
 	////////////////////// UNIVERSAL ISSUES ////////////////////
-
-
-	
+	if charPromo[pChar[cyc]][pChar[v]] == 0 && pChar[v] == gamChar[slot] {
+		if charFollowTim[pChar[cyc]] == 0 && (gamMission[slot] != 18 || pChar[cyc] != gamClient[slot]) \
+		&& AttackViable(cyc) >= 1 && AttackViable(cyc) <= 2 && pDazed[cyc] == 0 {
+			// offers to heal you
+			randy := bb.RndI(0, 5000)
+			if gamLocation[slot] == 6 {
+				randy = bb.RndI(0, 1000)
+			}
+			if randy == 0 && gamMoney[slot] > 0 && charRelation[pChar[cyc]][pChar[v]] >= 0 \
+			&& charAngerTim[pChar[cyc]][pChar[v]] == 0 && cast(bool)InProximity(cyc, v, 30) {
+				injury := 0
+				for limb in 1..=40 {
+					if pScar[v][limb] >= 5 {
+						injury += 1
+					}
+				}
+				if injury > 0 && cast(bool)InLine(cyc, p[v], talkRange) {
+					charPromo[pChar[cyc]][pChar[v]] = 250
+				}
+			}
+			// offers to forge qualifications
+			randy = bb.RndI(0, 10000)
+			if gamLocation[slot] == 4 {
+				randy = bb.RndI(0, 5000)
+			}
+			if randy == 0 && gamMoney[slot] > 100 && charIntelligence[pChar[v]] <= 75 \
+			&& charRelation[pChar[cyc]][pChar[v]] >= 0 && charAngerTim[pChar[cyc]][pChar[v]] == 0 \
+			&& cast(bool)InProximity(cyc, v, 30) {
+				if cast(bool)InLine(cyc, p[v], talkRange) {
+					charPromo[pChar[cyc]][pChar[v]] = 253
+				}
+			}
+		}
+		// time up on bribes
+		if charBribeTim[pChar[cyc]] >= 1 && charBribeTim[pChar[cyc]] <= 100 \
+		&& charFollowTim[pChar[cyc]] == 0 {
+			charPromo[pChar[cyc]][pChar[v]] = 75
+		}
+		if charFollowTim[pChar[cyc]] >= 1 && charFollowTim[pChar[cyc]] <= 100 {
+			charPromo[pChar[cyc]][pChar[v]] = 76
+		}
+	}
+	////////////////////// LAST MINUTE LOGIC ////////////////////
+	if charPromo[pChar[cyc]][pChar[v]] > 0 {
+		// no longer carrying weapon
+		if charPromo[pChar[cyc]][pChar[v]] == 1 || charPromo[pChar[cyc]][pChar[v]] == 16 \
+		|| charPromo[pChar[cyc]][pChar[v]] == 18 || charPromo[pChar[cyc]][pChar[v]] == 48 \
+		|| charPromo[pChar[cyc]][pChar[v]] == 53 || charPromo[pChar[cyc]][pChar[v]] == 72 {
+			if pWeapon[v] == 0 {
+				charPromo[pChar[cyc]][pChar[v]] = 0
+			}
+		}
+		if charPromo[pChar[cyc]][pChar[v]] == 49 || charPromo[pChar[cyc]][pChar[v]] == 50 {
+			if pWeapon[cyc] == 0 {
+				charPromo[pChar[cyc]][pChar[v]] = 0
+			}
+		}
+		// no longer in a gang
+		if charPromo[pChar[cyc]][pChar[v]] == 42 && charGang[pChar[cyc]] == 0 {
+			charPromo[pChar[cyc]][pChar[v]] = 0
+		}
+		if charPromo[pChar[cyc]][pChar[v]] == 47 {
+			if charGang[pChar[cyc]] == 0 || charGang[pChar[v]] == 0 {
+				charPromo[pChar[cyc]][pChar[v]] = 0
+			}
+		}
+		if charPromo[pChar[cyc]][pChar[v]] == 45 && charGang[pChar[v]] == 0 {
+			charPromo[pChar[cyc]][pChar[v]] = 0
+		}
+		if charPromo[pChar[cyc]][pChar[v]] == 46 && charGang[pChar[cyc]] == 0 {
+			charPromo[pChar[cyc]][pChar[v]] = 0
+		}
+		// no longer wanted
+		if charPromo[pChar[cyc]][pChar[v]] == 55 || charPromo[pChar[cyc]][pChar[v]] == 56 \
+		|| charPromo[pChar[cyc]][pChar[v]] == 59 {
+			if gamWarrant[slot] == 0 {
+				charPromo[pChar[cyc]][pChar[v]] = 0
+			}
+		}
+		// victim no longer dead
+		if charPromo[pChar[cyc]][pChar[v]] == 82 || charPromo[pChar[cyc]][pChar[v]] == 83 {
+			if charLocation[charPromoRef[pChar[cyc]]] > 0 {
+				charPromo[pChar[cyc]][v] = 0
+			}
+		}
+		// life no longer in danger
+		if charPromo[pChar[cyc]][pChar[v]] == 258 && pHealth[cyc] <= 0 {
+			charPromo[pChar[cyc]][pChar[v]] = 0
+		}
+		// already used
+		if promoUsed[charPromo[pChar[cyc]][pChar[v]]] != 0 {
+			charPromo[pChar[cyc]][pChar[v]] = 0
+		}
+	}
 }
 
 
