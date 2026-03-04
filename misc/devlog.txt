@@ -36,3 +36,8 @@ I've decided to port all the source files to Odin first before working on the AP
 --------------Feb 16, 2026-----------
 The project has phases. The current phase is to make a literal translation from BlitzBasic to Odin. Next phase is to create the Blitz3D API with SDL3 and make it run. The final phase will be to refactor the code and rewrite it to be shorter and optimized for quality of life features. As of this writing 46.20% of lines are translated, 49,09% of those lines are functionally accurate.
 
+--------------Mar 3, 2026-----------
+I've been using odin core packages when possible to simplify features. e.g In values.odin I use the os package to read directory files instead of using the ReadDir functions from Blitz. Or how I'm using an arena allocator in functions.odin. I shouldn't be worried about this since Blitz is a completly different language, impossible to replicate its behaviour 100%. Either way, I'm planning on rewriting the code after the game runs, so there is no point on trying to use every Blitz API function. I'm definetly not going to translate another Blitz game in the future, nor will I make a transpiler for it, nor will I release a standalone library for the Blitz package. Hardtime is the only project where I'm willing to do a manual translation for. During the rewriting phase, I think the blitz API will slowly fade away as I start using Core functions that already do the job. Keeping the Blitz package is still a good idea to keep the backend isolated.
+
+
+

@@ -61,8 +61,6 @@ SpriteViewMode :: proc(mode, other: i32) {}
 // -------Text--------
 LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> i32 { return 0}
 Upper :: proc(allocator := context.allocator) -> string { return "" }
-Left :: proc(allocator := context.allocator) -> string { return "" }
-Right :: proc(allocator := context.allocator) -> string { return "" }
 
 // -------File--------
 WriteFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, false, loc) }
@@ -88,12 +86,12 @@ RndF :: proc{rnd_float}
 
 // -------String-------
 StringWidth :: proc(text: string) -> i32 { return 1 }
-Left :: proc(text: string, count: i32) -> string {
+Left :: proc(text: string, count: i32, allocator := context.allocator) -> string {
 	result, ok := strings.substring_to(text, int(count))
 	if ok do return result
 	return text
 }
-Right :: proc(text: string, count: i32) -> string {
+Right :: proc(text: string, count: i32, allocator := context.allocator) -> string {
 	result, ok := strings.substring_from(text, int(count))
 	if ok do return result
 	return text
