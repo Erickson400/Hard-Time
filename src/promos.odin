@@ -959,15 +959,22 @@ RiskPromo :: proc(cyc, v: i32) {
 }
 
 
+//--------------------------------------------------------------------
+///////////////////////////// PROMO TEXT /////////////////////////////
+//--------------------------------------------------------------------
 DisplayPromo :: proc() {
 
 }
 
 
-ChangeRelationship :: proc(cyc, v, relation: i32) {}
+ChangeRelationship :: proc(cyc, v, relation: i32) {
+	
+}
 
 
-TriggerPromo :: proc(cyc, v, promo: i32) {}
+TriggerPromo :: proc(cyc, v, promo: i32) {
+
+}
 
 
 FacialExpressions :: proc(cyc: i32) {

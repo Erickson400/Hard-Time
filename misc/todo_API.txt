@@ -51,6 +51,7 @@ Text:
 - StringWidth
 - Left
 - Right
+- Upper
 
 File:
 - WriteFile
@@ -62,6 +63,11 @@ File:
 - ReadInt
 - ReadFloat
 - ReadString
+- ReadDir
+- CloseDir
+- CurrentDir
+- FileType
+- NextFiles
 
 Math:
 - RndI

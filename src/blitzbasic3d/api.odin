@@ -60,6 +60,9 @@ SpriteViewMode :: proc(mode, other: i32) {}
 
 // -------Text--------
 LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> i32 { return 0}
+Upper :: proc(allocator := context.allocator) -> string { return "" }
+Left :: proc(allocator := context.allocator) -> string { return "" }
+Right :: proc(allocator := context.allocator) -> string { return "" }
 
 // -------File--------
 WriteFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, false, loc) }
@@ -71,6 +74,12 @@ WriteString :: proc(file: os.Handle, text: string, loc := #caller_location) { wr
 ReadInt :: proc(file: os.Handle, loc := #caller_location) -> i32 { return read_int(file, loc) }
 ReadString :: proc(file: os.Handle, loc := #caller_location) -> string { return read_string(file, loc) }
 ReadFloat :: proc(file: os.Handle, loc := #caller_location) -> f32 { return read_float(file, loc) }
+ReadDir :: proc(directory: string) -> i32 { return 0 }
+CloseDir :: proc(fileHandle: i32) {}
+CurrentDir :: proc(allocator := context.allocator) -> string { return "" }
+FileType :: proc(filePath: i32) -> i32 { return 0 }
+NextFiles :: proc(allocator := context.allocator) -> string { return "" }
+
 
 // -------Math-------
 // Rnd :: proc{rnd_int, rnd_float}
@@ -130,7 +139,6 @@ EntityRadius :: proc(entity: i32, x_radius: f32, y_radious: f32 = 0) {}
 CreatePivot :: proc() -> i32 { return 1}
 CameraRange :: proc(camera: i32, near, far: f32) {}
 CameraFogColor :: proc(camera: i32, r, g, b: f32) {}
-
 
 // -------Models--------
 LoadAnimMesh :: proc(filename: string) -> i32 { return 1}

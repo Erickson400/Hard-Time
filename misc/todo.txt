@@ -1,11 +1,10 @@
 ---- Tasks ----
 (In March) Replace os/os2 to os on the next Odin upgrade. That also includes it's use in main.odin
 
+(In March) Remove the os package use in values.odin and the strings.upper function. Use as in the original code instead. Add API implement todo for Upper, NextFiles, FileType, ReadDir, CloseDir, and CurrentDir.
+Use the blitz functions Left and Right instead of slices.
+
 Add private="file" to functions only used in a file.
-
-Remove the os package use in values.odin. Use as in the original code instead.
-
-
 
 Promos.bb:
 There are 17 functions. One is ~500 lines, the other is ~4100 lines, and the rest are small ~20 lines each.
