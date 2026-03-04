@@ -7,9 +7,7 @@ package blitzbasic3d
 */
 
 import ray "vendor:raylib"
-import "core:os"
 import "core:strings"
-
 
 // ------Internals-------
 GfxMode3DExists :: proc(width, height, color: i32) -> i32 { return 0 }
@@ -63,15 +61,15 @@ LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> i32 
 Upper :: proc(allocator := context.allocator) -> string { return "" }
 
 // -------File--------
-WriteFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, false, loc) }
-ReadFile :: proc(path: string, loc := #caller_location) -> os.Handle { return open_file(path, true, loc) }
-CloseFile :: proc(file: os.Handle) { os.close(file) }
-WriteInt :: proc(file: os.Handle, value: i32, loc := #caller_location) { write_int(file, value, loc) }
-WriteFloat :: proc(file: os.Handle, value: f32, loc := #caller_location)  { write_float(file, value, loc) }
-WriteString :: proc(file: os.Handle, text: string, loc := #caller_location) { write_string(file, text, loc) }
-ReadInt :: proc(file: os.Handle, loc := #caller_location) -> i32 { return read_int(file, loc) }
-ReadString :: proc(file: os.Handle, loc := #caller_location) -> string { return read_string(file, loc) }
-ReadFloat :: proc(file: os.Handle, loc := #caller_location) -> f32 { return read_float(file, loc) }
+WriteFile :: proc(path: string, loc := #caller_location) -> i32 { return 0 }
+ReadFile :: proc(path: string, loc := #caller_location) -> i32 { return 0 }
+CloseFile :: proc(file: i32) {}
+WriteInt :: proc(file: i32, value: i32, loc := #caller_location) {}
+WriteFloat :: proc(file: i32, value: f32, loc := #caller_location)  {}
+WriteString :: proc(file: i32, text: string, loc := #caller_location) {}
+ReadInt :: proc(file: i32, loc := #caller_location) -> i32 { return 0 }
+ReadString :: proc(file: i32, loc := #caller_location) -> string { return "" }
+ReadFloat :: proc(file: i32, loc := #caller_location) -> f32 { return 0 }
 ReadDir :: proc(directory: string) -> i32 { return 0 }
 CloseDir :: proc(fileHandle: i32) {}
 CurrentDir :: proc(allocator := context.allocator) -> string { return "" }

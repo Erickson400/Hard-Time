@@ -957,8 +957,13 @@ DisplayMap :: proc(x, y: i32) {
 ChangeResolution :: proc(resolution: i32, task: i32) {
 	// 0=pre-game, 1=during game
 	// assess preferences
-	width := i32(strconv.atoi(textResX[resolution]))
-	height := i32(strconv.atoi(textResY[resolution]))
+	width, height: i32
+	{
+		w, _ := strconv.parse_int(textResX[resolution])
+		h, _ := strconv.parse_int(textResY[resolution])
+		width, height = i32(w), i32(h)
+	}
+
 	if bb.GfxMode3DExists(width, height, 16) == 0 {
 		width = 800
 		height = 600

@@ -27,12 +27,12 @@ main :: proc() {
 	}
 
 	// Create file logger. (Info level for debug, Error level for release)
-	// TODO: Replace with os2 in march
-	log_file, _ := os.open("logs.txt", os.O_CREATE | os.O_WRONLY, 0o777)
+	log_file, _ := os.open("logs.txt", {.Create, .Trunc})
 	context.logger = log.create_file_logger(log_file)
 	context.logger.lowest_level = .Info when ODIN_DEBUG else .Error
 	defer os.close(log_file)
 	defer log.destroy_file_logger(context.logger )
+
 	
 	// Initialize BlitzBasic3D
 	bb.init()

@@ -1,7 +1,7 @@
 package main
 
 import bb "blitzbasic3d"
-import os "core:os/os2"
+import "core:os"
 import "core:strings"
 import "core:fmt"
 
@@ -950,14 +950,17 @@ LoadImages :: proc() {
 texture_loading :: proc() {
 	count_texture_files :: proc(path, prefix: string, counter: ^i32) {
 		folder := os.open(path) or_else fmt.panicf("Folder not found: %v", path)
-		files := os.read_directory(folder, 100, context.temp_allocator) or_else fmt.panicf("Could not read directory: %v", path)
+		files := os.read_directory(folder, 100, context.allocator) or_else fmt.panicf("Could not read directory: %v", path)
 		for file in files {
-			upper_filename := strings.to_upper(file.name, context.temp_allocator)
-			upper_prefix := strings.to_upper(prefix, context.temp_allocator)
+			upper_filename := strings.to_upper(file.name)
+			upper_prefix := strings.to_upper(prefix)
 			if strings.has_prefix(upper_filename, upper_prefix) {
 				counter^ += 1
 			}
+			delete(upper_filename)
+			delete(upper_prefix)
 		}
+		os.file_info_slice_delete(files, context.allocator)
 		os.close(folder)
 	}
 
