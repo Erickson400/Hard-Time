@@ -58,7 +58,8 @@ SpriteViewMode :: proc(mode, other: i32) {}
 
 // -------Text--------
 LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> i32 { return 0}
-Upper :: proc(allocator := context.allocator) -> string { return "" }
+Upper :: proc(text: string, allocator := context.allocator) -> string { return "" }
+Lower :: proc(text: string, allocator := context.allocator) -> string { return "" }
 
 // -------File--------
 WriteFile :: proc(path: string, loc := #caller_location) -> i32 { return 0 }

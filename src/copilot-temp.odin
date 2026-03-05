@@ -1,15 +1,14 @@
 package main
 
-// import "core:fmt"
-// import bb "blitzbasic3d"
+import "core:fmt"
+import bb "blitzbasic3d"
 
-TEMP_DisplayPromo :: proc(cyc, v: i32) {
+TEMP_DisplayPromo :: proc() {
+	// 9. COMPLAIN ABOUT LOSING SEAT
+
 
 }
 
-
-
-
 /*
-
+ 753
 */

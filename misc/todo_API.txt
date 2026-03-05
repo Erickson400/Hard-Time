@@ -52,6 +52,7 @@ Text:
 - Left
 - Right
 - Upper
+- Lower
 
 File:
 - WriteFile
