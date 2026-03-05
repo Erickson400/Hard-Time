@@ -4,11 +4,10 @@ import "core:fmt"
 import bb "blitzbasic3d"
 
 TEMP_DisplayPromo :: proc() {
-	// 9. COMPLAIN ABOUT LOSING SEAT
-
+	// 17. COMPLAIN ABOUT STOLEN ITEM
 
 }
 
 /*
- 753
+936
 */

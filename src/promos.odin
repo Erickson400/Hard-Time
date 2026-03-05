@@ -1311,10 +1311,281 @@ DisplayPromo :: proc() {
 			promoTim = 9975
 			promoUsed[gamPromo] = 1
 		}
-
-
 	}
 	// 9. COMPLAIN ABOUT LOSING SEAT
+	if gamPromo == 9 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 1
+				charReputation[pChar[v]] += 1
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				DamageRelationship(pChar[cyc], pChar[v], -1)
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				promoEffect = 1
+			}
+			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", i was sitting there!")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Since i'm on my feet, i should kick your ass!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			delete(full_string)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 10. COMPLAIN ABOUT LOSING BED
+	if gamPromo == 10 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 1
+				charReputation[pChar[v]] += 1
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				DamageRelationship(pChar[cyc], pChar[v], -1)
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				promoEffect = 1
+			}
+			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", i was sleeping there!")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You don't wake me up unless you want a fight!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			delete(full_string)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 11. TOLD TO STOP SLEEPING
+	if gamPromo == 11 {
+		// intro
+		optionA = "Yes, get up..."
+		optionB = "No, leave me alone!"
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			char_name := CellName(pChar[v])
+			full_string := fmt.aprint("Hey, ", char_name, ", sleeping time is over!")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Get out of bed before i drag you out!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			delete(full_string)
+			delete(char_name)
+		}
+		if promoStage == 0 && promoTim > 325 {
+			camFoc = v
+		}
+		if promoStage == 0 && promoTim > 350 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 2)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				charAngerTim[pChar[cyc]][pChar[v]] = 0
+				promoEffect = 1
+			}
+			Outline("That's right - wake your lazy ass up!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("There's plenty you could be doing...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] += 1
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				randy := bb.RndI(0, 5)
+				if randy == 0 && gamWarrant[slot] < 1 {
+					gamWarrant[slot] = 1
+				}
+				promoEffect = 1
+			}
+			Outline("Fine! If you want to sleep all day, i'll", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("give you a reason to be flat on your back!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 12. GUARD TELLS YOU TO LEAVE FOREIGN CELL
+	if gamPromo == 12 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 1
+				charReputation[pChar[v]] += 1
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				pSubX[cyc] = 9999
+				pSubZ[cyc] = 9999
+				randy := bb.RndI(0, 10)
+				if randy == 0 && gamWarrant[slot] < 1 {
+					gamWarrant[slot] = 1
+				}
+				promoEffect = 1
+			}
+			char_name := CellName(pChar[v])
+			full_string := fmt.aprint("Hey, ", char_name, ", get out of that cell!")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You've got no business being in there...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			delete(full_string)
+			delete(char_name)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 13. INMATE TELLS YOU TO LEAVE HIS CELL
+	if gamPromo == 13 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 1
+				charReputation[pChar[v]] += 1
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				pSubX[cyc] = 9999
+				pSubZ[cyc] = 9999
+				promoEffect = 1
+			}
+			Outline("Hey, what are you doing in MY cell?!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Get out of there before i kick you out!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 14. COMPLAIN ABOUT UNPROVOKED ATTACK
+	if gamPromo == 14 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 1
+				charReputation[pChar[v]] += 1
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				DamageRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("Hey, what's your problem?! Touch me again", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("and it'll be the last thing you ever do...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 15. COMPLAIN ABOUT BEING BUMPED
+	if gamPromo == 15 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			ShowPhoto(charPromoRef[pChar[cyc]])
+			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", watch who you mess with!")
+			full_string2 := fmt.aprint( charName[charPromoRef[pChar[cyc]]], " is a personal friend of mine...")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(full_string2, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			delete(full_string)
+			delete(full_string2)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				pSubX[cyc] = 9999
+				pSubZ[cyc] = 9999
+				promoEffect = 1
+			}
+			Outline("An attack on MY friends is an attack on", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("ME, so let's see how tough you are now!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 16. INMATE DEMANDS ITEM
+	if gamPromo == 16 {
+		// intro
+		optionA = "Yes, give item..."
+		optionB = "No, it's mine!"
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			weap_name := bb.Lower(weapName[weapType[pWeapon[v]]])
+			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", i need that ", weap_name, "!")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Give it to me or i'll take it by force...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			delete(full_string)
+			delete(weap_name)
+		}
+		if promoStage == 0 && promoTim > 325 {
+			camFoc = v
+		}
+		if promoStage == 0 && promoTim > 350 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				DamageRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Thanks, this should come in handy!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Maybe i'll return the favour some time...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] += 1
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 100
+				}
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				pAgenda[cyc] = 4
+				pWeapFoc[cyc] = pWeapon[v]
+				promoEffect = 1
+			}
+			Outline("Well, it better be worth it because i'm", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("gonna kick your ass until you give it up!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 17. COMPLAIN ABOUT STOLEN ITEM
 
 
 	
@@ -1359,5 +1630,9 @@ CellName :: proc(location: i32, allocator := context.allocator) -> string {
 }
 
 DamageRelationship :: proc(cyc, v, damage: i32) {
+	
+}
+
+ShowPhoto :: proc(char: i32) {
 	
 }
