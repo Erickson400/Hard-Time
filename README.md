@@ -7,7 +7,7 @@ Make the game's source and assets readily available for fans and modders. Preser
 
 The project has phases. The current phase is to make a literal translation from BlitzBasic to Odin. Next phase is to create the Blitz3D API with SDL3 and make it run. The final phase will be to refactor the code and rewrite it to be shorter and optimized for quality of life features. 
 
-### Source Translation Checklist as of Feb 26, 2026
+### Source Translation Checklist as of Mar 6, 2026
 | Script name     | Last time checked | Accuracy | BB Line Count |
 |-----------------|-------------------|----------|---------------|
 | Text.bb         | Feb 13, 2026      | 10/10    | 460           |
@@ -22,14 +22,14 @@ The project has phases. The current phase is to make a literal translation from 
 | Players.bb      | Feb 23, 2026      | 10/10    | 635           |
 | Anims.bb        | Feb 25, 2026      | 10/10    | 2055          |
 | Moves.bb        | Feb 26, 2026      | 9/10     | 482           |
-| AI.bb           |     .., 2026      | ./10     | 1094          |
+| AI.bb           | Feb 27, 2026      | 7/10     | 1094          |
 | Promos.bb       |     .., 2026      | ./10     | 4890          |
 | Crimes.bb       |     .., 2026      | ./10     | 1384          |
 | Missions.bb     |     .., 2026      | ./10     | 941           |
 | Credits.bb      |     .., 2026      | ./10     | 752           |
 | Gameplay.bb     |     .., 2026      | ./10     | 899           |
 
-**46.20%** of lines translated, **49.09%** of those lines are functionally accurate.
+**54.32%** of lines translated, **96.92%** of those lines are functionally accurate.
 
 Copilot was used to help with the repetitive copy pasting.
 
