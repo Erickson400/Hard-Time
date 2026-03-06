@@ -3,5 +3,6 @@
 There are 17 functions. One is ~500 lines, the other is ~4100 lines, and the rest are small ~20 lines each.
 DisplayPromo will be split into sections similar to how I did other files. I'll do a fake scope around the sections and then paste them to promo.odin as I reach the 300 line mark in temp.odin.
 
+GetFigure in functions.odin should probably take an allocator
 
-
+I have to delete OptionA and OptionB at the end of promo because not all its assignments are string literals. That also means I have to allocate all strings on the heap to not deallocate a literal by accident, and keep things consistant.
