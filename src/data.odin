@@ -59,6 +59,7 @@ LoadOptions :: proc() {
 	buttPickUp = bb.ReadInt(file)
 	// Game ID's
 	for count in 1..=3 {
+		delete(gamName[count])
 		gamName[count] = bb.ReadString(file)
 	}
 	bb.CloseFile(file)
@@ -275,6 +276,7 @@ LoadChars :: proc() {
 		defer delete(filepath)
 		file := bb.ReadFile(filepath)
 		// Appearance
+		delete(charName[char])
 		charName[char] = bb.ReadString(file)
 		charSnapped[char] = bb.ReadInt(file)
 		charModel[char] = bb.ReadInt(file)

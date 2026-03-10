@@ -1,7 +1,9 @@
 package main
 
-import "core:fmt"
 import bb "blitzbasic3d"
+import "core:fmt"
+import "core:strings"
+import "core:mem"
 
 ////////////////////////////////////////////////////////////////////////////////
 //---------------------------- HARD TIME: PROMOS -------------------------------
@@ -963,6 +965,7 @@ RiskPromo :: proc(cyc, v: i32) {
 ///////////////////////////// PROMO TEXT /////////////////////////////
 //--------------------------------------------------------------------
 DisplayPromo :: proc() {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)(context.temp_allocator.data))
 	// translate identities
 	cyc := promoActor[1]
 	v := promoActor[2]
@@ -985,23 +988,20 @@ DisplayPromo :: proc() {
 	if bb.GraphicsWidth() < 800 do bb.SetFont(font[3])
 	if bb.GraphicsWidth() > 800 do bb.SetFont(font[5])
 	if bb.GraphicsWidth() > 1024 do bb.SetFont(font[6])
+	delete(optionA)
+	delete(optionB)
 	// 1. GUARD CONFRONTS ABOUT ILLEGAL WEAPON
 	if gamPromo == 1 {
 		// intro
-		optionA = "Yes, drop weapon..."
-		optionB = "No, it's mine!"
+		optionA = strings.clone("Yes, drop weapon...")
+		optionB = strings.clone("No, it's mine!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
-			cell_name := CellName(pChar[v])
-			full_cell_name := fmt.aprint("Hey, ", cell_name, ", stop where you are! What")
+			full_cell_name := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", stop where you are! What")
 			Outline(full_cell_name, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			lower := bb.Lower(weapName[weapType[pWeapon[v]]])
-			full_lower := fmt.aprint("are you doing with that ", lower, "?")
+			full_lower := fmt.tprint("are you doing with that ", lower, "?")
 			Outline(full_lower, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_lower)
-			delete(full_cell_name)
-			delete(cell_name)
-			delete(lower)
 		}
 		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 1)
@@ -1054,12 +1054,9 @@ DisplayPromo :: proc() {
 	if gamPromo == 2 {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprintf("Hey, ", cell_name, ", didn't you hear the buzzer? This")
+			full_string := fmt.tprintf("Hey, %s, didn't you hear the buzzer? This", CellName(pChar[v], context.temp_allocator))
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("place has been locked down for the night!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(cell_name)
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 1)
@@ -1068,10 +1065,9 @@ DisplayPromo :: proc() {
 				charReputation[pChar[v]] -= 1
 				promoEffect = 1
 			}
-			full_string := fmt.aprint("You're supposed to be in the ", textBlock[charBlock[pChar[v]]], " Block.")
+			full_string := fmt.tprint("You're supposed to be in the ", textBlock[charBlock[pChar[v]]], " Block.")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("Make your way there before i drag your sorry ass!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
 		}
 		if promoTim > 650 && promoTim < 9975 {
 			promoTim = 9975
@@ -1082,13 +1078,9 @@ DisplayPromo :: proc() {
 	if gamPromo == 3 {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprint("Come on, ", cell_name, ", get back to your cell! We're")
+			full_string := fmt.tprint("Come on, ", CellName(pChar[v], context.temp_allocator), ", get back to your cell! We're")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("trying to lock this place down for the night...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(cell_name)
-			delete(full_string)
-
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 1)
@@ -1097,10 +1089,9 @@ DisplayPromo :: proc() {
 				charReputation[pChar[v]] -= 1
 				promoEffect = 1
 			}
-			full_string := fmt.aprint("Your bed is in Cell ", charCell[pChar[v]], ". Use that one or")
+			full_string := fmt.tprint("Your bed is in Cell ", charCell[pChar[v]], ". Use that one or")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("i'll have to put you in a HOSPITAL bed!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
 		}
 		if promoTim > 650 && promoTim < 9975 {
 			promoTim = 9975
@@ -1111,12 +1102,9 @@ DisplayPromo :: proc() {
 	if gamPromo == 4 {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", cell_name, ", what's the problem here?")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", what's the problem here?")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("If there's any fighting to do, i'll do it!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(cell_name)
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 1)
@@ -1138,12 +1126,9 @@ DisplayPromo :: proc() {
 	if gamPromo == 5 {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", cell_name, ", you've got no business")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", you've got no business")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("putting your hands on a police officer!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(cell_name)
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 1)
@@ -1170,12 +1155,9 @@ DisplayPromo :: proc() {
 	if gamPromo == 6 {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 2)
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", cell_name, ", didn't you hear the bell? Dinner")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", didn't you hear the bell? Dinner")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("is served! Go and get something to eat...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(cell_name)
 		}
 		if promoTim > 325 && promoTim < 9975 {
 			promoTim = 9975
@@ -1185,17 +1167,14 @@ DisplayPromo :: proc() {
 	// 7. TOLD TO GIVE UP SEAT
 	if gamPromo == 7 {
 		// intro
-		optionA = "Yes, give up seat..."
-		optionB = "No, go away!"
+		optionA = strings.clone("Yes, give up seat...")
+		optionB = strings.clone("No, go away!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			promoVariable = pSeat[v]
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", cell_name, ", get out of that seat!")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", get out of that seat!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("You've been hogging it all day. It's MY turn!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(cell_name)
 		}
 		if promoStage == 0 && promoTim > 325 do camFoc = v
 		if promoStage == 0 && promoTim > 350 {
@@ -1208,15 +1187,13 @@ DisplayPromo :: proc() {
 			Speak(cyc, 2)
 			if promoVariable > 0 {
 				digit := Dig(promoVariable, 10)
-				child_string := fmt.aprint("Chair", digit)
+				child_string := fmt.tprint("Chair", digit)
 				target := bb.FindChild(world, child_string)
 				pTX[cyc] = bb.EntityX(target, 1)
 				pTZ[cyc] = bb.EntityZ(target, 1)
 				pAgenda[cyc] = -1
 				pSubX[cyc] = 9999
 				pSubZ[cyc] = 9999
-				delete(child_string)
-				delete(digit)
 			}
 			if promoEffect == 0 {
 				charHappiness[pChar[v]] -= 5
@@ -1250,17 +1227,14 @@ DisplayPromo :: proc() {
 	// 8. TOLD TO GIVE UP BED
 	if gamPromo == 8 {
 		// intro
-		optionA = "Yes, give up bed..."
-		optionB = "No, go away!"
+		optionA = strings.clone("Yes, give up bed...")
+		optionB = strings.clone("No, go away!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			promoVariable = pBed[v]
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", cell_name, ", get out of that bed!")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", get out of that bed!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("I need to sleep too - and we're not sharing!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(cell_name)
 		}
 		if promoStage == 0 && promoTim > 325 do camFoc = v
 		if promoStage == 0 && promoTim > 350 {
@@ -1273,15 +1247,13 @@ DisplayPromo :: proc() {
 			Speak(cyc, 2)
 			if promoVariable > 0 {
 				digit := Dig(promoVariable, 10)
-				child_string := fmt.aprint("Bed", digit)
+				child_string := fmt.tprint("Bed", digit)
 				target := bb.FindChild(world, child_string)
 				pTX[cyc] = bb.EntityX(target, 1)
 				pTZ[cyc] = bb.EntityZ(target, 1)
 				pAgenda[cyc] = -1
 				pSubX[cyc] = 9999
 				pSubZ[cyc] = 9999
-				delete(child_string)
-				delete(digit)
 			}
 			if promoEffect == 0 {
 				charHappiness[pChar[v]] -= 5
@@ -1327,10 +1299,9 @@ DisplayPromo :: proc() {
 				pFollowFoc[cyc] = v
 				promoEffect = 1
 			}
-			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", i was sitting there!")
+			full_string := fmt.tprint("Hey, ", charName[pChar[v]], ", i was sitting there!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("Since i'm on my feet, i should kick your ass!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
 		}
 		if promoTim > 325 && promoTim < 9975 {
 			promoTim = 9975
@@ -1352,10 +1323,9 @@ DisplayPromo :: proc() {
 				pFollowFoc[cyc] = v
 				promoEffect = 1
 			}
-			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", i was sleeping there!")
+			full_string := fmt.tprint("Hey, ", charName[pChar[v]], ", i was sleeping there!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("You don't wake me up unless you want a fight!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
 		}
 		if promoTim > 325 && promoTim < 9975 {
 			promoTim = 9975
@@ -1365,16 +1335,13 @@ DisplayPromo :: proc() {
 	// 11. TOLD TO STOP SLEEPING
 	if gamPromo == 11 {
 		// intro
-		optionA = "Yes, get up..."
-		optionB = "No, leave me alone!"
+		optionA = strings.clone("Yes, get up...")
+		optionB = strings.clone("No, leave me alone!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
-			char_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", char_name, ", sleeping time is over!")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", sleeping time is over!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("Get out of bed before i drag you out!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(char_name)
 		}
 		if promoStage == 0 && promoTim > 325 {
 			camFoc = v
@@ -1440,12 +1407,9 @@ DisplayPromo :: proc() {
 				}
 				promoEffect = 1
 			}
-			char_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", char_name, ", get out of that cell!")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", get out of that cell!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("You've got no business being in there...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(char_name)
 		}
 		if promoTim > 325 && promoTim < 9975 {
 			promoTim = 9975
@@ -1503,12 +1467,10 @@ DisplayPromo :: proc() {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			ShowPhoto(charPromoRef[pChar[cyc]])
-			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", watch who you mess with!")
-			full_string2 := fmt.aprint( charName[charPromoRef[pChar[cyc]]], " is a personal friend of mine...")
+			full_string := fmt.tprint("Hey, ", charName[pChar[v]], ", watch who you mess with!")
+			full_string2 := fmt.tprint( charName[charPromoRef[pChar[cyc]]], " is a personal friend of mine...")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline(full_string2, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(full_string2)
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 1)
@@ -1534,16 +1496,14 @@ DisplayPromo :: proc() {
 	// 16. INMATE DEMANDS ITEM
 	if gamPromo == 16 {
 		// intro
-		optionA = "Yes, give item..."
-		optionB = "No, it's mine!"
+		optionA = strings.clone("Yes, give item...")
+		optionB = strings.clone("No, it's mine!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			weap_name := bb.Lower(weapName[weapType[pWeapon[v]]])
-			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", i need that ", weap_name, "!")
+			full_string := fmt.tprint("Hey, ", charName[pChar[v]], ", i need that ", weap_name, "!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("Give it to me or i'll take it by force...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			delete(weap_name)
 		}
 		if promoStage == 0 && promoTim > 325 {
 			camFoc = v
@@ -1588,16 +1548,14 @@ DisplayPromo :: proc() {
 	// 17. COMPLAIN ABOUT STOLEN ITEM
 	if gamPromo == 17 {
 		// intro
-		optionA = "Yes, return item..."
-		optionB = "No, it's mine!"
+		optionA = strings.clone("Yes, return item...")
+		optionB = strings.clone("No, it's mine!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc,1)
 			lower := bb.Lower(weapName[weapType[pWeapon[v]]])
-			full_string := fmt.aprint("Hey, ", charName[pChar[v]], ", that's my ", lower, "!")
+			full_string := fmt.tprint("Hey, ", charName[pChar[v]], ", that's my ", lower, "!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("Give it back or i'll show you what it's for...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(lower)
-			delete(full_string)
 		}
 		if promoStage == 0 && promoTim > 350 && promoTim < 650 do camFoc = v
 		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
@@ -1651,20 +1609,16 @@ DisplayPromo :: proc() {
 	// 18. CARRYING ITEM OUT OF CONTEXT
 	if gamPromo == 18 {
 		// intro
-		optionA = "Yes, drop item..."
-		optionB = "No, it's mine!"
+		optionA = strings.clone("Yes, drop item...")
+		optionB = strings.clone("No, it's mine!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc,1)
 			promoVariable := weapType[pWeapon[v]]
 			lower := bb.Lower(weapName[promoVariable])
-			cell_name := CellName(pChar[v])
-			full_string := fmt.aprint("Hey, ", cell_name, ", stop where you are! What")
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", stop where you are! What")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
-			full_string = fmt.aprint("are you doing with that ", lower, "?")
-			Outline(full_string, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(lower)
-			delete(full_string)
+			full_string2 := fmt.tprint("are you doing with that ", lower, "?")
+			Outline(full_string2, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
 			Speak(cyc,1)
@@ -1686,10 +1640,9 @@ DisplayPromo :: proc() {
 				charAngerTim[pChar[cyc]][pChar[v]] = 0
 				promoEffect = 1
 			}
-			full_string := fmt.aprint("That's right. Step away from the ", weapName[promoVariable])
+			full_string := fmt.tprint("That's right. Step away from the ", weapName[promoVariable])
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("and we won't have to take this any further...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
 		}
 		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
 			Speak(cyc,1)
@@ -1783,15 +1736,15 @@ DisplayPromo :: proc() {
 	// 24. LAWYER OFFERS TO REDUCE SENTENCE
 	if gamPromo == 24 {
 		// intro
-		optionA = fmt.aprint("Yes, pay $", GetFigure(promoCash), "!")
-		optionB = "No, forget it..."
+		figure := GetFigure(promoCash)
+		optionA = fmt.aprint("Yes, pay $", figure, "!")
+		optionB = strings.clone("No, forget it...")
 		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(1)
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc,3)
-			full_string := fmt.aprint("Hi, ", charName[pChar[v]], ", it's your lawyer speaking.")
+			full_string := fmt.tprint("Hi, ", charName[pChar[v]], ", it's your lawyer speaking.")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("I've got some good news about your case!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(full_string)
 		}
 		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
 			Speak(cyc,3)
@@ -1800,12 +1753,10 @@ DisplayPromo :: proc() {
 		}
 		if promoStage == 0 && promoTim > 675 && promoTim < 975 {
 			Speak(cyc,3)
-			figure := GetFigure(promoCash)
-			full_string := fmt.aprint("The only problem is we'll need $", figure, " to take")
+			figure2 := GetFigure(promoCash)
+			full_string := fmt.tprint("The only problem is we'll need $", figure2, " to take")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("it to court. Do you want to wire me the money?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(figure)
-			delete(full_string)
 		}
 		if promoStage == 0 && promoTim > 975 do camFoc = v
 		if promoStage == 0 && promoTim > 1000 {
@@ -1827,11 +1778,9 @@ DisplayPromo :: proc() {
 				promoEffect = 1
 			}
 			Outline("Alright, i'll get onto it immediately! Your", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			figure := GetFigure(charSentence[pChar[v]])
-			full_string := fmt.aprint("sentence should be down to just ", figure, " days...")
+			figure2 := GetFigure(charSentence[pChar[v]])
+			full_string := fmt.tprint("sentence should be down to just ", figure2, " days...")
 			Outline(full_string, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
-			delete(figure)
-			delete(full_string)
 		}
 		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
 			Speak(cyc,1)
@@ -1844,8 +1793,204 @@ DisplayPromo :: proc() {
 		}
 	}
 	// 25. TANOY ANNOUNCES LOCK DOWN
+	if gamPromo == 25 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline("ATTENTION! The prison is being locked down for the", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("night. All inmates should return to their home cell...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 26. TANOY ANNOUNCES NEW DAY
+	if gamPromo == 26 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline("ATTENTION! Lock down is over. All inmates", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("should wake up and resume their rehabilitation...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 27. TANOY ANNOUNCES DINNER TIME
+	if gamPromo == 27 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline("ATTENTION! Dinner is served in the canteen.", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Take your seat now to avoid disappointment...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 28. COURT CASE VICTORY AFTERMATH
+	if gamPromo == 28 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", we both know that you")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("deserved to be crucified by that judge!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			Outline("There may not be any justice in HIS court", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("room, but there is justice in MY prison!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				if charAngerTim[pChar[cyc]][pChar[v]] < 1000 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 1000
+				}
+				promoEffect = 1
+			}
+			Outline("For every day you should have been sentenced", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("to, i'm gonna make your life a living hell!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 975 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 29. COURT CASE FAILURE AFTERMATH
+	if gamPromo == 29 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", we both know that")
+			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("justice was done in that courtroom!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], 0)
+				charAngerTim[pChar[cyc]][pChar[v]] = 0
+				promoEffect = 1
+			}
+			Outline("There's no reason for either of us to hold a grudge,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("so just toe the line and we won't have a problem...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 30. TANOY ANNOUNCES NEW ARRIVAL
+	if gamPromo == 30 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 && charRole[gamArrival[slot]] == 0 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("ATTENTION! A new inmate called '", charName[gamArrival[slot]], "'"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("will now occupy Cell ", charCell[gamArrival[slot]], " of the ", textBlock[charBlock[gamArrival[slot]]], " Block..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 25 && promoTim < 325 && charRole[gamArrival[slot]] == 1 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("ATTENTION! A new officer called '", charName[gamArrival[slot]], "'"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("will now patrol the ", textLocation[charLocation[gamArrival[slot]]], " area..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			gamArrival[slot] = 0
+		}
+	}
+	// 31. TANOY ANNOUNCES FATALITY
+	if gamPromo == 31 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 9975 {
+			ShowPhoto(gamFatality[slot])
+			for count in 1..=no_plays {
+				if pAnim[count] < 20 do ChangeAnim(i32(count), 131)
+			}
+		}
+		if promoTim > 25 && promoTim < 325 && charRole[gamFatality[slot]] == 0 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamFatality[slot], context.temp_allocator), ", otherwise known"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("as '", charName[gamFatality[slot]], "', has been found dead!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 25 && promoTim < 325 && charRole[gamFatality[slot]] == 1 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("ATTENTION! ", charName[gamFatality[slot]]), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("has been found dead!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 && (gamFatality[slot] == 0 || charAttacker[gamFatality[slot]] == 0 || charWitness[charAttacker[gamFatality[slot]]] == 0) {
+			Speak(cyc, 2)
+			Outline("Unfortunately, no witnesses have come forward", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("to shed light on the circumstances of his death...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 && gamFatality[slot] > 0 && charAttacker[gamFatality[slot]] > 0 && charWitness[charAttacker[gamFatality[slot]]] > 0 {
+			Speak(cyc, 2)
+			Outline("His untimely death is thought to be related", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("to a dispute with ", charName[charAttacker[gamFatality[slot]]], "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 && charRole[gamFatality[slot]] == 0 {
+			Speak(cyc, 2)
+			Outline("Our condolences go out to both his friends within the", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("prison and the family that he leaves behind outside...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 && charRole[gamFatality[slot]] == 1 {
+			Speak(cyc, 2)
+			Outline("We at the prison are deeply saddened by his passing,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("and our condolences go to his family on the outside...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 975 && promoTim < 9975 {
+			promoTim = 9975
+			gamFatality[slot] = 0
+		}
+	}
+	// 32. TANOY ANNOUNCES RELEASE
+	if gamPromo == 32 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 9975 do ShowPhoto(gamRelease[slot])
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamRelease[slot], context.temp_allocator), ", otherwise known"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("as '", charName[gamRelease[slot]], "', has been released..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			lower := bb.Lower(textCrime[charCrime[gamRelease[slot]]])
+			Outline(fmt.tprint("He served his sentence for ", lower), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("and we now welcome him back into society...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			gamRelease[slot] = 0
+		}
+	}
+	// 33. INVITED TO JOIN SUNS OF GOD
 
-	
+	mem.end_arena_temp_memory(checkpoint)
 }
 
 
