@@ -4,6 +4,7 @@ import bb "blitzbasic3d"
 import "core:os"
 import "core:strings"
 import "core:fmt"
+import "core:mem"
 
 ////////////////////////////////////////////////////////////////////////////////
 //--------------------------- HARD TIME: VARIABLES -----------------------------
@@ -617,6 +618,7 @@ bulletShooter: [no_bullets + 1]i32
 
 
 init_values :: proc() {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
 	// sounds
 	sMenuBrowse = bb.LoadSound("Sound/Browse.wav")
 	sMenuSelect = bb.LoadSound("Sound/Select.wav")
@@ -889,10 +891,12 @@ init_values :: proc() {
 		cellZ1[m] = cellZ1[m - 10]; cellZ2[m] = cellZ2[m - 10]
 		cellDoorX[m] = cellDoorX[m - 10]; cellDoorZ[m] = cellDoorZ[m - 10]
 	}
+	mem.end_arena_temp_memory(checkpoint)
 }
 
 
 LoadImages :: proc() {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
 	// main fonts
 	font[0] = bb.LoadFont("Kristen ITC.ttf", 13, 0, 0, 0)
 	font[1] = bb.LoadFont("Kristen ITC.ttf", 16, 0, 0, 0)
@@ -943,6 +947,7 @@ LoadImages :: proc() {
 			bb.MaskImage(gamPhoto[count], 255, 0, 255)
 		}
 	}
+	mem.end_arena_temp_memory(checkpoint)
 }
 
 
@@ -974,25 +979,26 @@ texture_loading :: proc() {
 
 
 LoadTextures :: proc() {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
 	// Loading process
 	Loader("Please Wait", "Loading Numbers")
 	// signs
 	for count in i32(1)..=11 {
-		tSign[count] = bb.LoadTexture(fmt.tprintf("World/Signs/Sign%s.png", Dig(count, 10, context.temp_allocator)))
+		tSign[count] = bb.LoadTexture(fmt.tprintf("World/Signs/Sign%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=4 {
-		tBlock[count] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Block%s.png", Dig(count, 10, context.temp_allocator)))
+		tBlock[count] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Block%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=20 {
-		tCell[count] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Cell%s.png", Dig(count, 10, context.temp_allocator)))
+		tCell[count] = bb.LoadTexture(fmt.tprintf("Characters/Numbers/Cell%s.png", Dig(count, 10)))
 	}
 	// video screens
 	for count in i32(0)..=10 {
-		tScreen[count] = bb.LoadTexture(fmt.tprintf("World/Screens/Screen%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tScreen[count] = bb.LoadTexture(fmt.tprintf("World/Screens/Screen%s.JPG", Dig(count, 10)))
 	}
 	// food trays
 	for count in i32(0)..=7 {
-		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.JPG", Dig(count, 10)))
 	}
 	// world
 	tFence = bb.LoadTexture("World/Sprites/Fence.png", 4)
@@ -1014,243 +1020,249 @@ LoadTextures :: proc() {
 	// costume variations
 	tShaved = bb.LoadTexture("Characters/Hair/Shaved.JPG")
 	for count in i32(1)..=3 {
-		tSpecs[count] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tSpecs[count] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_hairs {
-		tHair[count] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10, context.temp_allocator)), 4)
+		tHair[count] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10)), 4)
 	}
 	for count in i32(1)..=no_faces {
 		Loader("Please Wait", fmt.tprintf("Loading Face %s of %s", Dig(count, 10), no_faces))
-		tFace[count] = bb.LoadTexture(fmt.tprintf("Characters/Faces/Face%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tFace[count] = bb.LoadTexture(fmt.tprintf("Characters/Faces/Face%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_bodies {
 		Loader("Please Wait", fmt.tprintf("Loading Body %s of %s", Dig(count, 10), no_bodies))
-		tBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Bodies/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Bodies/Body%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_arms {
 		Loader("Please Wait", fmt.tprintf("Loading Arm %s of %s", Dig(count, 10), no_arms))
-		tArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Arms/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Arms/Arm%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_legs {
 		Loader("Please Wait", fmt.tprintf("Loading Legs %s of %s", Dig(count, 10), no_legs))
-		tLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Legs/Legs%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Legs/Legs%s.JPG", Dig(count, 10)))
 	}
 	// racial shades
 	Loader("Please Wait", "Loading Shades")
 	for count in i32(1)..=4 {
-		tBodyShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Body%s.png", Dig(count, 10, context.temp_allocator)))
+		tBodyShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Body%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=8 {
-		tArmShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Arm%s.png", Dig(count, 10, context.temp_allocator)))
+		tArmShade[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Shading/Arm%s.png", Dig(count, 10)))
 	}
 	// scarring
 	Loader("Please Wait", "Loading Scars")
 	for count in i32(0)..=5 {
-		tFaceScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Face%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tFaceScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Face%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(0)..=4 {
-		tBodyScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tBodyScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Body%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(0)..=4 {
-		tArmScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tArmScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Arm%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(0)..=4 {
-		tLegScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Legs%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tLegScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Legs%s.JPG", Dig(count, 10)))
 	}
 	// wounds
 	tSeverEars = bb.LoadTexture("Characters/Scarring/Wounds/Ears.JPG")
 	for count in i32(1)..=3 {
-		tSeverBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tSeverBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Body%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(1)..=3 {
-		tSeverArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tSeverArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Arm%s.JPG", Dig(count, 10)))
 	}
 	for count in i32(1)..=3 {
-		tSeverLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Legs%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tSeverLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Legs%s.JPG", Dig(count, 10)))
 	}
 	// tattoos
 	for count in i32(1)..=6 {
-		tTattooBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Body%s.JPG", Dig(count, 10, context.temp_allocator)))
-		tTattooVest[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Vest%s.JPG", Dig(count, 10, context.temp_allocator)))
-		tTattooArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Arm%s.JPG", Dig(count, 10, context.temp_allocator)))
-		tTattooTee[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Tee%s.JPG", Dig(count, 10, context.temp_allocator)))
-		tTattooSleeve[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Sleeve%s.JPG", Dig(count, 10, context.temp_allocator)))
+		tTattooBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Body%s.JPG", Dig(count, 10)))
+		tTattooVest[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Vest%s.JPG", Dig(count, 10)))
+		tTattooArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Arm%s.JPG", Dig(count, 10)))
+		tTattooTee[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Tee%s.JPG", Dig(count, 10)))
+		tTattooSleeve[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Sleeve%s.JPG", Dig(count, 10)))
 	}
+	mem.end_arena_temp_memory(checkpoint)
 }
 
 
 LoadWeaponData :: proc() {
-	weapName[0] = "Thing"
+	for i in 0..=25 {
+		delete(weapName[i])
+		delete(weapFile[i])
+	}
+
+	weapName[0] = strings.clone("Thing")
 	// rock
-	n := 1 ; weapName[n] = "Rock" ; weapFile[n] = "Rock"
+	n := 1 ; weapName[n] = strings.clone("Rock") ; weapFile[n] = strings.clone("Rock")
 	weapSound[n] = sRock ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 5 ; weapWeight[n] = 0.4
 	weapRange[n] = 6 ; weapDamage[n] = 3
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// wooden plank
-	n = 2 ; weapName[n] = "Wooden Plank" ; weapFile[n] = "Plank"
+	n = 2 ; weapName[n] = strings.clone("Wooden Plank") ; weapFile[n] = strings.clone("Plank")
 	weapSound[n] = sWood ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// steel pipe
-	n = 3 ; weapName[n] = "Steel Pipe" ; weapFile[n] = "Pipe"
+	n = 3 ; weapName[n] = strings.clone("Steel Pipe") ; weapFile[n] = strings.clone("Pipe")
 	weapSound[n] = sMetal ; weapTex[n] = 0 ; weapShiny[n] = 1.0
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// baseball bat
-	n = 4 ; weapName[n] = "Baseball Bat" ; weapFile[n] = "Bat"
+	n = 4 ; weapName[n] = strings.clone("Baseball Bat") ; weapFile[n] = strings.clone("Bat")
 	weapSound[n] = sWood ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n]= 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 2
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// pool cue
-	n = 5 ; weapName[n] = "Pool Cue" ; weapFile[n] = "Cue"
+	n = 5 ; weapName[n] = strings.clone("Pool Cue") ; weapFile[n] = strings.clone("Cue")
 	weapSound[n] = sCane ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n] = 12 ; weapWeight[n] = 0.25
 	weapRange[n] = 10 ; weapDamage[n] = 2
 	weapStyle[n] = 1 ; weapHabitat[n] = 9
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// dagger
-	n = 6 ; weapName[n] = "Knife" ; weapFile[n] = "Dagger"
+	n = 6 ; weapName[n] = strings.clone("Knife") ; weapFile[n] = strings.clone("Dagger")
 	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
 	weapSize[n] = 6 ; weapWeight[n] = 0.25
 	weapRange[n] = 6 ; weapDamage[n] = 4
 	weapStyle[n] = 7 ; weapHabitat[n] = 8
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// pistol
-	n = 7 ; weapName[n] = "Pistol" ; weapFile[n] = "Pistol"
+	n = 7 ; weapName[n] = strings.clone("Pistol") ; weapFile[n] = strings.clone("Pistol")
 	weapSound[n] = sGun ; weapTex[n] = tPistol ; weapShiny[n] = 0.5
 	weapSize[n] = 5 ; weapWeight[n] = 0.3
 	weapRange[n] = 6 ; weapDamage[n] = 3
 	weapStyle[n] = 3 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 100
 	// machine gun
-	n = 8 ; weapName[n] = "Machine Gun" ; weapFile[n] = "Machine"
+	n = 8 ; weapName[n] = strings.clone("Machine Gun") ; weapFile[n] = strings.clone("Machine")
 	weapSound[n] = sGun ; weapTex[n] = tMachine ; weapShiny[n] = 0.5
 	weapSize[n] = 8 ; weapWeight[n] = 0.4
 	weapRange[n] = 8 ; weapDamage[n] = 3
 	weapStyle[n] = 4 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 100
 	// TNT
-	n = 9 ; weapName[n] = "Explosive" ; weapFile[n] = "TNT"
+	n = 9 ; weapName[n] = strings.clone("Explosive") ; weapFile[n] = strings.clone("TNT")
 	weapSound[n] = sGeneric ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 6 ; weapWeight[n] = 0.3
 	weapRange[n] = 5 ; weapDamage[n] = 2
 	weapStyle[n] = 6 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 100
 	// brick
-	n = 10 ; weapName[n] = "Brick" ; weapFile[n] = "Brick"
+	n = 10 ; weapName[n] = strings.clone("Brick") ; weapFile[n] = strings.clone("Brick")
 	weapSound[n] = sRock ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 6 ; weapWeight[n] = 0.4
 	weapRange[n] = 6 ; weapDamage[n] = 3
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// dumbell
-	n = 11 ; weapName[n] = "Dumbbell" ; weapFile[n] = "Dumbell"
+	n = 11 ; weapName[n] = strings.clone("Dumbbell") ; weapFile[n] = strings.clone("Dumbell")
 	weapSound[n] = sAxe ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n] = 8 ; weapWeight[n] = 0.5
 	weapRange[n] = 6 ; weapDamage[n] = 5
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// nightstick
-	n = 12 ; weapName[n] = "Nightstick" ; weapFile[n] = "Baton"
+	n = 12 ; weapName[n] = strings.clone("Nightstick") ; weapFile[n] = strings.clone("Baton")
 	weapSound[n] = sWood ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n] = 6 ; weapWeight[n] = 0.3
 	weapRange[n] = 7 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// hammer
-	n = 13 ; weapName[n] = "Hammer" ; weapFile[n] = "Hammer"
+	n = 13 ; weapName[n] = strings.clone("Hammer") ; weapFile[n] = strings.clone("Hammer")
 	weapSound[n] = sRock ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n] = 5 ; weapWeight[n] = 0.4
 	weapRange[n] = 6 ; weapDamage[n] = 4
 	weapStyle[n] = 1 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// ball
-	n = 14 ; weapName[n] = "Ball" ; weapFile[n] = "Ball"
+	n = 14 ; weapName[n] = strings.clone("Ball") ; weapFile[n] = strings.clone("Ball")
 	weapSound[n] = sBall ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 7 ; weapWeight[n] = 0.3
 	weapRange[n] = 5 ; weapDamage[n] = 1
 	weapStyle[n] = 0 ; weapHabitat[n] = 99
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// broom
-	n = 15 ; weapName[n] = "Broom" ; weapFile[n] = "Broom"
+	n = 15 ; weapName[n] = strings.clone("Broom") ; weapFile[n] = strings.clone("Broom")
 	weapSound[n] = sCane ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 13 ; weapWeight[n] = 0.25
 	weapRange[n] = 11 ; weapDamage[n] = 2
 	weapStyle[n] = 1 ; weapHabitat[n] = 99
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// cigarette
-	n = 16 ; weapName[n] = "Cigarette" ; weapFile[n] = "Cigar"
+	n = 16 ; weapName[n] = strings.clone("Cigarette") ; weapFile[n] = strings.clone("Cigar")
 	weapSound[n] = sCigar ; weapTex[n] = 0 ; weapShiny[n] = 0
 	weapSize[n] = 4 ; weapWeight[n] = 0.15
 	weapRange[n] = 6 ; weapDamage[n] = 1
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// syringe
-	n = 17 ; weapName[n] = "Syringe" ; weapFile[n] = "Syringe"
+	n = 17 ; weapName[n] = strings.clone("Syringe") ; weapFile[n] = strings.clone("Syringe")
 	weapSound[n] = sSyringe ; weapTex[n] = 0 ; weapShiny[n] = 0.5
 	weapSize[n] = 5 ; weapWeight[n] = 0.2
 	weapRange[n] = 6 ; weapDamage[n] = 2
 	weapStyle[n] = 7 ; weapHabitat[n] = 6
 	weapCreate[n] = 0 ; weapValue[n] = 20
 	// beer bottle
-	n = 18 ; weapName[n] = "Bottle" ; weapFile[n] = "Bottle"
+	n = 18 ; weapName[n] = strings.clone("Bottle") ; weapFile[n] = strings.clone("Bottle")
 	weapSound[n] = sBottle ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n] = 5 ; weapWeight[n] = 0.25
 	weapRange[n] = 5 ; weapDamage[n] = 2
 	weapStyle[n] = 6 ; weapHabitat[n] = 8
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// fire extinguisher
-	n = 19 ; weapName[n] = "Extinguisher" ; weapFile[n] = "Extinguisher"
+	n = 19 ; weapName[n] = strings.clone("Extinguisher") ; weapFile[n] = strings.clone("Extinguisher")
 	weapSound[n] = sMetal ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n] = 6 ; weapWeight[n] = 0.3
 	weapRange[n] = 5 ; weapDamage[n] = 3
 	weapStyle[n] = 6 ; weapHabitat[n] = 99
 	weapCreate[n] = 1 ; weapValue[n] = 50
 	// screwdriver
-	n = 20 ; weapName[n] = "Screwdriver" ; weapFile[n] = "Screw"
+	n = 20 ; weapName[n] = strings.clone("Screwdriver") ; weapFile[n] = strings.clone("Screw")
 	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
 	weapSize[n] = 5 ; weapWeight[n] = 0.25
 	weapRange[n] = 6 ; weapDamage[n] = 3
 	weapStyle[n] = 7 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// scissors
-	n = 21 ; weapName[n] = "Scissor" ; weapFile[n] = "Scissors"
+	n = 21 ; weapName[n] = strings.clone("Scissor") ; weapFile[n] = strings.clone("Scissors")
 	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
 	weapSize[n] = 5 ; weapWeight[n] = 0.25
 	weapRange[n] = 6 ; weapDamage[n] = 4
 	weapStyle[n] = 7 ; weapHabitat[n] = 4
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// meat cleaver
-	n = 22 ; weapName[n] = "Meat Cleaver" ; weapFile[n] = "Cleaver"
+	n = 22 ; weapName[n] = strings.clone("Meat Cleaver") ; weapFile[n] = strings.clone("Cleaver")
 	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 5
 	weapStyle[n] = 1 ; weapHabitat[n] = 8
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// samurai sword
-	n = 23 ; weapName[n] = "Sword" ; weapFile[n] = "Samurai"
+	n = 23 ; weapName[n] = strings.clone("Sword") ; weapFile[n] = strings.clone("Samurai")
 	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 10 ; weapDamage[n] = 5
 	weapStyle[n] = 1 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 50
 	// comb
-	n = 24 ; weapName[n] = "Comb" ; weapFile[n] = "Comb"
+	n = 24 ; weapName[n] = strings.clone("Comb") ; weapFile[n] = strings.clone("Comb")
 	weapSound[n] = sCigar ; weapTex[n] = 0 ; weapShiny[n] = 0.25
 	weapSize[n] = 5 ; weapWeight[n] = 0.2
 	weapRange[n] = 6 ; weapDamage[n] = 1
 	weapStyle[n] = 0 ; weapHabitat[n] = 99
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// mirror
-	n = 25 ; weapName[n] = "Mirror" ; weapFile[n] = "Mirror"
+	n = 25 ; weapName[n] = strings.clone("Mirror") ; weapFile[n] = strings.clone("Mirror")
 	weapSound[n] = sGeneric ; weapTex[n] = 0 ; weapShiny[n] = 0.5
 	weapSize[n] = 8 ; weapWeight[n] = 0.25
 	weapRange[n] = 7 ; weapDamage[n] = 2

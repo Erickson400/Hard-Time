@@ -1,13 +1,15 @@
 Build commands:
 (For active dev and debugging) ---- odin build ./src -o:none -debug -vet -vet-tabs -strict-style
-(No release command as of yet) ----
+(For release) ---- N/A
 
 ---- Writing conventions Odin code ----
 - Comment out unused variables/functions and put an "Unused" comment next to them.
+- Mark functions with file scope if they're not using in outside files.
 - Game source code should be PascalCase just like the original. Only the BlitzBasic API should use the Odin naming convention. The code should still use the other Odin style points.
 - If a variable is only read, then make it constant or rodata.
 - Import statements should be right below the package name, no comments between.
 - Make sure all files follow -vet, -vet-tabs, and -strict-style.
+- Global strings in values.odin must be heap allocated. Watch out for gamName, optionA, optionB, charName, weapName, and weapFile.
 
 
 ---- Translaton Guide ----
@@ -15,8 +17,7 @@ Build commands:
 - "For i = 0 to 99" is the same as "for i in 0..=99" in odin.
 - Cast i32 to bool for non bool Blitz if statements.
 - Replace Rnd with RndI/RndF.
-- All Hardtime code should use the context.allocator, init_values() using temp_alloc is an exception since it happens once. The Blitz API should create a arena allocator. temp_alloc will be reserved for future use in rewritten Hardtime code.
-- String arguments should not be freed or reassigned inside the function. The caller has to handle it. Do not assume the string is alive after exiting the function.
+- String arguments should not be freed or reassigned inside the function. That also includes returned strings. The caller has to handle it. Do not assume the string is alive after exiting the function.
 - Blitz functions with path args are rooted in the assets folder. The Blitz API and any Odin OS calls have to add the assets string. 
 - Blitz variables and file paths are case-insensitive. (Probably not important)
 
