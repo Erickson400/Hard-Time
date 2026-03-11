@@ -112,7 +112,7 @@ GetHeight :: proc(value: i32) -> string {
 
 
 // CALCULATE 1'000'000 FIGURE
-GetFigure :: proc(value: i32) -> string {
+GetFigure :: proc(value: i32, allocator := context.allocator) -> string {
 	value := value
 	minus := 0
 	if value < 0 {
