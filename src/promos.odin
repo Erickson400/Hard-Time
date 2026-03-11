@@ -1736,7 +1736,7 @@ DisplayPromo :: proc() {
 	// 24. LAWYER OFFERS TO REDUCE SENTENCE
 	if gamPromo == 24 {
 		// intro
-		figure := GetFigure(promoCash)
+		figure := GetFigure(promoCash, context.temp_allocator)
 		optionA = fmt.aprint("Yes, pay $", figure, "!")
 		optionB = strings.clone("No, forget it...")
 		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(1)
@@ -1753,7 +1753,7 @@ DisplayPromo :: proc() {
 		}
 		if promoStage == 0 && promoTim > 675 && promoTim < 975 {
 			Speak(cyc,3)
-			figure2 := GetFigure(promoCash)
+			figure2 := GetFigure(promoCash, context.temp_allocator)
 			full_string := fmt.tprint("The only problem is we'll need $", figure2, " to take")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("it to court. Do you want to wire me the money?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
@@ -1778,7 +1778,7 @@ DisplayPromo :: proc() {
 				promoEffect = 1
 			}
 			Outline("Alright, i'll get onto it immediately! Your", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			figure2 := GetFigure(charSentence[pChar[v]])
+			figure2 := GetFigure(charSentence[pChar[v]], context.temp_allocator)
 			full_string := fmt.tprint("sentence should be down to just ", figure2, " days...")
 			Outline(full_string, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
@@ -2692,7 +2692,7 @@ DisplayPromo :: proc() {
 		optionB = strings.clone("No, forget it!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 2)
-			Outline(fmt.tprint("Hey, ", CellName(pChar[v]), ", let me see those tattoos!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", let me see those tattoos!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline(fmt.tprint("Are you a member of ", textGang[charGang[pChar[v]]], "?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
@@ -2929,7 +2929,7 @@ Speak :: proc(cyc, v: i32) {
 	
 }
 
-CellName :: proc(location: i32, allocator := context.temp_allocator) -> string {
+CellName :: proc(location: i32, allocator: mem.Allocator) -> string {
 	return ""
 }
 

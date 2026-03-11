@@ -1,11 +1,5 @@
 ---- Tasks ----
-GetFigure in functions.odin should probably take an allocator
 
-I have to delete OptionA and OptionB at the end of promo because not all its assignments are string literals.
 
-I should probably make all strings in values.odin be heap allocated, that way I dont deallocate a literal by accident, and keep things consistant.
 
-Use temp allocator for promo function.
-
-Wtf is going on in GetFigure in functions.odin
 

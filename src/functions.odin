@@ -2,6 +2,7 @@ package main
 
 import "core:fmt"
 import "core:strings"
+import "core:mem"
 import bb "blitzbasic3d"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +113,7 @@ GetHeight :: proc(value: i32) -> string {
 
 
 // CALCULATE 1'000'000 FIGURE
-GetFigure :: proc(value: i32, allocator := context.allocator) -> string {
+GetFigure :: proc(value: i32, allocator: mem.Allocator) -> string {
 	value := value
 	minus := 0
 	if value < 0 {
@@ -147,8 +148,8 @@ GetFigure :: proc(value: i32, allocator := context.allocator) -> string {
 	if millions > 0 && thousands < 10 do clean_sbprintf(&tho, "'00%s", thousands)
 	// return
 	figure: string
-	if minus == 0 do figure = fmt.aprint(strings.to_string(mil), strings.to_string(tho), strings.to_string(hun))
-	if minus == 1 do figure = fmt.aprint("-", strings.to_string(mil), strings.to_string(tho), strings.to_string(hun))
+	if minus == 0 do figure = fmt.aprint(strings.to_string(mil), strings.to_string(tho), strings.to_string(hun), allocator = allocator)
+	if minus == 1 do figure = fmt.aprint("-", strings.to_string(mil), strings.to_string(tho), strings.to_string(hun), allocator = allocator)
 	strings.builder_destroy(&hun)
 	strings.builder_destroy(&tho)
 	strings.builder_destroy(&mil)
