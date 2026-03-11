@@ -1989,6 +1989,545 @@ DisplayPromo :: proc() {
 		}
 	}
 	// 33. INVITED TO JOIN SUNS OF GOD
+	if gamPromo == 33 {
+		// intro
+		optionA = strings.clone("Yes, join gang!")
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", your skin is white"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("but you're not letting it shine bright!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("Why don't you join The Suns Of God and help us", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("purify this place? We could use a guy like you...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 1)
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Welcome to the family, brother! Discovering", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("your roots is the first step to growing strong...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] -= 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("You're either with us or against us! If you're", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("not part of the solution, you're the problem...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 34. INVITED TO JOIN AVATARS OF ALLAH
+	if gamPromo == 34 {
+		// intro
+		optionA = strings.clone("Yes, join gang!")
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", you've been sent to"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("this prison to serve a greater cause...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("Join The Avatars Of Allah and help us wage war", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("on the infidels! We could use a guy like you...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 2)
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Welcome to the family, brother! Surrender your", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("life to the cause and justice will be done...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] -= 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("You're either with us or against us! If you don't", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("kill the infidels, you'll die alongside them...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 35. INVITED TO JOIN THE DARK SIDE
+	if gamPromo == 35 {
+		// intro
+		optionA = strings.clone("Yes, join gang!")
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", aren't you tired of"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("being judged by the colour of your skin?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("This place is designed to keep the black man down,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("but join The Dark Side and we can fight back!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 3)
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Welcome to the family, brother! Discovering", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("your roots is the first step to growing strong...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] -= 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("You're either with us or against us! If you're", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("not part of the solution, you're the problem...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 36. INVITED TO JOIN POWERS THAT BE
+	if gamPromo == 36 {
+		// intro
+		optionA = strings.clone("Yes, join gang!")
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", haven't you ever heard"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("that the pen is mightier than the sword?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("Knowledge is power, so join The Powers That Be", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("and we can bring down this system from within!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 4)
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Welcome to the family, brother! Discovering", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("your roots is the first step to growing strong...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] -= 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("You're either with us or against us! If you're", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("not part of the solution, you're the problem...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 37. INVITED TO JOIN GLADIATORS
+	if gamPromo == 37 {
+		// intro
+		optionA = strings.clone("Yes, join gang!")
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", i'm sure you know"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("that only the strong survive in here?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("So why not join The Gladiators and fight alongside", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("your fellow athletes? We could use a guy like you...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 5)
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Welcome to the team, soldier! Wear the ink", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("with pride and we'll always have your back...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] -= 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("You're either with us or against us - and this is", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("one wall you really don't want to come up against!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 38. INVITED TO JOIN THE PEAKS
+	if gamPromo == 38 {
+		// intro
+		optionA = strings.clone("Yes, join gang!")
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", don't forget that the"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("point of prison is to better yourself...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("Join The Peaks and we'll guide you to your", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("highest self! You'll be out before you know it...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 6)
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Welcome to the family, brother! We don't offer", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("an easy life, but it will be a meaningful one...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 2)
+			Outline("That's your choice, but do remember that those", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("who live by the sword will die by the same fate...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+    // 39. CONFRONTED ABOUT ATTACKING GANG MEMBER
+	if gamPromo == 39 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", watch who you mess with!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint(charName[charPromoRef[pChar[cyc]]], " is a member of ", textGang[charGang[pChar[cyc]]], "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] += 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				pSubX[cyc] = 9999
+				pSubZ[cyc] = 9999
+				promoEffect = 1
+			}
+			Outline("An attack on one of us is an attack on the", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("whole crew, so pick your battles carefully!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 40. ASSAULTED RIVAL GANG MEMBER
+	if gamPromo == 40 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline("Hey, do you know who you're messing with?!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("I'm a member of ", textGang[charGang[pChar[cyc]]], "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] += 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("This ink means something! One word from me", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("and the whole crew will be on your back...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 41. ASSAULTED FELLOW GANG MEMBER
+	if gamPromo == 41 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", why are you attacking"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("a fellow member of ", textGang[charGang[pChar[cyc]]], "?!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charGang[pChar[v]] = 0
+				GangAdjust(pChar[v])
+				ApplyCostume(v)
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("The last thing a crew needs is civil war!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("A traitor doesn't deserve to wear that ink...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 42. DEFECTED FROM GANG
+	if gamPromo == 42 {
+		if promoTim > 25 && promoTim < 325 && charGang[pChar[v]] == 0 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", how could you turn"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("your back on ", textGang[charGang[pChar[cyc]]], "?!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 25 && promoTim < 325 && charGang[pChar[v]] > 0 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", how could you turn your back"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("on ", textGang[charGang[pChar[cyc]]], " to join ", textGang[charGang[pChar[v]]], "?!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				promoEffect = 1
+			}
+			Outline("Don't you know the only way out is DEATH?", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You soon will when the others hear about this!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+			RemovePromo(gamPromo)
+		}
+	}
+	// 43. FORGIVE UNPROVOKED ATTACK
+	if gamPromo == 43 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline("Brother, what hurts you so much that you", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("feel you need to hurt me to heal it?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Come, you will find that the respect of these", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("men isn't worth sacrificing your soul for...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 44. FORGIVEN FOR STEALING
+	if gamPromo == 44 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline("Brother, what is it you're hoping to attain?", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			lower_name := strings.to_lower(weapName[weapType[pWeapon[v]]], context.temp_allocator)
+			Outline(fmt.tprint("Will that ", lower_name, " really bring you happiness?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Detach yourself from these possessions, and you", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("will discover that what matters can never be lost...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 45. FORMER GANG MEMBER ASKS YOU TO LEAVE TOO
+	if gamPromo == 45 {
+		// intro
+		optionA = strings.clone("Yes, leave gang...")
+		optionB = strings.clone("No, forget it!")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", i thought you should"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("know that i've left ", textGang[charGang[pChar[v]]], "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("Why don't you leave before it's too late?", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("They'll only use you to do their dirty work!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 0)
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Good for you! They're gonna come after us when", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("they hear about this, but we'll survive together...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] += 1
+				DamageRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("In that case, we can no longer be friends!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("I want nothing to do with ", textGang[charGang[pChar[v]]], "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 46. FRIEND JOINS A GANG
+	if gamPromo == 46 {
+		// intro
+		optionA = strings.clone("Yes, join gang!")
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", you're now looking"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("at a member of ", textGang[charGang[pChar[cyc]]], "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("Do you want me to get you into the gang too?", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Their support can make life easier in here!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], charGang[pChar[cyc]])
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Welcome to the family, brother! Trust me, it's", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("much better to be with us than against us...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] -= 1
+				DamageRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("In that case, we can no longer be friends!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("My loyalties lie with ", textGang[charGang[pChar[cyc]]], "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 47 
 
 	mem.end_arena_temp_memory(checkpoint)
 }
@@ -2036,5 +2575,13 @@ DamageRelationship :: proc(cyc, v, damage: i32) {
 }
 
 ShowPhoto :: proc(char: i32) {
+	
+}
+
+AngerGang :: proc(char, gang: i32) {
+	
+}
+
+RemovePromo :: proc(sus: i32) {
 	
 }
