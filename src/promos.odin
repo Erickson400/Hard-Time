@@ -2890,7 +2890,200 @@ DisplayPromo :: proc() {
 		}
 	}
 	// 55. WITNESS BLACKMAILS YOU
-	
+	if gamPromo == 55 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, pay $", figure, "..."))
+		optionB = strings.clone("No, i don't care!")
+		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(1)
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", i saw what you did!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I could send you down for a long time...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			figure2 := GetFigure(promoCash, context.temp_allocator)
+			Outline("Fortunately for you, i'm a compassionate man and", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("may be willing to forget what i saw for $", figure2, "?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				MakeDeal(cyc, v)
+				bb.PlaySound(sCash)
+				statTim[7] = -50
+				gamMoney[slot] -= promoCash
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] -= 1
+				DamageRelationship(pChar[cyc], pChar[v], 1)
+				charWitness[pChar[v]] = 0
+				gamWarrant[slot] = 0
+				if bb.ChannelPlaying(chAlarm) > 0 do bb.StopChannel(chAlarm)
+				promoEffect = 1
+			}
+			Outline("Turns out i didn't see anything after all!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I guess the wardens just lost their case...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("Fine, have it your way! When the wardens hear my", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("version of the story they'll throw away the key...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 56. INMATE OFFERS TO TAKE BLAME
+	if gamPromo == 56 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, pay $", figure, "..."))
+		optionB = strings.clone("No, i don't care!")
+		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(1)
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", what have you been up to?"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("Word is you're wanted for ", strings.to_lower(textWarrant[gamWarrant[slot]], context.temp_allocator), "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			figure2 := GetFigure(promoCash, context.temp_allocator)
+			Outline("Fortunately for you, i need money - and may be", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("willing to take the blame if you pay me $", figure2, "?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				MakeDeal(cyc, v)
+				bb.PlaySound(sCash)
+				statTim[7] = -50
+				gamMoney[slot] -= promoCash
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				for count in 1..=no_plays {
+					if charRole[pChar[count]] == 1 {
+						charAngerTim[pChar[count]][pChar[cyc]] = 1000
+						pAgenda[count] = 2
+						pFollowFoc[count] = cyc
+					}
+				}
+				charSentence[pChar[cyc]] += 180
+				charWitness[pChar[v]] = 0
+				gamWarrant[slot] = 0
+				if bb.ChannelPlaying(chAlarm) > 0 do bb.StopChannel(chAlarm)
+				promoEffect = 1
+			}
+			Outline("This should ease the pain when i take the heat!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I'm never getting out, so i might as well profit...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				promoEffect = 1
+			}
+			Outline("Fine, have it your way! I'll take the side", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("of the wardens and make sure you go down...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 57. INMATE ASKS YOU TO TAKE BLAME
+	if gamPromo == 57 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, accept $", figure, "!"))
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim < 25 {
+			promoVariable = bb.RndI(1, 14)
+			promoCash = bb.RndI(promoVariable * 50, promoVariable * 100)
+			promoCash = RoundOff(promoCash, 50)
+		}
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", you've got to help me!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("The wardens want me for ", strings.to_lower(textWarrant[promoVariable], context.temp_allocator), "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			figure2 := GetFigure(promoCash, context.temp_allocator)
+			Outline("Take the heat for me and i won't forget it!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("I'll even pay you $", figure2, " for your trouble?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				MakeDeal(cyc, v)
+				bb.PlaySound(sCash)
+				statTim[7] = 50
+				gamMoney[slot] += promoCash
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				gamWarrant[slot] = promoVariable
+				gamVictim[slot] = bb.RndI(1, no_chars)
+				if gamMission[slot] != 11 && gamMission[slot] != 12 do gamItem[slot] = bb.RndI(1, no_weaps)
+				promoEffect = 1
+			}
+			Outline("Thanks, you just saved my life! Here's your money.", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Having a friend like you will be worth every penny...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				DamageRelationship(pChar[cyc], pChar[v], -1)
+				charReputation[pChar[v]] -= 1
+				for count in 1..=no_plays {
+					if charRole[pChar[count]] == 1 {
+						charAngerTim[pChar[count]][pChar[cyc]] = 1000
+						pAgenda[count] = 2
+						pFollowFoc[count] = cyc
+					}
+				}
+				promoEffect = 1
+			}
+			figure2 := GetFigure(promoCash, context.temp_allocator)
+			Outline(fmt.tprint("You're turning down $", figure2, " to tell a few lies?!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Don't come to me the next time you need a favour...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 58. WARDEN THREATENS TO MAKE UP CHARGE
 	
 	mem.end_arena_temp_memory(checkpoint)
 }
