@@ -3084,7 +3084,371 @@ DisplayPromo :: proc() {
 		}
 	}
 	// 58. WARDEN THREATENS TO MAKE UP CHARGE
+	if gamPromo == 58 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, pay $", figure, "..."))
+		optionB = strings.clone("No, do your worst!")
+		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(1)
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("You know, ", CellName(pChar[v], context.temp_allocator), ", being a warden is a very"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("respectable job. People believe whatever you say!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			Outline("For instance, i don't have to SEE you morons", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("committing a crime - all i have to do is SAY it!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 675 && promoTim < 975 {
+			Speak(cyc, 1)
+			figure = GetFigure(promoCash, context.temp_allocator)
+			Outline(fmt.tprint("Give me $", figure, " or i'll give you an example!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I could have you before a judge right now...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 975 do camFoc = v
+		if promoStage == 0 && promoTim > 1000 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 2)
+			if promoEffect == 0 {
+				MakeDeal(cyc, v)
+				bb.PlaySound(sCash)
+				statTim[7] = -50
+				gamMoney[slot] -= promoCash
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				promoEffect = 1
+			}
+			Outline("A wise choice! It would have been a shame", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("if you ruined your life for no reason...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] /= 2
+				charReputation[pChar[v]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				gamWarrant[slot] = bb.RndI(1, 14)
+				gamVictim[slot] = bb.RndI(1, no_chars)
+				if gamMission[slot] != 11 && gamMission[slot] != 12 do gamItem[slot] = bb.RndI(1, no_weaps)
+				promoEffect = 1
+			}
+			Outline("Wrong move! It turns out you're wanted for", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			warrantText := strings.to_lower(textWarrant[gamWarrant[slot]], context.temp_allocator)
+			Outline(fmt.tprint(warrantText, "! I'll have to take you in..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 59. WARDEN AKS YOU TO GIVE YOURSELF IN
+	if gamPromo == 59 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			warrantText := strings.to_lower(textWarrant[gamWarrant[slot]], context.temp_allocator)
+			Outline(fmt.tprint("You're wanted for ", warrantText, ", ", CellName(pChar[v], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("It's only a matter of time before we catch you...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			Outline("Give yourself up! The sooner you face the charges,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("the sooner you can get on with your rehabilitation...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 60. TIME TO GO
+	if gamPromo == 60 {
+		// intro
+		optionA = strings.clone("Yes, let me go!")
+		optionB = strings.clone("No, not yet...")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline(fmt.tprint("You've served your sentence, ", CellName(pChar[v], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Would you like me to escort you outside?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 325 do camFoc = v
+		if promoStage == 0 && promoTim > 350 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			Outline("OK, you're a free man now so i wish you luck!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("We'll keep you posted on what happens in here...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 2)
+			Outline("Alright, i'll give you some time to say goodbye.", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You'll have to leave this place eventually though...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 61. LOSE WEIGHT
+	if gamPromo == 61 {
+		if promoTim < 100 && pAnim[cyc] < 20 do ChangeAnim(cyc, 130)
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				pHealth[cyc] += 5
+				charStrength[pChar[cyc]] -= 5
+				charAgility[pChar[cyc]] += 5
+				charHappiness[pChar[cyc]] += 5
+				gamGrowth[slot] = 0
+				promoEffect = 1
+			}
+			Outline("Whoa, i think i've lost some weight!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I certainly feel lighter on my feet...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 do promoTim = 9975 //; promoUsed[gamPromo] = 1
+	}
+	// 62. GAIN WEIGHT
+	if gamPromo == 62 {
+		if promoTim < 100 && pAnim[cyc] < 20 do ChangeAnim(cyc, 130)
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				if charModel[pChar[cyc]] <= 3 {
+					pHealth[cyc] += 5
+				} else {
+					pHealth[cyc] -= 5
+				}
+				charStrength[pChar[cyc]] += 5
+				charAgility[pChar[cyc]] -= 5
+				if charModel[pChar[cyc]] <= 3 {
+					charHappiness[pChar[cyc]] += 5
+				} else {
+					charHappiness[pChar[cyc]] -= 5
+				}
+				gamGrowth[slot] = 0
+				promoEffect = 1
+			}
+			Outline("Whoa, i think i've gained some weight!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I certainly feel a lot more powerful...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 do promoTim = 9975 //; promoUsed[gamPromo] = 1
+	}
+	// 63. WRONG NUMBER
+	if gamPromo == 63 {
+		if promoTim < 25 {
+			for {
+				promoVariable = bb.RndI(1, no_chars)
+				if promoVariable != gamChar[slot] do break
+			}
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline("Hello? Who's that?! Sorry, i was hoping to", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("speak to somebody called '", charName[promoVariable], "'..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 64. SOCIAL CALL
+	if gamPromo == 64 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline(fmt.tprint("Hi, ", charName[gamChar[slot]], ", how are you holding up?"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I was just calling to check you're alright!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				promoEffect = 1
+			}
+			Outline("We all miss you back to home, and we hope", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("you get out soon! Keep your head up, friend...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 65. FAMILY CALL
+	if gamPromo == 65 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline("Hi, darling, it's your wife here. We miss you!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I thought you might like to talk to the kids?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 do camFoc = v
+		if promoTim > 350 && promoTim < 650 {
+			Speak(v, 3)
+			Outline("Hi, kids! I know you wish i was home, but", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("daddy has got some important work to do...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 {
+			Speak(v, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				promoEffect = 1
+			}
+			Outline("I'm a 'secret agent' like we saw on TV!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Be good while i'm saving the world! Bye...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 975 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 66. LAWYER OFFERS TO SHAVE A DAY OFF
+	if gamPromo == 66 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, pay $", figure, "!"))
+		optionB = strings.clone("No, forget it...")
+		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(2)
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline(fmt.tprint("Hi, ", charName[pChar[v]], ", it's your lawyer speaking."), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I've got some good news about your case!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("One of those idiots messed up your paperwork,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("so we should be able to claim back a day!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 675 && promoTim < 975 {
+			Speak(cyc, 3)
+			Outline(fmt.tprint("The only problem is we'll need $", figure, " to file"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("an appeal. Do you want to wire me the money?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 975 do camFoc = v
+		if promoStage == 0 && promoTim > 1000 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				bb.PlaySound(sCash)
+				statTim[6] = 100
+				statTim[7] = -50
+				gamMoney[slot] -= promoCash
+				charSentence[pChar[v]] -= 1
+				charHappiness[pChar[v]] += 5
+				promoEffect = 1
+			}
+			Outline("Alright, i'll get onto it immediately! Your", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			figure2 := GetFigure(charSentence[pChar[v]], context.temp_allocator)
+			Outline(fmt.tprint("sentence should be down to just ", strings.to_lower(figure2, context.temp_allocator), " days..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			Outline("Damn, i thought we were onto something here!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I guess you don't care about getting out...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 67. GANG REDUCES YOUR SENTENCE
+	if gamPromo == 67 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline(fmt.tprint("Hey, ", charName[gamChar[slot]], ", i hear you're doing a good"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("job of representing ", textGang[charGang[gamChar[slot]]], " in there?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("I want you out of prison as soon as possible", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("so that i can put you to work on the street!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charSentence[pChar[v]] -= 1
+				statTim[6] = 100
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 1
+				promoEffect = 1
+			}
+			Outline("I'll pull some strings with the wardens and", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("try to get some time shaved off your sentence...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 68. SELL STORY TO JOURNALIST
+	if gamPromo == 68 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, accept $", figure, "!"))
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim < 25 {
+			promoCash = bb.RndI(10, 100)
+			promoCash *= 10
+		}
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline("Listen, i'm a journalist and i'm trying to put", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("together a piece about life inside prison...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("I'd love to hear about your experiences! Would", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("you be willing to share your story for $", figure, "?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				bb.PlaySound(sCash)
+				statTim[7] = 50
+				gamMoney[slot] += promoCash
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] -= 1
+				nearest := NearestEnemy(v)
+				if InProximity(v, nearest, 50) != 0 && charPromo[pChar[nearest]][pChar[v]] == 0 do charPromo[pChar[nearest]][pChar[v]] = 70
+				promoEffect = 1
+			}
+			Outline("Thanks for taking part! I'm sure the public", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("will be fascinated by what you have to say...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("You're turning down $", figure, " to talk to me?!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("No one cares what you morons have to say anyway...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = -1
+		}
+	}
+	// 69. SELL MOVIE RIGHTS
+
+
+
+
 	
+
 	mem.end_arena_temp_memory(checkpoint)
 }
 

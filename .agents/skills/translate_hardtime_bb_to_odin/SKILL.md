@@ -7,13 +7,19 @@ description: Instructions for translating BlitzBasic Hard-Time promos and events
 
 When translating the `Promos.bb` code snippet from BlitzBasic to Odin for the Hard-Time project, follow these general guidelines:
 
+## General
+- Do not add spaces between lines.
+- Use Tab indentation.
+- Do not run the program or fix lint errors.
+- Arithmetic on the same value should be done with `+=`, `-=`, `*=`, `/=`, etc.
+
 ## Array Indexing
 BlitzBasic uses parentheses for arrays, e.g., `gamMoney(slot)`.
 Odin uses square brackets, e.g., `gamMoney[slot]`. Pay close attention to nested arrays like `charAngerTim(pChar(count),pChar(cyc))` -> `charAngerTim[pChar[count]][pChar[cyc]]`.
 
 ## String Concatenation and Formatting
 BlitzBasic uses `+` for string concatenation: `"Hello " + name$`.
-In Odin, use `fmt.tprint` and clone strings if they are assigned to variables that outlive the scope:
+In Odin, use `fmt.tprint` and clone strings if they are assigned to `optionA` or `optionB`.
 ```odin
 // BlitzBasic
 optionA$="Yes, pay $"+GetFigure$(promoCash)+"..."
@@ -40,6 +46,7 @@ Note the casting to `i32()` on coordinates when passing them to functions like `
 - `PlaySound sCash` becomes `bb.PlaySound(sCash)`.
 - `StopChannel chAlarm` becomes `bb.StopChannel(chAlarm)`.
 - `ChannelPlaying(chAlarm)` becomes `bb.ChannelPlaying(chAlarm)`.
+- `CellName(pChar(v))` becomes `CellName(pChar[v], context.temp_allocator)`.
 
 ## Memory Allocation for Temporary Strings
 Whenever dealing with BlitzBasic functions that returned temporary strings (like `GetFigure$`), pass `context.temp_allocator` when translating to Odin. Store these intermediate temporary strings if you are going to use them in a `fmt.tprint` to avoid nested allocator calls inside variadic functions:
@@ -50,6 +57,7 @@ Outline(fmt.tprint("may be willing to forget what i saw for $", figure, "?"), ..
 
 ## Loops
 BlitzBasic `For count=1 To no_plays` translates to Odin `for count in 1..=no_plays`.
+Repeat Until loops are just Odin infinite loops with a break condition at the end.
 
 ## Control Flow
 BlitzBasic `If ... Then ... : ...`
