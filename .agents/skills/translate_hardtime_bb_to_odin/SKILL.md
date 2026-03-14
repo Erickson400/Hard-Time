@@ -1,17 +1,16 @@
 ---
 name: translate_hardtime_promos_bb_to_odin
-description: Instructions for translating BlitzBasic Hard-Time promos and events into Odin code.
+description: Instructions for translating BlitzBasic Hard-Time promos and events into Odin code. primarily using the copilot-temp.odin file as a workspace with commented blitz code.
 ---
 
 # Translating BlitzBasic Promos to Odin
-
 When translating the `Promos.bb` code snippet from BlitzBasic to Odin for the Hard-Time project, follow these general guidelines:
 
 ## General
 - Do not add spaces between lines.
 - Use Tab indentation.
 - Do not run the program or fix lint errors.
-- Arithmetic on the same value should be done with `+=`, `-=`, `*=`, `/=`, etc.
+- `charHappiness[pChar[v]] = charHappiness[pChar[v]] + 5` should be `charHappiness[pChar[v]] += 5`.
 
 ## Array Indexing
 BlitzBasic uses parentheses for arrays, e.g., `gamMoney(slot)`.
