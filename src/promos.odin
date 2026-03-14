@@ -971,8 +971,8 @@ DisplayPromo :: proc() {
 	v := promoActor[2]
 	//oldFoc := camFoc // Unused
 	// introduce widescreen
+	y: f32 = 60
 	if gamPromo > 0 {
-		y: f32 = 60
 		if promoTim <= 25 do y = PercentOf(60, f32(promoTim) * 4)
 		if promoTim >= 9975 do y = PercentOf(60, (10000 - f32(promoTim)) * 4)
 		bb.Color(0, 0, 0)
@@ -4200,6 +4200,575 @@ DisplayPromo :: proc() {
 		}
 	}
 	// 93. PAY YOUR WAY INTO GANG
+	if gamPromo == 93 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, pay $", figure, "!"))
+		optionB = strings.clone("No thanks...")
+		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(1)
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", i'm sure you'd like to"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("be a member of ", textGang[charGang[pChar[cyc]]], " like me?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("Trouble is there's a strict selection process,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			figure2 := GetFigure(promoCash, context.temp_allocator)
+			Outline(fmt.tprint("but $", figure2, " might tempt me to overlook it?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				MakeDeal(cyc, v)
+				bb.PlaySound(sCash)
+				statTim[7] = -50
+				gamMoney[slot] -= promoCash
+				ChangeGang(pChar[v], charGang[pChar[cyc]])
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Thanks for your generous contribution! I'm", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("sure you'll be a great asset to the gang...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] -= 1
+				DamageRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("You'll never make any progress in here with that", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("attitude! You need to learn to grease the wheels...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 94. GANG REQUIREMENTS
+	if gamPromo == 94 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", i'm sure you'd like to"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("be a member of ", textGang[charGang[pChar[cyc]]], " like me?"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				promoEffect = 1
+			}
+			if charGang[pChar[cyc]] <= 3 {
+				Outline("Well, dream on - because you need a tough", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline("reputation if you want to hang with us!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+			if charGang[pChar[cyc]] == 4 {
+				Outline("Well, dream on - because you need to be", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline("intelligent if you want to hang with us!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+			if charGang[pChar[cyc]] == 5 {
+				Outline("Well, dream on - because you need to be", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline("physically fit to keep the pace with us!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+			if charGang[pChar[cyc]] == 6 {
+				Outline("Well, dream on - because your reputation", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline("is too violent for you to be one of us!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 95. GANG ASKS YOU TO KICK UP
+	if gamPromo == 95 {
+		// intro
+		figure := GetFigure(promoCash, context.temp_allocator)
+		optionA = strings.clone(fmt.tprint("Yes, pay $", figure, "..."))
+		optionB = strings.clone("No, it's mine!")
+		if promoStage == 0 && promoTim < 25 do promoCash = GetPromoMoney(2)
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", nobody said being a"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("member of ", textGang[charGang[pChar[v]]], " was free!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			Outline("You need to kick up some of that money you've", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			figure2 := GetFigure(promoCash, context.temp_allocator)
+			Outline(fmt.tprint("earned in our name! $", figure2, " should cover it..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				MakeDeal(cyc, v)
+				bb.PlaySound(sCash)
+				statTim[7] = -50
+				gamMoney[slot] -= promoCash
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline(fmt.tprint("You're a good earner, ", charName[pChar[v]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Just remember that the family comes first...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 0)
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 5
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("In that case, take your ass somewhere else!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("We haven't got any room for passengers...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 96. GANG ASKS YOU TO CONFORM
+	if gamPromo == 96 {
+		// intro
+		optionA = strings.clone("Yes, conform to gang...")
+		optionB = strings.clone("No, leave me alone!")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", ", textGang[charGang[pChar[v]]]), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("aren't supposed to dress like that!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			Outline("Return to how you were when you joined us,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("or we'll have to question your loyalty!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				GangAdjust(pChar[v])
+				ApplyCostume(v)
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Good! That looks much better!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Now don't let it happen again...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				ChangeGang(pChar[v], 0)
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 5
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("If you're so ashamed of us then get out!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("We don't need traitors like you in the gang...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 97. ENEMY ASKS TO BURY THE HATCHET
+	if gamPromo == 97 {
+		// intro
+		optionA = strings.clone("Yes, make friends...")
+		optionB = strings.clone("No, forget it!")
+		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Listen, ", charName[pChar[v]], ", i know we haven't"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("been seeing eye-to-eye in recent weeks...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			Outline("Well, i for one am tired of the bickering", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("so what d'you say we put it all behind us?", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 0 && promoTim > 650 do camFoc = v
+		if promoStage == 0 && promoTim > 675 {
+			promoStage = 1
+			foc = 1
+			keytim = 20
+		}
+		// responses
+		if promoStage == 2 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Great! That's one less thing to worry about!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You need all the friends you can get in here...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charReputation[pChar[v]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 do charAngerTim[pChar[cyc]][pChar[v]] = 100
+				promoEffect = 1
+			}
+			Outline("Fine! We'll wage war until you stop breathing!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You'll learn that pride comes before a fall...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 98. FRIENDLY WELCOME
+	if gamPromo == 98 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			if charGang[pChar[cyc]] == 0 {
+				Outline(fmt.tprint("Welcome to the jungle! My name is ", charName[pChar[cyc]], ","), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline(fmt.tprint("and i live in Cell ", charCell[pChar[cyc]], " of the ", textBlock[charBlock[pChar[cyc]]], " Block..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+			if charGang[pChar[cyc]] > 0 {
+				Outline(fmt.tprint("Welcome to the jungle! I'm ", charName[pChar[cyc]], ","), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline(fmt.tprint("and i'm a member of ", textGang[charGang[pChar[cyc]]], "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Life can be pretty tough inside this place,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			if charGang[pChar[cyc]] == 0 do Outline("so look me up if you ever need a friend...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			if charGang[pChar[cyc]] > 0 do Outline("so look us up if you ever need some support...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 99. NEUTRAL WELCOME
+	if gamPromo == 99 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			if charGang[pChar[cyc]] == 0 {
+				Outline(fmt.tprint("I'm ", charName[pChar[cyc]], " from Cell ", charCell[pChar[cyc]], " of the ", textBlock[charBlock[pChar[cyc]]], " Block."), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline("Stay out of my way and we won't have a problem...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+			if charGang[pChar[cyc]] > 0 {
+				Outline(fmt.tprint("I'm ", charName[pChar[cyc]], " - a member of ", textGang[charGang[pChar[cyc]]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline("Stay out of my way and we won't have a problem...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 100. HOSTILE WELCOME
+	if gamPromo == 100 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			if charGang[pChar[cyc]] == 0 {
+				Outline(fmt.tprint("Watch your back, new boy! I'm ", charName[pChar[cyc]], " from"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline(fmt.tprint("Cell ", charCell[pChar[cyc]], " of the ", textBlock[charBlock[pChar[cyc]]], " Block and i rule this place..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+			if charGang[pChar[cyc]] > 0 {
+				Outline(fmt.tprint("Watch your back, new boy! I'm ", charName[pChar[cyc]], " of"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+				Outline(fmt.tprint(textGang[charGang[pChar[cyc]]], " and we rule this place..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			}
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 100-140: CRIME PROMOS
+	CrimePromos(cyc, v, y)
+	// 140-200: MISSION PROMOS
+	MissionPromos(cyc, v, y)
+	// 200-300: ADDITIONAL PROMOS
+	// 200. FRIENDLY NEW ARRIVAL
+	if gamPromo == 200 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline(fmt.tprint("Hi, ", charName[pChar[v]], ", my name is ", charName[pChar[cyc]], "."), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("I'm new here, but i hope we can be friends!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			// promoUsed[gamPromo] = 1
+		}
+	}
+	// 201. HOSTILE NEW ARRIVAL
+	if gamPromo == 201 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("Hey, there's a new king in town and his name", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("is ", charName[pChar[cyc]], "! Watch your step around me..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			// promoUsed[gamPromo] = 1
+		}
+	}
+	// 202. FRIENDLY ROOM-MATE
+	if gamPromo == 202 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline("Well, it looks like we're sharing this cell!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Don't worry, i'm sure we'll get along fine...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			// promoUsed[gamPromo] = 1
+		}
+	}
+	// 203. NEUTRAL ROOM-MATE
+	if gamPromo == 203 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline("So i guess i've got to share this cell with you?", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Just stay out of my way and we'll be alright...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			// promoUsed[gamPromo] = 1
+		}
+	}
+	// 204. HOSTILE ROOM-MATE
+	if gamPromo == 204 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			Outline("Damn, i can't believe i have to share a cell!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You better stay in the corner and shut up...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			// promoUsed[gamPromo] = 1
+		}
+	}
+	// 205. NEW CELL
+	if gamPromo == 205 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", the prison system has been"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("shaken up to stop you getting too comfortable!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			if promoEffect == 0 {
+				AssignCell(gamChar[slot])
+				ApplyCostume(v)
+				FindCellMates()
+				charHappiness[pChar[v]] -= 5
+				promoEffect = 1
+			}
+			Outline(fmt.tprint("You're now in Cell ", charCell[pChar[v]], " of the ", textBlock[charBlock[pChar[v]]], " Block."), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Head over there and make yourself at home...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 206. TANOY ANNOUNCES POWER FAILURE!
+	if gamPromo == 206 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline("ATTENTION! The prison seems be", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("suffering from a power failure!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			Outline("Please be patient while the problem", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("is rectified by our technical staff...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+		gamBlackout[slot] = bb.RndI(1000, 10000)
+	}
+	// 207. TANOY ANNOUNCES BOMB THREAT!
+	if gamPromo == 207 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			for char in 1 ..= no_chars {
+				charHappiness[char] = charHappiness[char] / 2
+			}
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline("ATTENTION! The prison has been", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("targeted for a terrorist attack!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			Outline("All inmates should find a safe place to", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("hide until the threat has been removed...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+		gamBombThreat[slot] = bb.RndI(500, 5000)
+	}
+	// 208. CALLER ISSUES BOMB THREAT!
+	if gamPromo == 208 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 2)
+			Outline("YOU'RE ALL GOING TO DIE!!!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("We've rigged the prison with explosives...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			if promoEffect == 0 {
+				charHappiness[gamChar[slot]] /= 2
+				promoEffect = 1
+			}
+			Outline("Run for your life like a coward - or accept", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("that your blood will be spilt for the cause!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+		gamBombThreat[slot] = bb.RndI(500, 5000)
+	}
+	// 209. ALARMED BY DANGEROUS WEAPON
+	if gamPromo == 209 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[gamChar[slot]] -= 5
+				charReputation[gamChar[slot]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				promoEffect = 1
+			}
+			for count in 1 ..=no_plays {
+				if charRole[pChar[count]] == 0 && pChar[count] != gamChar[slot] {
+					pSubX[count] = 9999
+					pSubZ[count] = 9999
+					pAgenda[count] = 1
+					pExploreY[count] = 10
+					if pX[v] < 0 {
+						pExploreX[count] = pX[count] + 300
+					} else {
+						pExploreX[count] = pX[count] - 300
+					}
+					if pZ[v] < 0 {
+						pExploreZ[count] = pZ[count] + 300
+					} else {
+						pExploreZ[count] = pZ[count] - 300
+					}
+					pRunTim[count] = 200
+				}
+				if charRole[pChar[count]] == 1 {
+					pSubX[count] = 9999
+					pSubZ[count] = 9999
+					pAgenda[count] = 2
+					pFollowFoc[count] = v
+					pRunTim[count] = 200
+				}
+			}
+			Outline("EVERYBODY RUN FOR YOUR LIVES!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint(charName[pChar[v]], " has got a ", strings.to_lower(weapName[weapType[pWeapon[v]]], context.temp_allocator), "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 210. WELCOME TO YARD
+	if gamPromo == 210 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			if charRole[pChar[cyc]] == 0 && promoEffect == 0 {
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			cell_name := CellName(pChar[v], context.temp_allocator)
+			Outline(fmt.tprint("Welcome to the Exercise Yard, ", cell_name, "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("This is where you come to improve your body...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			Outline("You can improve your strength by lifting weights,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("or improve your agility by running around the yard...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 {
+			Speak(cyc, 3)
+			Outline("But if that sounds too boring, you could always", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("try shooting hoops! It's a fun way to keep fit...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 975 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = -1
+		}
+	}
+    // 211. WELCOME TO STUDY
 	
 
 	mem.end_arena_temp_memory(checkpoint)
@@ -4256,5 +4825,13 @@ AngerGang :: proc(char, gang: i32) {
 }
 
 RemovePromo :: proc(sus: i32) {
+	
+}
+
+CrimePromos :: proc(cyc, v: i32, y: f32) {
+	
+}
+
+MissionPromos :: proc(cyc, v: i32, y: f32) {
 	
 }
