@@ -351,14 +351,16 @@ Editor :: proc() {
 			intelligence_string := fmt.aprint(charIntelligence[char])
 			crime_string := fmt.aprint(charCrime[char], ". ", textCrime[charCrime[char]])
 			x, y: f32 = 570, 145
+			height := GetHeight(charHeight[char], context.allocator)
 			DrawOption(1, rX(x), rY(y), "Name", charName[char])
-			DrawOption(2, rX(x), rY(y + 55), "Height", GetHeight(charHeight[char]))
+			DrawOption(2, rX(x), rY(y + 55), "Height", height)
 			DrawOption(3, rX(x), rY(y + 115), "Strength", strength_string)
 			DrawOption(4, rX(x), rY(y + 170), "Agility", agility_string)
 			DrawOption(5, rX(x), rY(y + 230), "Intelligence", intelligence_string)
 			DrawOption(6, rX(x), rY(y + 285), "Crime", crime_string)
 			DrawOption(7, rX(x), rY(y + 345), ">>> APPEARANCE >>>", "")
 			DrawOption(8, rX(x), rY(y + 400), "<<< SAVE & EXIT <<<", "")
+			delete(height)
 			delete(strength_string)
 			delete(agility_string)
 			delete(intelligence_string)
@@ -581,7 +583,7 @@ HandIntact :: proc(cyc: i32, limb: i32) -> i32 { // left=4, right=17
 
 
 // DESCRIBE LIMB
-// Returns a literal
+// Returns a literal, so no need for an allocator
 DescribeLimb :: proc(char: i32) -> string {
 	injury := "a limb"
 	// ears

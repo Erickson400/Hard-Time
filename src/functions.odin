@@ -100,12 +100,12 @@ rY :: proc(y: f32) -> f32 {
 //---------------------------------------------------------------------------
 
 // Calculate height in feet & inches
-GetHeight :: proc(value: i32) -> string {
+GetHeight :: proc(value: i32, allocator: mem.Allocator) -> string {
 	feet := value / 12
 	inches := value - (feet * 12)
 	ft := fmt.aprintf("%s'", feet + 5)
 	inch := fmt.aprintf("%s''", inches)
-	figure := strings.concatenate({ft, inch})
+	figure := strings.concatenate({ft, inch}, allocator = allocator)
 	delete(ft)
 	delete(inch)
 	return figure

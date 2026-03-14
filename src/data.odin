@@ -2,6 +2,7 @@ package main
 
 import bb "blitzbasic3d"
 import "core:fmt"
+import "core:mem"
 
 ////////////////////////////////////////////////////////////////////////////////
 //---------------------------- HARD TIME: DATA ---------------------------------
@@ -541,7 +542,7 @@ GenerateCharacter :: proc(char, role: i32) {
 	// Appearance
 	charRole[char] = role
 	delete(charName[char])
-	charName[char] = GenerateName(char)
+	charName[char] = GenerateName(char, context.allocator)
 	charPhoto[char] = 0; charSnapped[char] = 0
 	randy := bb.RndI(0, 5)
 	charModel[char] = 2 if randy == 0 else bb.RndI(1, no_models)
@@ -810,33 +811,34 @@ GenerateWeapon :: proc(cyc, style, area: i32, x, y, z: f32) {
 }
 
 
-GenerateName :: proc(char: i32) -> string {
-	name: string
+GenerateName :: proc(char: i32, allocator: mem.Allocator) -> string {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)(context.temp_allocator.data))
+	temp_name: string
 	for {
-		digit := Dig(char, 100)
-		name = fmt.aprintf("Character%s", digit)
-		delete(digit)
+		temp_name = fmt.tprintf("Character%s", Dig(char, 100))
 		// Inmate
 		if charRole[char] == 0 {
 			randy := bb.RndI(0, 1)
-			if randy == 0 || randy == 1 do delete(name)
-			if randy == 0 do name = fmt.aprint(textNickName[bb.RndI(0, 80)])
-			if randy == 1 do name = fmt.aprint(textFirstName[bb.RndI(0, 65)], " ", textSurName[bb.RndI(0, 65)]) 
+			if randy == 0 do temp_name = fmt.tprint(textNickName[bb.RndI(0, 80)])
+			if randy == 1 do temp_name = fmt.tprint(textFirstName[bb.RndI(0, 65)], " ", textSurName[bb.RndI(0, 65)]) 
 		}
 		// Officials
 		if charRole[char] >= 1 {
-			if charRole[char] >= 1 && charRole[char] <= 3 do delete(name)
-			if charRole[char] == 1 do name = fmt.aprint("Warden ", textSurName[bb.RndI(0, 65)])
-			if charRole[char] == 2 do name = fmt.aprint("Lawyer ", textSurName[bb.RndI(0, 65)])
-			if charRole[char] == 3 do name = fmt.aprint("Judge ", textSurName[bb.RndI(0, 65)])
+			if charRole[char] == 1 do temp_name = fmt.tprint("Warden ", textSurName[bb.RndI(0, 65)])
+			if charRole[char] == 2 do temp_name = fmt.tprint("Lawyer ", textSurName[bb.RndI(0, 65)])
+			if charRole[char] == 3 do temp_name = fmt.tprint("Judge ", textSurName[bb.RndI(0, 65)])
 		}
 		// Find conflicts
 		conflict := 0
 		for v in 1..=no_chars {
-			if charName[v] == name do conflict = 1
+			if charName[v] == temp_name do conflict = 1
 		}
 		if conflict == 0 do break
 	}
+	heap_name := fmt.aprint(temp_name)
+	mem.end_arena_temp_memory(checkpoint)
+	name := fmt.aprint(heap_name, allocator = allocator)
+	delete(heap_name)
 	return name
 }
 
