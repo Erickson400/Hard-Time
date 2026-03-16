@@ -969,7 +969,7 @@ DisplayPromo :: proc() {
 	// translate identities
 	cyc := promoActor[1]
 	v := promoActor[2]
-	//oldFoc := camFoc // Unused
+	oldFoc := camFoc
 	// introduce widescreen
 	y: f32 = 60
 	if gamPromo > 0 {
@@ -6048,12 +6048,243 @@ DisplayPromo :: proc() {
 			promoUsed[gamPromo] = 1
 		}
 	}
-	//260. REPUTATION DISPUTED
-
-
-	
-	
-
+	// 260. REPUTATION DISPUTED
+	if gamPromo == 260 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", i'm not scared of you!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Your status makes you a target to me...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				if charAngerTim[pChar[cyc]][pChar[v]] < 10000 {
+					charAngerTim[pChar[cyc]][pChar[v]] = 10000
+				}
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				promoEffect = 1
+			}
+			Outline("The only thing wrong with having a reputation", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("is that i can earn one by kicking your ass!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 261. HUMAN RIGHTS DONATION
+	if gamPromo == 261 {
+		if promoTim < 25 {
+			promoCash = bb.RndI(5, 25)
+			promoCash = promoCash * 10
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			Outline("Hello, i represent a human rights group and we'd", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("like to support you during this difficult time...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				bb.PlaySound(sCash)
+				statTim[7] = 50
+				gamMoney[slot] += promoCash
+				charHappiness[pChar[v]] += 10
+				charReputation[pChar[v]] -= 1
+				promoEffect = 1
+			}
+			figure := GetFigure(promoCash, context.temp_allocator)
+			Outline(fmt.tprint("Please accept a charitable donation of $", figure, " to"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("help fight your case and bring you some comfort!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 262. NOT FIT TO LEAVE
+	if gamPromo == 262 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			cell_name := CellName(pChar[v], context.temp_allocator)
+			Outline(fmt.tprint("You've served your sentence, ", cell_name, ", but i'm"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("afraid you're still not fit to leave yet...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			Outline("To survive on the outside, you'll need strength,", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("agility, and intelligence ratings of at least 70%!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 {
+			Speak(cyc, 3)
+			Outline("Get to work on that, and perhaps you'll be", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("considered for release some other time...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 975 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 263. NOT WEALTHY ENOUGH TO LEAVE
+	if gamPromo == 263 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			cell_name := CellName(pChar[v], context.temp_allocator)
+			Outline(fmt.tprint("You've served your sentence, ", cell_name, ", but i'm"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("afraid we can't let you leave just yet...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 2)
+			Outline("You'll need at least $1'000 to build a life on", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			figure := GetFigure(gamMoney[slot], context.temp_allocator)
+			Outline(fmt.tprint("the outside! You've only earned $", figure, " so far..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 675 && promoTim < 975 {
+			Speak(cyc, 3)
+			Outline("Get to work on that, and perhaps you'll be", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("considered for release some other time...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 975 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 264. CRITICIZED OVER RECRUIT
+	if gamPromo == 264 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			ShowPhoto(charPromoRef[pChar[cyc]])
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", why did you recruit ", charName[charPromoRef[pChar[cyc]]], "?"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("You know he's not suitable for ", textGang[charGang[pChar[cyc]]], "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 350 && promoTim < 650 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				ChangeGang(pChar[cyc], 0)
+				ChangeGang(charPromoRef[pChar[cyc]], 0)
+				AngerGang(pChar[v], charGang[pChar[cyc]])
+				AngerGang(charPromoRef[pChar[cyc]], charGang[pChar[cyc]])
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				promoEffect = 1
+			}
+			Outline("Since you obviously can't be trusted, you're out", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("of the gang - and you can take that loser with you!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 650 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+			RemovePromo(gamPromo)
+		}
+	}
+	// 265. PRAISED OVER RECRUIT
+	if gamPromo == 265 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			ShowPhoto(charPromoRef[pChar[cyc]])
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			Outline(fmt.tprint("Hey, ", charName[pChar[v]], ", good call on ", charName[charPromoRef[pChar[cyc]]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint(textGang[charGang[pChar[cyc]]], " get stronger by the day..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+			RemovePromo(gamPromo)
+		}
+	}
+	// 266. RACIAL TENSION
+	if gamPromo == 266 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] -= 5
+				charReputation[pChar[v]] -= 1
+				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				if charAngerTim[pChar[cyc]][pChar[v]] < 100 do charAngerTim[pChar[cyc]][pChar[v]] = 100
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
+				promoEffect = 1
+			}
+			race := textRace[GetRace(pChar[v])]
+			Outline(fmt.tprint("You better watch your back, ", charName[pChar[v]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("We don't like ", race, " people around here..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 267. RACIAL COMRADERY
+	if gamPromo == 267 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 3)
+			if promoEffect == 0 {
+				charHappiness[pChar[v]] += 5
+				charReputation[pChar[v]] += 1
+				ChangeRelationship(pChar[cyc], pChar[v], 1)
+				promoEffect = 1
+			}
+			race := textRace[GetRace(pChar[v])]
+			Outline(fmt.tprint("We should stick together, ", charName[pChar[v]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("They don't like ", race, " people in here..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// OPTION BOXES
+	if promoStage == 1 {
+		if charBreakdown[gamChar[slot]] > 0 do foc = 2
+		mood: i32 = 3 if foc == 1 else 1
+		if cyc > 0 {
+			if pChar[cyc] == gamChar[slot] do Speak(cyc, mood)
+		}
+		if cyc > 0 {
+			if pChar[cyc] == gamChar[slot] do Speak(cyc, mood)
+		}
+		if v > 0 {
+			if pChar[v] == gamChar[slot] do Speak(v, mood)
+		}
+		DrawOption(1, rX(400), rY(518), optionA, "")
+		DrawOption(2, rX(400), rY(562), optionB, "")
+	}
+	// take photo
+	if camFoc > 0 && camFoc == oldFoc {
+		if charSnapped[pChar[camFoc]] == 0 && pSpeaking[camFoc] > 0 && pGrappler[camFoc] == 0 && AttackViable(camFoc) != 3 {
+			if cast(bool)ReachedCord(camX, camZ, camTX, camTZ, 5) && cast(bool)ReachedCord(camPivX, camPivZ, camPivTX, camPivTZ, 5) {
+				TakePhoto(pChar[camFoc])
+			}
+		}
+	}
+	// put down phone
+	if promoTim > 9975 {
+		if pPhone[v] > 0 && pAnim[v] != 29 do AnswerPhone(v, pPhone[v], 29)
+	}
+	// end conversation
+	if promoTim > 10000 {
+		for count in 1..=no_plays {
+			if pChar[count] == gamChar[slot] {
+				camFoc = count
+				camType = 1
+			}
+		}
+		promoActor[1] = 0
+		promoActor[2] = 0
+		if (gamPromo > 100 && gamPromo < 120) || (gamPromo == 52 && promoStage == 3) do go = 2
+		if gamPromo == 60 && promoStage == 2 do go = 3
+		gamPromo = 0
+		promoTim = 50
+	}
 	mem.end_arena_temp_memory(checkpoint)
 }
 
@@ -6116,5 +6347,9 @@ CrimePromos :: proc(cyc, v: i32, y: f32) {
 }
 
 MissionPromos :: proc(cyc, v: i32, y: f32) {
+	
+}
+
+TakePhoto :: proc(char: i32) {
 	
 }
