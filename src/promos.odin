@@ -4,6 +4,7 @@ import bb "blitzbasic3d"
 import "core:fmt"
 import "core:strings"
 import "core:mem"
+import "core:slice"
 
 ////////////////////////////////////////////////////////////////////////////////
 //---------------------------- HARD TIME: PROMOS -------------------------------
@@ -6289,67 +6290,239 @@ DisplayPromo :: proc() {
 }
 
 
-ChangeRelationship :: proc(cyc, v, relation: i32) {
-	
+TriggerPromo :: proc(cyc, v, promo: i32) {
+	camFoc = cyc
+	camType = 10
+	gamPromo = promo
+	promoTim = 0
+	promoStage = 0
+	promoEffect = 0
+	promoActor[1] = cyc
+	promoActor[2] = v
+	if cyc > 0 && v > 0 {
+		pFoc[cyc] = v
+		pFoc[v] = cyc
+		pInteract[cyc][v] = 1
+		pInteract[v][cyc] = 1
+		pPromoState[cyc] = bb.RndI(0, 3)
+		pPromoState[v] = bb.RndI(0, 3)
+		if pAgenda[cyc] == 2 do pAgenda[cyc] = 0
+		if pAgenda[v] == 2 do pAgenda[v] = 0
+	}
 }
 
 
-TriggerPromo :: proc(cyc, v, promo: i32) {
+// Remove specific promo
+RemovePromo :: proc(promo: i32) {
+	for char in 1..=no_chars {
+		if charPromo[char][gamChar[slot]] == promo {
+			charPromo[char][gamChar[slot]] = 0
+		}
+	}
+}
 
+
+// Remove unused promos
+RevisePromos :: proc() {
+	for cyc in 1..=no_plays {
+		for v in 1..=no_plays {
+			promo := charPromo[pChar[cyc]][pChar[v]]
+			values := [?]i32{4, 5, 9, 10, 14, 15, 18, 40, 41, 43, 53, 72, 78, 79, 80, 249, 258, 259}
+			if slice.contains(values[:], promo) {
+				charPromo[pChar[cyc]][pChar[v]] = 0
+			}
+		}
+	}
+}
+
+
+Speak :: proc(cyc, expression: i32) {
+	camFoc = cyc
+	if cyc > 0 {
+		pSpeaking[cyc] = 1
+		if expression > 0 do pEyes[cyc] = expression
+	}
+}
+
+
+ResetExpressions :: proc(cyc: i32) {
+	pOldEyes[cyc] = pEyes[cyc]
+	if screen == 50 && cyc != promoActor[1] && cyc != promoActor[2] {
+		if pFoc[cyc] == 0 do pEyes[cyc] = 2
+		if pFoc[cyc] > 0 {
+			rel := charRelation[pChar[cyc]][pChar[pFoc[cyc]]]
+			if rel == -1 do pEyes[cyc] = 1
+			if rel == 0 do pEyes[cyc] = 2
+			if rel == 1 do pEyes[cyc] = 3
+			if charAngerTim[pChar[cyc]][pChar[pFoc[cyc]]] > 0 do pEyes[cyc] = 1
+		}
+		if charGang[pChar[cyc]] == 6 do pEyes[cyc] = 3
+		if charBreakdown[pChar[cyc]] > 0 do pEyes[cyc] = 1
+	}
+	pSpeaking[cyc] = 0
 }
 
 
 FacialExpressions :: proc(cyc: i32) {
-	
+	// eye expressions
+	if pEyes[cyc] != pOldEyes[cyc] && pEyes[cyc] > 0 {
+		bb.EntityTexture(pLimb[cyc][1], tEyes[pEyes[cyc]], 0, 3)
+		pOldEyes[cyc] = pEyes[cyc]
+	}
+	// mouth movement
+	if pSpeaking[cyc] == 1 {
+		randy := bb.RndI(0, 3)
+		if randy == 0 do pMouth[cyc] = bb.RndI(-2, 5)
+		if pMouth[cyc] < 0 do pMouth[cyc] = 0
+		bb.EntityTexture(pLimb[cyc][1], tMouth[pMouth[cyc]], 0, 4)
+	}
+	if pSpeaking[cyc] == 0 && pMouth[cyc] > 0 {
+		pMouth[cyc] = 0
+		bb.EntityTexture(pLimb[cyc][1], tMouth[0], 0, 4)
+	}
+}
+
+
+CellName :: proc(char: i32, allocator: mem.Allocator) -> string {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
+	defer mem.end_arena_temp_memory(checkpoint)
+	switch charBlock[char] {
+	case 1:
+		return fmt.aprint("N-", Dig(charCell[char], 100), allocator = allocator)
+	case 2:
+		return fmt.aprint("E-", Dig(charCell[char], 100), allocator = allocator)
+	case 3:
+		return fmt.aprint("S-", Dig(charCell[char], 100), allocator = allocator)
+	case 4:
+		return fmt.aprint("W-", Dig(charCell[char], 100), allocator = allocator)
+	case:
+		return strings.clone("", allocator = allocator)
+	}
+}
+
+
+TakePhoto :: proc(char: i32) {
+	charPhoto[char] = bb.CreateImage(i32(rY(300)) + (i32(rY(300)) / 2), i32(rY(300)))
+	photoX: f32 = 415
+	photoY: f32 = 280
+	if screen == 52 && char == 101 {
+		photoX = 450
+		photoY = 280
+	}
+	if screen == 52 && char == 102 {
+		photoX = 365
+		photoY = 280
+	}
+	if bb.GraphicsHeight() > 600 {
+		photoY -= 10
+	}
+	if bb.GraphicsHeight() > 768 {
+		photoY -= 20
+	}
+	bb.GrabImage(charPhoto[char], i32(rX(photoX)), i32(rY(photoY)))
+	bb.ResizeImage(charPhoto[char], 150, 100)
+	bb.MaskImage(charPhoto[char], 255, 0, 255)
+	charSnapped[char] = 1
+}
+
+
+ShowPhoto :: proc(char: i32) {
+	if charSnapped[char] > 0 {
+		bb.DrawImage(charPhoto[char], 75, i32(rY(480) - 50))
+		bb.Color(0, 0, 0)
+		bb.Rect(0, i32(rY(480)) - 100, 150, 100, 0)
+	}
+}
+
+
+ChangeRelationship :: proc(cyc, v, relation: i32) {
+	charRelation[cyc][v] = relation
+	charRelation[v][cyc] = relation
+	if relation == 1 {
+		charAngerTim[cyc][v] = 0
+		charAngerTim[v][cyc] = 0
+	}
+}
+
+
+DamageRelationship :: proc(cyc, v, effect: i32) {
+	charRelation[cyc][v] += effect
+	if charRelation[cyc][v] > 1 {
+		charRelation[cyc][v] = 1
+	}
+	if charRelation[cyc][v] < -1 {
+		charRelation[cyc][v] = -1
+	}
+	charRelation[v][cyc] = charRelation[cyc][v]
+	if effect > 0 {
+		charAngerTim[cyc][v] = 0
+		charAngerTim[v][cyc] = 0
+	}
 }
 
 
 ChangeGang :: proc(char, gang: i32) {
-	
+	if charGang[char] > 0 && charGang[char] != gang && charGang[char] != 6 {
+		AngerGang(char, charGang[char])
+		for v in 1..=no_chars {
+			if char == gamChar[slot] && charGang[v] == charGang[char] && charPromo[v][char] == 0 {
+				charPromo[v][char] = 42
+			}
+		}
+	}
+	// adapt to new one
+	if gang > 0 do charGangHistory[char][gang] = 1
+	charGang[char] = gang
+	GangAdjust(char)
+	if screen == 50 && go == 0 {
+		for v in 1..=no_plays {
+			if pChar[v] == char do ApplyCostume(v)
+			if char == gamChar[slot] && charGang[char] > 0 \
+			&& charRole[pChar[v]] == 1 && Friendly(v, gamPlayer[slot]) == 0 \
+			&& charBribeTim[pChar[v]] == 0 && AttackViable(v) >= 1 \
+			&& AttackViable(v) <= 2 && pDazed[v] == 0 \
+			&& cast(bool)InProximity(v, gamPlayer[slot], 50) {
+				if cast(bool)InLine(v, p[gamPlayer[slot]], 60) {
+					randy := bb.RndI(0, 5)
+					if randy == 0 && gamWarrant[slot] < 2 {
+						gamWarrant[slot] = 2
+					}
+				}
+			}
+		}
+	}
 }
 
-
-InferiorDice :: proc(cyc, v: i32) -> i32{
-	return 0
-}
-
-
-SuperiorDice :: proc(cyc, v: i32) -> i32{
-	return 0
-}
-
-Speak :: proc(cyc, v: i32) {
-	
-}
-
-CellName :: proc(location: i32, allocator: mem.Allocator) -> string {
-	return ""
-}
-
-DamageRelationship :: proc(cyc, v, damage: i32) {
-	
-}
-
-ShowPhoto :: proc(char: i32) {
-	
-}
 
 AngerGang :: proc(char, gang: i32) {
-	
+	for v in 1..=no_chars {
+		if charGang[v] == gang && gang != 6 {
+			if charAngerTim[v][char] < 10000 {
+				charAngerTim[v][char] = 10000
+			}
+			charRelation[v][char] = -1
+		}
+	}
 }
 
-RemovePromo :: proc(sus: i32) {
-	
+
+SuperiorDice :: proc(cyc, v: i32) -> i32 {
+	repper := (charReputation[pChar[v]] / 10) - (charReputation[pChar[cyc]] / 10)
+	if repper < 1 do repper = 1
+	chance := 1000 * repper
+	if pAnim[cyc] == 12 || pAnim[cyc] == 13 || pAnim[v] == 12 || pAnim[v] == 13 {
+		chance /= 2
+	}
+	return bb.RndI(0, chance)
 }
 
-CrimePromos :: proc(cyc, v: i32, y: f32) {
-	
-}
 
-MissionPromos :: proc(cyc, v: i32, y: f32) {
-	
-}
-
-TakePhoto :: proc(char: i32) {
-	
+InferiorDice :: proc(cyc, v: i32) -> i32 {
+	repper := 5 - ((charReputation[pChar[v]] / 10) - (charReputation[pChar[cyc]] / 10))
+	if repper < 1 do repper = 1
+	chance := 1000 * repper
+	if pAnim[cyc] == 12 || pAnim[cyc] == 13 || pAnim[v] == 12 || pAnim[v] == 13 {
+		chance /= 2
+	}
+	return bb.RndI(0, chance)
 }
