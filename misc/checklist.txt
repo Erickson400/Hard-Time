@@ -14,7 +14,7 @@ lines_translated% =  scored_rows_total / total_line_count
 | Script name     | Last time checked | Accuracy | BB Line Count |
 |-----------------|-------------------|----------|---------------|
 | Text.bb         | Feb 13, 2026      | 10/10    | 460           |
-| Values.bb       | Dec 12, 2025      | 10/10    | 1157          |
+| Values.bb       | Feb 20, 2026      | 10/10    | 1157          |
 | Data.bb         | Feb 15, 2026      | 10/10    | 774           |
 | Functions.bb    | Feb 16, 2026      | 10/10    | 289           |
 | Menus.bb        | Feb 18, 2026      | 10/10    | 731           |
@@ -24,7 +24,7 @@ lines_translated% =  scored_rows_total / total_line_count
 | Particles.bb    | Feb 23, 2026      | 10/10    | 367           |
 | Players.bb      | Feb 23, 2026      | 10/10    | 635           |
 | Anims.bb        | Feb 25, 2026      | 10/10    | 2055          |
-| Moves.bb        | Feb 26, 2026      | 9/10     | 482           |
+| Moves.bb        | Mar 16, 2026      | 10/10    | 482           |
 | AI.bb           | Feb 27, 2026      | 7/10     | 1094          |
 | Promos.bb       | Mar 16, 2026      | 8/10     | 4890          |
 | Crimes.bb       |     .., 2026      | ./10     | 1384          |

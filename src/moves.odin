@@ -49,7 +49,6 @@ LoadMoveSequences :: proc(cyc: i32) {
 MoveAnims :: proc(cyc: i32) {
 	v: i32
 	randy: i32
-
 	//------------- HOLDING -------------
 	switch pAnim[cyc] {
 	case 200:
@@ -66,7 +65,7 @@ MoveAnims :: proc(cyc: i32) {
 		&& pAnimTim[cyc] <= 13 \
 		&& pScar[cyc][4] <= 4 \
 		&& pGrappling[cyc] == 0 {
-			for v_trg in 1 ..= no_plays {
+			for v_trg in 1 ..=no_plays {
 				if cyc != v_trg \
 				&& (cast(bool)Friendly(cyc, v_trg) == false || v_trg == pFoc[cyc]) \
 				&& cast(bool)InProximity(cyc, v_trg, 20) \
@@ -177,7 +176,6 @@ MoveAnims :: proc(cyc: i32) {
 			}
 		}
 		DropWeapon(v, 5)
-
 	case 204:
 		// pick up from floor
 		v = pGrappling[cyc]
@@ -196,7 +194,6 @@ MoveAnims :: proc(cyc: i32) {
 			}
 		}
 		DropWeapon(v, 5)
-
 	case 205:
 		// hold headlock
 		v = pGrappling[cyc]
@@ -208,7 +205,6 @@ MoveAnims :: proc(cyc: i32) {
 		if cast(bool)DirPressed(cyc) do ChangeAnim(cyc, 206)
 		FindMoveCommands(cyc)
 		DropWeapon(v, 0)
-
 	case 206:
 		// headlock movement
 		v = pGrappling[cyc]
@@ -227,7 +223,6 @@ MoveAnims :: proc(cyc: i32) {
 		if pAnimTim[cyc] > 5 && cast(bool)DirPressed(cyc) == false do ChangeAnim(cyc, 205)
 		FindMoveCommands(cyc)
 		pStepTim[cyc] += 1
-
 	case 210:
 		// release headlock
 		v = pGrappling[cyc]
@@ -246,7 +241,6 @@ MoveAnims :: proc(cyc: i32) {
 			pGrappling[cyc] = 0
 			pGrappler[v] = 0
 		}
-
 	case 211:
 		// headlock punch
 		v = pGrappling[cyc]
@@ -278,7 +272,7 @@ MoveAnims :: proc(cyc: i32) {
 		}
 		if pAnimTim[cyc] >= 16 {
 			pAnimTim[cyc] = 0
-			if (cast(bool)cAttack[cyc] == false || cast(bool)DirPressed(cyc) == false) && pHP[v] > 0 do ChangeAnim(cyc, 205)
+			if (cAttack[cyc] == 0 || DirPressed(cyc) == 0) && pHP[v] > 0 do ChangeAnim(cyc, 205)
 			if pHP[v] <= 0 do ChangeAnim(cyc, 210)
 			randy = bb.RndI(0, (150 - charStrength[pChar[v]]) * 3)
 			if pAnim[cyc] == 211 && randy <= 10 {
@@ -318,14 +312,13 @@ MoveAnims :: proc(cyc: i32) {
 		}
 		if pAnimTim[cyc] >= 18 {
 			pAnimTim[cyc] = 0
-			if (cast(bool)cAttack[cyc] == false || cast(bool)DirPressed(cyc)) && pHP[v] > 0 do ChangeAnim(cyc, 205)
+			if (cAttack[cyc] == 0 || cast(bool)DirPressed(cyc)) && pHP[v] > 0 do ChangeAnim(cyc, 205)
 			if pHP[v] <= 0 do ChangeAnim(cyc, 210)
 			randy = bb.RndI(0, (150 - charStrength[pChar[v]]) * 3)
 			if pAnim[cyc] == 212 && randy <= 10 {
 				if cast(bool)DirPressed(v) || cast(bool)ActionPressed(v) || pControl[v] == 0 do ChangeAnim(cyc, 217)
 			}
 		}
-
 	case 213:
 		// headlock takedown
 		v = pGrappling[cyc]
@@ -363,7 +356,6 @@ MoveAnims :: proc(cyc: i32) {
 			pGrappling[cyc] = 0
 			pGrappler[v] = 0
 		}
-
 	case 214:
 		// bodyslam
 		v = pGrappling[cyc]
@@ -400,7 +392,6 @@ MoveAnims :: proc(cyc: i32) {
 			pGrappling[cyc] = 0
 			pGrappler[v] = 0
 		}
-
 	case 215:
 		// chokeslam
 		v = pGrappling[cyc]
@@ -437,7 +428,6 @@ MoveAnims :: proc(cyc: i32) {
 			pGrappling[cyc] = 0
 			pGrappler[v] = 0
 		}
-
 	case 216:
 		// bulldog
 		v = pGrappling[cyc]
@@ -475,7 +465,6 @@ MoveAnims :: proc(cyc: i32) {
 			pGrappling[cyc] = 0
 			pGrappler[v] = 0
 		}
-
 	case 217:
 		// push off
 		v = pGrappling[cyc]
@@ -516,7 +505,6 @@ MoveAnims :: proc(cyc: i32) {
 			pGrappling[cyc] = 0
 			pGrappler[v] = 0
 		}
-
 	case 218:
 		// ground throw
 		v = pGrappling[cyc]
@@ -581,7 +569,7 @@ FixGrapple :: proc(cyc: i32, v: i32) {
 	pHurtA[v] = pA[cyc]
 	bb.RotateEntity(pPivot[v], 0, pA[v], 0)
 	//discomfort
-	randy: i32 = bb.RndI(0, 50)
+	randy := bb.RndI(0, 50)
 	if randy == 0 {
 		ProduceSound(p[v], sShuffle[bb.RndI(1, 3)], 22050, 0)
 		ProduceSound(p[v], sPain[bb.RndI(1, 8)], 22050, bb.RndF(0.1, 0.5))
@@ -598,7 +586,7 @@ FindMoveCommands :: proc(cyc: i32) {
 	if pControl[cyc] == 0 || charBreakdown[pChar[cyc]] > 0 {
 		randy = bb.RndI(0, 100)
 		if randy <= 10 do move = bb.RndI(210, 216)
-			if cast(bool)Friendly(cyc, v) && cast(bool)charBreakdown[pChar[cyc]] == false do move = 210
+			if cast(bool)Friendly(cyc, v) && charBreakdown[pChar[cyc]] == 0 do move = 210
 	}
 	//human input
 	if pControl[cyc] > 0 {
