@@ -1019,7 +1019,7 @@ InProximity :: proc(cyc, v, range: i32) -> i32 {
 }
 
 
-LimbProximity :: proc(limb: i32, x, z: f32, range: i32) -> i32 {
+LimbProximity :: proc(limb: uintptr, x, z: f32, range: i32) -> i32 {
 	if x > bb.EntityX(limb, 1) - f32(range) \
 	&& x < bb.EntityX(limb, 1) + f32(range) \
 	&& z > bb.EntityZ(limb, 1) - f32(range) \
@@ -1053,7 +1053,7 @@ InRange :: proc(cyc, v, range: i32) -> i32 {
 }
 
 
-InLine :: proc(cyc, entity, range: i32) -> i32 {
+InLine :: proc(cyc: i32, entity: uintptr, range: i32) -> i32 {
 	ResetDummy(cyc)
 	bb.PointEntity(dummy, entity)
 	tA := CleanAngle(bb.EntityYaw(dummy))

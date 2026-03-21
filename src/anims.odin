@@ -2282,7 +2282,7 @@ SharpTransition :: proc(cyc, anim: i32, offset: f32) {
 
 
 //POINT BODY
-PointBody :: proc(cyc, entity: i32) {
+PointBody :: proc(cyc: i32, entity: uintptr) {
 	//identify limbs involved
 	limb := bb.FindChild(p[cyc], "Body")
 	source := bb.FindChild(p[cyc], "Hips")
@@ -2321,7 +2321,7 @@ PointBody :: proc(cyc, entity: i32) {
 
 
 //POINT HEAD
-PointHead :: proc(cyc, entity: i32) {
+PointHead :: proc(cyc: i32, entity: uintptr) {
 	//identify limbs involved
 	limb := bb.FindChild(p[cyc], "Head")
 	source := bb.FindChild(p[cyc], "Body")
@@ -2355,7 +2355,7 @@ PointHead :: proc(cyc, entity: i32) {
 
 
 //TURN TO FACE ENTITY
-FaceEntity :: proc(cyc, entity: i32, turner: f32) {
+FaceEntity :: proc(cyc: i32, entity: uintptr, turner: f32) {
 	if entity > 0 {
 		bb.PositionEntity(dummy, pX[cyc], pY[cyc], pZ[cyc])
 		bb.PointEntity(dummy, entity)
@@ -2564,7 +2564,7 @@ SittingEffects :: proc(cyc: i32) {
 	}
 	//canteen food
 	if pState[cyc] == 103 {
-		limb: i32
+		limb: uintptr
 		pFoodTim[cyc] = pFoodTim[cyc] - 1
 		if pFoodTim[cyc] < 0 do pFoodTim[cyc] = 0
 		if pAnimTim[cyc] == 30 || pAnimTim[cyc] == 40 do limb = bb.FindChild(p[cyc], "R_Finger04")

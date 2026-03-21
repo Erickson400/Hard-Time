@@ -45,7 +45,7 @@ gamFile: i32
 gamDoor: i32
 gamEnded: i32
 gamName: [4]string
-gamPhoto: [4]i32
+gamPhoto: [4]uintptr
 gamChar: [4]i32
 gamPlayer: [4]i32
 gamLocation: [4]i32
@@ -127,87 +127,87 @@ buttPickUp: i32 = 4
 //----------------------- SOUND -------------------------
 /////////////////////////////////////////////////////////
 // music & atmosphere
-sTheme: i32
-chTheme: i32
+sTheme: uintptr
+chTheme: uintptr
 musicVol: f32
-chAtmos: i32
-sAtmos: i32
-chPhone: i32
-chAlarm: i32
+chAtmos: uintptr
+sAtmos: uintptr
+chPhone: uintptr
+chAlarm: uintptr
 // menu effects
-sMenuBrowse: i32
-sMenuSelect: i32
-sMenuGo: i32
-sMenuBack: i32
-sVoid: i32
-sTrash: i32
-sCamera: i32
-sComputer: i32
-sCash: i32
-sPaper: i32
+sMenuBrowse: uintptr
+sMenuSelect: uintptr
+sMenuGo: uintptr
+sMenuBack: uintptr
+sVoid: uintptr
+sTrash: uintptr
+sCamera: uintptr
+sComputer: uintptr
+sCash: uintptr
+sPaper: uintptr
 // court reactions
-sMurmur: i32
-sJury: [3]i32
+sMurmur: uintptr
+sJury: [3]uintptr
 // world
-sDoor: [4]i32
-sBuzzer: i32
-sBell: i32
-sRing: i32
-sAlarm: i32
-sTanoy: i32
-sBasket: i32
+sDoor: [4]uintptr
+sBuzzer: uintptr
+sBell: uintptr
+sRing: uintptr
+sAlarm: uintptr
+sTanoy: uintptr
+sBasket: uintptr
 // movements
-sFall: i32
-sThud: i32
-sShuffle: [4]i32
-sStep: [7]i32
+sFall: uintptr
+sThud: uintptr
+sShuffle: [4]uintptr
+sStep: [7]uintptr
 // pain
-chDeath: i32
-sDeath: i32
-sChoke: i32
-sSnore: i32
-sBreakdown: i32
-sPain: [11]i32
-sAgony: [6]i32
+chDeath: uintptr
+sDeath: uintptr
+sChoke: uintptr
+sSnore: uintptr
+sBreakdown: uintptr
+sPain: [11]uintptr
+sAgony: [6]uintptr
 // impacts
-sSwing: i32
-sBleed: i32
-sStab: i32
-sEat: i32
-sDrink: i32
-sImpact: [7]i32
+sSwing: uintptr
+sBleed: uintptr
+sStab: uintptr
+sEat: uintptr
+sDrink: uintptr
+sImpact: [7]uintptr
 // weapons
-sGeneric: i32
-sBlade: i32
-sMetal: i32
-sWood: i32
-sCane: i32
-sString: i32
-sRock: i32
-sAxe: i32
-sBall: i32
-sPhone: i32
-sCigar: i32
-sSyringe: i32
-sBottle: i32
-sSplash: i32
+sGeneric: uintptr
+sBlade: uintptr
+sMetal: uintptr
+sWood: uintptr
+sCane: uintptr
+sString: uintptr
+sRock: uintptr
+sAxe: uintptr
+sBall: uintptr
+sPhone: uintptr
+sCigar: uintptr
+sSyringe: uintptr
+sBottle: uintptr
+sSplash: uintptr
 // technology
-sShot: [6]i32
-sRicochet: [6]i32
-sReload: i32
-sGun: i32
-sMine: i32
-sExplosion: i32
-sBlaze: i32
-sLaser: i32
+sShot: [6]uintptr
+sRicochet: [6]uintptr
+sReload: uintptr
+sGun: uintptr
+sMine: uintptr
+sExplosion: uintptr
+sBlaze: uintptr
+sLaser: uintptr
 
 ////////////////////////////////////////////////////////
 //-------------------- PLAYERS -------------------------
 ////////////////////////////////////////////////////////
 no_plays: i32
-p: [optPlayLim + 1]i32
-pPivot: [optPlayLim + 1]i32
-pMovePivot: [optPlayLim + 1]i32
+p: [optPlayLim + 1]uintptr
+pPivot: [optPlayLim + 1]uintptr
+pMovePivot: [optPlayLim + 1]uintptr
 pFoc: [optPlayLim + 1]i32
 pX: [optPlayLim + 1]f32
 pY: [optPlayLim + 1]f32
@@ -302,7 +302,7 @@ pEyes: [optPlayLim + 1]i32
 pOldEyes: [optPlayLim + 1]i32
 pMouth: [optPlayLim + 1]i32
 pSpeaking: [optPlayLim + 1]i32
-pShadow: [optPlayLim + 1][41]i32
+pShadow: [optPlayLim + 1][41]uintptr
 //pControlTim: [optPlayLim + 1]i32 // Unused
 //pTag: [3]i32 // Unused
 //pHighlight: [3]i32 // Unused
@@ -311,7 +311,7 @@ pShadow: [optPlayLim + 1][41]i32
 //----------------------- LIMBS -------------------------
 /////////////////////////////////////////////////////////
 // status
-pLimb: [optPlayLim + 1][41]i32
+pLimb: [optPlayLim + 1][41]uintptr
 pScar: [optPlayLim + 1][41]i32
 pOldScar: [optPlayLim + 1][41]i32
 // heirarchy
@@ -353,7 +353,7 @@ charExperience: [optCharLim + 1]i32
 // status
 charPlayer: [optCharLim + 1]i32
 charName: [optCharLim + 1]string
-charPhoto: [optCharLim + 1]i32
+charPhoto: [optCharLim + 1]uintptr
 charSnapped: [optCharLim + 1]i32
 charRole: [optCharLim + 1]i32 // 0=prisoner, 1=warden
 charSentence: [optCharLim + 1]i32
@@ -384,22 +384,22 @@ charPromoRef: [optCharLim + 1]i32
 /////////////////////////////////////////////////////////
 // Images
 // Variables
-font: [11]i32
-fontTest: [11]i32
-fontNumber: i32
-fontComputer: i32
-fontMoney: i32
-fontClock: i32
-gLogo: [4]i32
-gMenu: [11]i32
-gTile: i32
-gMDickie: i32
-gHealth: i32
-gHappiness: i32
-gMoney: i32
-gPhoto: i32
-gMap: i32
-gMarker: i32
+font: [11]uintptr
+fontTest: [11]uintptr
+fontNumber: uintptr
+fontComputer: uintptr
+fontMoney: uintptr
+fontClock: uintptr
+gLogo: [4]uintptr
+gMenu: [11]uintptr
+gTile: uintptr
+gMDickie: uintptr
+gHealth: uintptr
+gHappiness: uintptr
+gMoney: uintptr
+gPhoto: uintptr
+gMap: uintptr
+gMarker: uintptr
 
 /////////////////////////////////////////////////////////
 //--------------------- TEXTURES ------------------------
@@ -411,44 +411,44 @@ no_arms: i32
 no_legs: i32
 
 // World variables
-tSign: [21]i32
-tBlock: [5]i32
-tCell: [21]i32
-tFence: i32
-tNet: i32
-tShower: i32
-tCrowd: i32
-tScreen: [11]i32
-tTray: [11]i32
+tSign: [21]uintptr
+tBlock: [5]uintptr
+tCell: [21]uintptr
+tFence: uintptr
+tNet: uintptr
+tShower: uintptr
+tCrowd: uintptr
+tScreen: [11]uintptr
+tTray: [11]uintptr
 // Weapon variables
-tMachine: i32
-tPistol: i32
+tMachine: uintptr
+tPistol: uintptr
 // Character variables
-tShaved: i32
-tEars: i32
-tSeverEars: i32
-tEyes: [4]i32
-tMouth: [6]i32
-tSpecs: [4]i32
-tHair: [201]i32
-tFace: [101]i32
-tBody: [101]i32
-tArm: [101]i32
-tLegs: [101]i32
-tBodyShade: [11]i32
-tArmShade: [11]i32
-tFaceScar: [6]i32
-tBodyScar: [6]i32
-tArmScar: [6]i32
-tLegScar: [6]i32
-tSeverBody: [4]i32
-tSeverArm: [4]i32
-tSeverLegs: [4]i32
-tTattooBody: [7]i32
-tTattooVest: [7]i32
-tTattooArm: [7]i32
-tTattooTee: [7]i32
-tTattooSleeve: [7]i32
+tShaved: uintptr
+tEars: uintptr
+tSeverEars: uintptr
+tEyes: [4]uintptr
+tMouth: [6]uintptr
+tSpecs: [4]uintptr
+tHair: [201]uintptr
+tFace: [101]uintptr
+tBody: [101]uintptr
+tArm: [101]uintptr
+tLegs: [101]uintptr
+tBodyShade: [11]uintptr
+tArmShade: [11]uintptr
+tFaceScar: [6]uintptr
+tBodyScar: [6]uintptr
+tArmScar: [6]uintptr
+tLegScar: [6]uintptr
+tSeverBody: [4]uintptr
+tSeverArm: [4]uintptr
+tSeverLegs: [4]uintptr
+tTattooBody: [7]uintptr
+tTattooVest: [7]uintptr
+tTattooArm: [7]uintptr
+tTattooTee: [7]uintptr
+tTattooSleeve: [7]uintptr
 
 /////////////////////////////////////////////////////////
 //--------------------- WEAPONS -------------------------
@@ -456,7 +456,7 @@ tTattooSleeve: [7]i32
 no_weaps: i32 = 100
 weapList :: 25
 // state
-weap: [optWeapLim + 1]i32
+weap: [optWeapLim + 1]uintptr
 weapType: [optWeapLim + 1]i32
 weapCarrier: [optWeapLim + 1]i32
 weapThrower: [optWeapLim + 1]i32
@@ -468,8 +468,8 @@ weapOldScar: [optWeapLim + 1]i32
 weapState: [optWeapLim + 1]i32
 weapLocation: [optWeapLim + 1]i32
 // physics
-weapWall: [optWeapLim + 1]i32
-weapGround: [optWeapLim + 1]i32
+weapWall: [optWeapLim + 1]uintptr
+weapGround: [optWeapLim + 1]uintptr
 weapX: [optWeapLim + 1]f32
 weapY: [optWeapLim + 1]f32
 weapZ: [optWeapLim + 1]f32
@@ -484,8 +484,8 @@ weapBounce: [optWeapLim + 1]f32
 // type
 weapName: [weapList + 1]string
 weapFile: [weapList + 1]string
-weapSound: [weapList + 1]i32
-weapTex: [weapList + 1]i32
+weapSound: [weapList + 1]uintptr
+weapTex: [weapList + 1]uintptr
 weapSize: [weapList + 1]f32
 weapWeight: [weapList + 1]f32
 weapValue: [weapList + 1]i32
@@ -496,23 +496,23 @@ weapStyle: [weapList + 1]i32 // 0=hand, 1=sword, 2=shield, 3=pistol, 4=rifle, 5=
 weapHabitat: [weapList + 1]i32
 weapCreate: [weapList + 1]i32
 // creation kits
-kit: [7]i32
+kit: [7]uintptr
 kitType: [7]i32
 kitState: [7]i32
 
 /////////////////////////////////////////////////////////
 //----------------------- WORLD -------------------------
 /////////////////////////////////////////////////////////
-world: i32
+world: uintptr
 no_chairs, no_beds, no_doors: i32
 wScreen, wOldScreen: i32
 // Food trays
 trayState: [51]i32
 trayOldState: [51]i32
 // Camera
-camListener, dummy: i32
+camListener, dummy: uintptr
 camType, camTim: i32
-cam, camPivot: i32
+cam, camPivot: uintptr
 camFoc, camOldFoc: i32
 camX, camY, camZ: f32 = 0, 75, 0
 camTX, camTY, camTZ: f32
@@ -525,7 +525,7 @@ speedX, speedY, speedZ: f32
 // Camera presets
 //camShortcut := [11]i32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0} // Unused
 // Lighting
-light: [11]i32
+light: [11]uintptr
 no_lights: i32
 lightR, lightG, lightB: f32 = 100, 100, 100
 lightTR, lightTG, lightTB: f32
@@ -563,12 +563,12 @@ cellDoorZ: [21]f32
 //////////////////////////////////////////////////////////
 //--------------- PARTICLE EFFECTS -----------------------
 //////////////////////////////////////////////////////////
-fader: i32
+fader: uintptr
 fadeAlpha: f32
 fadeTarget: f32
 // Particles
 no_particles: i32 = 500
-part: [1001]i32
+part: [1001]uintptr
 partType: [1001]i32
 partX: [1001]f32
 partY: [1001]f32
@@ -594,7 +594,7 @@ exHurt: [no_explodes + 1][optPlayLim + 1]i32
 // NOTE: Likely a bug. no_pools is assigned again in Gameplay.bb, 
 // so I have to manually set the arrays below to a length of 51
 no_pools: i32 = 50
-pool: [51]i32
+pool: [51]uintptr
 poolType: [51]i32
 poolX: [51]f32
 poolY: [51]f32
@@ -605,7 +605,7 @@ poolAlpha: [51]f32
 poolState: [51]i32
 // Bullets
 no_bullets :: 40
-bullet: [no_bullets + 1]i32
+bullet: [no_bullets + 1]uintptr
 bulletX: [no_bullets + 1]f32
 bulletY: [no_bullets + 1]f32
 bulletZ: [no_bullets + 1]f32

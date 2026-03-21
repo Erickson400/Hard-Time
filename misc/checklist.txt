@@ -26,10 +26,10 @@ lines_translated% =  scored_rows_total / total_line_count
 | Anims.bb        | Feb 25, 2026      | 10/10    | 2055          |
 | Moves.bb        | Mar 16, 2026      | 10/10    | 482           |
 | AI.bb           | Mar 20, 2026      | 10/10    | 1094          |
-| Promos.bb       | Mar 16, 2026      | 8/10     | 4890          |
-| Crimes.bb       |     .., 2026      | ./10     | 1384          |
-| Missions.bb     |     .., 2026      | ./10     | 941           |
-| Credits.bb      |     .., 2026      | ./10     | 752           |
-| Gameplay.bb     |     .., 2026      | ./10     | 899           |
+| Promos.bb       | Mar 16, 2026      |  8/10    | 4890          |
+| Crimes.bb       |     .., 2026      |  ./10    | 1384          |
+| Missions.bb     |     .., 2026      |  ./10    | 941           |
+| Credits.bb      |     .., 2026      |  ./10    | 752           |
+| Gameplay.bb     |     .., 2026      |  ./10    | 899           |
 
 

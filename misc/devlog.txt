@@ -39,5 +39,7 @@ The project has phases. The current phase is to make a literal translation from 
 --------------Mar 3, 2026-----------
 I've been using odin core packages when possible to simplify features. e.g In values.odin I use the os package to read directory files instead of using the ReadDir functions from Blitz. Or how I'm using an arena allocator in functions.odin. I shouldn't be worried about this since Blitz is a completly different language, impossible to replicate its behaviour 100%. Either way, I'm planning on rewriting the code after the game runs, so there is no point on trying to use every Blitz API function. I'm definetly not going to translate another Blitz game in the future, nor will I make a transpiler for it, nor will I release a standalone library for the Blitz package. Hardtime is the only project where I'm willing to do a manual translation for. During the rewriting phase, I think the blitz API will slowly fade away as I start using Core functions that already do the job. Keeping the Blitz package is still a good idea to keep the backend isolated.
 
+--------------Mar 20, 2026-----------
+Blitz entity variables are actually 32 bit pointers, not handlers. I'll need to use uintptr to store these pointers in 64 bits. I'm not sure if switching to machine dependant bit size will break anything, I'll decide after I port all the code to confirm Hardtime doesnt do any overflow or bitwise arithmetic.
 
 

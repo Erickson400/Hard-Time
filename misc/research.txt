@@ -4,4 +4,5 @@ There are memory leaks. e.g. charPhoto is set to LoadImage, but then set to 0 wi
 
 Most functions are only used once.
 
+Entity creation functions return a 32 bit pointer. I cant implement this because pointers in modern systems are 64 bit. I'll need to use the uintptr type to store blitz object pointers.
 

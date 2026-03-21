@@ -17,47 +17,47 @@ Graphics3DWidth :: proc(width, height, color, thingy: i32) {}
 Cls :: proc() { cls() }
 Flip :: proc() { flip() }
 Color :: proc(r, g, b: i32) {}
-SetFont :: proc(font: i32) {}
+SetFont :: proc(font: uintptr) {}
 Text :: proc(x, y: i32, text: string, centerx, centery: i32) {}
 Line :: proc(p1x, p1y, p2x, p2y: i32) {}
 GraphicsWidth :: proc() -> i32 { return 1}
 GraphicsHeight :: proc() -> i32 { return 1}
-TileImage :: proc(image: i32) {}
-DrawImage :: proc(image: i32, x, y: i32) {}
+TileImage :: proc(image: uintptr) {}
+DrawImage :: proc(image: uintptr, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
-GrabImage :: proc(image: i32, x, y: i32, frame: i32 = 0) {}
+GrabImage :: proc(image: uintptr, x, y: i32, frame: i32 = 0) {}
 Locate :: proc(x, y: i32) {}
 Graphics3D :: proc(width, height, color, fullscreen: i32) {}
 
 // ------Audio-----
-ChannelPlaying :: proc(channel: i32) -> i32 { return 0 }
-StopChannel :: proc(channel: i32) {}
-LoadSound :: proc(filename: string) -> i32 { return load_sound(filename, false) }
-Load3DSound :: proc(filename: string) -> i32 { return load_sound(filename, true) }
-SoundPitch :: proc(sound: i32, pitch: i32) {}
-SoundVolume :: proc(sound: i32, volume: f32) {}
-EmitSound :: proc(sound: i32, entity: i32) -> i32 { return 0}
-PlaySound :: proc(sound: i32) {}
-CreateListener :: proc(entity: i32, roll, dopp, dist: f32) -> i32 { return 1}
+ChannelPlaying :: proc(channel: uintptr) -> i32 { return 0 }
+StopChannel :: proc(channel: uintptr) {}
+LoadSound :: proc(filename: string) -> uintptr { return 1 }
+Load3DSound :: proc(filename: string) -> uintptr { return 1 }
+SoundPitch :: proc(sound: uintptr, pitch: i32) {}
+SoundVolume :: proc(sound: uintptr, volume: f32) {}
+EmitSound :: proc(sound: uintptr, entity: uintptr) -> uintptr { return 0}
+PlaySound :: proc(sound: uintptr) {}
+CreateListener :: proc(entity: uintptr, roll, dopp, dist: f32) -> uintptr { return 1}
 
 // ------Images/Textures-----
-CreateImage :: proc(width, height: i32) -> i32 { return 1}
-LoadImage :: proc(filename: string) -> i32 { return load_image(filename) }
-MaskImage :: proc(image: i32, r: u8, g: u8, b: u8) { mask_image(image, r, g, b) }
-LoadTexture :: proc(filename: string, flags: i32 = 1) -> i32 { return load_texture(filename, flags) }
-LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height: i32, first_frame, frame_count: i32) -> i32 { 
-	return load_anim_texture(filenames, flags, frame_width, frame_height, first_frame, frame_count)
+CreateImage :: proc(width, height: i32) -> uintptr { return 1}
+LoadImage :: proc(filename: string) -> uintptr { return 1 }
+MaskImage :: proc(image: uintptr, r: u8, g: u8, b: u8) {  }
+LoadTexture :: proc(filename: string, flags: i32 = 1) -> uintptr { return 1 }
+LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height: i32, first_frame, frame_count: i32) -> uintptr { 
+	return 1
 }
-SaveImage :: proc(image_handle: i32, path: string) -> i32 { return save_image(image_handle, path) }
-ResizeImage :: proc(image: i32, new_width, new_height: i32) {}
+SaveImage :: proc(image_handle: uintptr, path: string) -> i32 { return 1}
+ResizeImage :: proc(image: uintptr, new_width, new_height: i32) {}
 
 // -------Sprite---------
-LoadSprite :: proc(filename: string, flags: i32) -> i32 { return 1}
-ScaleSprite :: proc(sprite: i32, scalex, scaley: f32) {}
-SpriteViewMode :: proc(mode, other: i32) {}
+LoadSprite :: proc(filename: string, flags: i32) -> uintptr { return 1}
+ScaleSprite :: proc(sprite: uintptr, scalex, scaley: f32) {}
+SpriteViewMode :: proc(mode, other: uintptr) {}
 
 // -------Text--------
-LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> i32 { return 0}
+LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> uintptr { return 0}
 Upper :: proc(text: string, allocator := context.allocator) -> string { return "" }
 Lower :: proc(text: string, allocator := context.allocator) -> string { return "" }
 
@@ -97,67 +97,67 @@ Right :: proc(text: string, count: i32, allocator := context.allocator) -> strin
 }
 
 // -------Time----------
-CreateTimer :: proc(fps: i32) -> i32 { return 1}
-WaitTimer :: proc(timer: i32) -> i32 { return 1}
-FreeTimer :: proc(timer: i32) {}
+CreateTimer :: proc(fps: i32) -> uintptr { return 1}
+WaitTimer :: proc(timer: uintptr) -> i32 { return 1}
+FreeTimer :: proc(timer: uintptr) {}
 MilliSecs :: proc() -> i32 { return 1}
 
 // -------Entity-------
-EntityType :: proc(entity, type_id: i32, other: i32 = 0) -> i32 { return 1}
-DeleteEntity :: proc(entity: i32) {}
-PositionEntity :: proc(entity: i32, x, y, z: f32) {}
-RotateEntity :: proc(entity: i32, x, y, z: f32) {}
-ScaleEntity :: proc(entity: i32, x, y, z: f32) {}
-EntityAlpha :: proc(entity: i32, alpha: f32) {}
-EntityColor :: proc(entity: i32, r, g, b: i32) {}
-EntityYaw :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
-EntityPitch :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
-EntityRoll :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
-PointEntity :: proc(entity: i32, global: i32 = 0) -> f32 { return 0}
-CountCollisions :: proc(entity: i32) -> i32 { return 1}
-CollisionEntity :: proc(entity: i32, index: i32) -> i32 { return 1}
+EntityType :: proc(entity: uintptr, collision_type: i32, recursive: i32 = 0) -> i32 { return 1}
+DeleteEntity :: proc(entity: uintptr) {}
+PositionEntity :: proc(entity: uintptr, x, y, z: f32) {}
+RotateEntity :: proc(entity: uintptr, x, y, z: f32) {}
+ScaleEntity :: proc(entity: uintptr, x, y, z: f32) {}
+EntityAlpha :: proc(entity: uintptr, alpha: f32) {}
+EntityColor :: proc(entity: uintptr, r, g, b: i32) {}
+EntityYaw :: proc(entity: uintptr, global: i32 = 0) -> f32 { return 0}
+EntityPitch :: proc(entity: uintptr, global: i32 = 0) -> f32 { return 0}
+EntityRoll :: proc(entity: uintptr, global: i32 = 0) -> f32 { return 0}
+PointEntity :: proc(entity, entity_t: uintptr, roll: f32 = 0) -> f32 { return 0}
+CountCollisions :: proc(entity: uintptr) -> i32 { return 1}
+CollisionEntity :: proc(entity: uintptr, index: i32) -> uintptr { return 1}
 
-EntityX :: proc(entity: i32, x: f32 = 0) -> f32 { return 0}
-EntityY :: proc(entity: i32, y: f32 = 0) -> f32 { return 0}
-EntityZ :: proc(entity: i32, z: f32 = 0) -> f32 { return 0}
-ResetEntity :: proc(entity: i32) {}
-MoveEntity :: proc(entity: i32, x, y, z: f32) {}
-EntityTexture :: proc(entity: i32, texture: i32, sus: i32 = 0, sos: i32 = 0) {}
-FindChild :: proc(parent: i32, name: string) -> i32 { return 1}
-HideEntity :: proc(entity: i32) {}
-ShowEntity :: proc(entity: i32) {}
-Animate :: proc(entity: i32, sequence: i32, speed: f32, loop: i32 = 0, other: i32 = 0) {}
-FreeEntity :: proc(entity: i32) {}
-EntityShininess :: proc(entity: i32, shininess: f32) {}
-EntityFX :: proc(entity: i32, fx_type: i32) {}
-CountChildren :: proc(entity: i32) -> i32 { return 1}
-GetChild :: proc(entity: i32, index: i32) -> i32 { return 1}
-EntityRadius :: proc(entity: i32, x_radius: f32, y_radious: f32 = 0) {}
-CreatePivot :: proc() -> i32 { return 1}
-CameraRange :: proc(camera: i32, near, far: f32) {}
-CameraFogColor :: proc(camera: i32, r, g, b: f32) {}
+EntityX :: proc(entity: uintptr, x: f32 = 0) -> f32 { return 0}
+EntityY :: proc(entity: uintptr, y: f32 = 0) -> f32 { return 0}
+EntityZ :: proc(entity: uintptr, z: f32 = 0) -> f32 { return 0}
+ResetEntity :: proc(entity: uintptr) {}
+MoveEntity :: proc(entity: uintptr, x, y, z: f32) {}
+EntityTexture :: proc(entity, texture: uintptr, sus: i32 = 0, sos: i32 = 0) {}
+FindChild :: proc(parent: uintptr, name: string) -> uintptr { return 1}
+HideEntity :: proc(entity: uintptr) {}
+ShowEntity :: proc(entity: uintptr) {}
+Animate :: proc(entity: uintptr, sequence: uintptr, speed: f32, loop: i32 = 0, other: i32 = 0) {}
+FreeEntity :: proc(entity: uintptr) {}
+EntityShininess :: proc(entity: uintptr, shininess: f32) {}
+EntityFX :: proc(entity: uintptr, fx_type: i32) {}
+CountChildren :: proc(entity: uintptr) -> i32 { return 1}
+GetChild :: proc(entity: uintptr, index: i32) -> uintptr { return 1}
+EntityRadius :: proc(entity: uintptr, x_radius: f32, y_radious: f32 = 0) {}
+CreatePivot :: proc() -> uintptr { return 1}
+CameraRange :: proc(camera: uintptr, near, far: f32) {}
+CameraFogColor :: proc(camera: uintptr, r, g, b: f32) {}
 
 // -------Models--------
-LoadAnimMesh :: proc(filename: string) -> i32 { return 1}
-LoadAnimSeq :: proc(entity: i32, filename: string) -> i32 { return 1}
-ExtractAnimSeq :: proc(entity: i32, seq: i32, start_frame, end_frame: i32) -> i32 {return 1}
+LoadAnimMesh :: proc(filename: string) -> uintptr { return 1}
+LoadAnimSeq :: proc(entity: uintptr, filename: string) -> i32 { return 1}
+ExtractAnimSeq :: proc(entity: uintptr, seq, start_frame, end_frame: i32) -> i32 {return 1}
 
 // -------Camera--------
-CreateCamera :: proc() -> i32 { return 1}
-CameraViewport :: proc(camera: i32, x, y, width, height: i32) {}
-CameraFogMode :: proc(camera: i32, mode: i32) {}
-CameraFogRange :: proc(camera: i32, start, end: f32) {}
+CreateCamera :: proc() -> uintptr { return 1}
+CameraViewport :: proc(camera: uintptr, x, y, width, height: i32) {}
+CameraFogMode :: proc(camera: uintptr, mode: i32) {}
+CameraFogRange :: proc(camera: uintptr, start, end: f32) {}
 
 // --------World-------
 UpdateWorld :: proc() {}
-RenderWorld :: proc(mode: i32) {}
+RenderWorld :: proc(mode: uintptr) {}
 
 // -------Lights--------
 AmbientLight :: proc(r, g, b: f32) {}
-CreateLight :: proc(type: i32) -> i32 { return 1}
-LightRange :: proc(light: i32, range: f32) {}
-LightConeAngles :: proc(light: i32, inner_angle, outer_angle: f32) {}
-LightColor :: proc(light: i32, r, g, b: f32) {}
+CreateLight :: proc(type: i32) -> uintptr { return 1}
+LightRange :: proc(light: uintptr, range: f32) {}
+LightConeAngles :: proc(light: uintptr, inner_angle, outer_angle: f32) {}
+LightColor :: proc(light: uintptr, r, g, b: f32) {}
 
 // -------Input--------
 KeyDown :: proc(key: i32) -> i32 { return 0}
@@ -175,7 +175,7 @@ FlushKeys :: proc() {}
 Input :: proc(prompt: string) -> string { return ""}
 
 // -------Collision--------
-Collisions :: proc(mode, entity1, entity2, response: i32) {}
+Collisions :: proc(src_type, dest_type, method, response: i32) {}
 
 // -------Animation--------
 

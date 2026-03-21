@@ -9,7 +9,7 @@ import bb "blitzbasic3d"
 //--------------------------- UNIVERSAL FUNCTIONS ------------------------------
 ////////////////////////////////////////////////////////////////////////////////
 // Produce Variant Sound
-ProduceSound :: proc(entity, sound, pitch: i32, vol: f32) {
+ProduceSound :: proc(entity, sound: uintptr, pitch: i32, vol: f32) {
 	vol := vol
 	// fluctuate pitch
 	range1 := pitch - (pitch / 8)

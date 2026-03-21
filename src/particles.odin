@@ -188,7 +188,7 @@ ParticleCycle :: proc() {
 //-----------------------------------------------------------------
 /////////////////////////// EXPLOSIONS ////////////////////////////
 //-----------------------------------------------------------------
-CreateExplosion :: proc(source, entity: i32, x, y, z: f32, style: i32) {
+CreateExplosion :: proc(source: i32, entity: uintptr, x, y, z: f32, style: i32) {
 	if optFX > 0 {
 		// find empty slot
 		cyc: i32 = 0

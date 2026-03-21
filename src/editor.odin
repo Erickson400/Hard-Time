@@ -14,9 +14,9 @@ Editor :: proc() {
 	// loading
 	Loader("Please Wait", "Loading Editor")
 	// prison setting
-	world := bb.LoadAnimMesh("World/Block/Block.3ds")
+	world = bb.LoadAnimMesh("World/Block/Block.3ds")
 	// camera
-	cam := bb.CreateCamera()
+	cam = bb.CreateCamera()
 	bb.CameraViewport(cam, 0, 0, bb.GraphicsWidth(), bb.GraphicsHeight())
 	bb.PositionEntity(cam, -232, 36, -89)
 	if bb.GraphicsWidth() > 1024 do bb.PositionEntity(cam, -228, 36, -84)

@@ -241,7 +241,7 @@ WeaponCycle :: proc() {
 			v := weapCarrier[cyc]
 			if v > 0 {
 				bb.ResetEntity(weap[cyc])
-				limb: i32
+				limb: uintptr
 				if weapStyle[weapType[cyc]] == 2 {
 					limb = pLimb[v][6]
 				} else {
