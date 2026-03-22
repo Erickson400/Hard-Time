@@ -5,7 +5,7 @@ Ported using Odin + SDL3 to recreate the classic Blitz3D API.
 ### Goals
 Make the game's source and assets readily available for fans and modders. Preserving it for decades to come. 
 
-The project has phases. The current phase is to make a literal translation from BlitzBasic to Odin. Next phase is to create the Blitz3D API with SDL3 and make it run. The final phase will be to refactor the code and rewrite it to be shorter and optimized for quality of life features. 
+The project has phases. The current phase is to make a functional translation from BlitzBasic to Odin. Next phase is to create the Blitz3D API with SDL3 and make it run. The final phase will be to refactor the code and rewrite it to be shorter and optimized for quality of life features. 
 
 ### Source Translation Checklist as of Mar 6, 2026
 | Script name     | Last time checked | Accuracy | BB Line Count |
@@ -29,9 +29,7 @@ The project has phases. The current phase is to make a literal translation from 
 | Credits.bb      |     .., 2026      | ./10     | 752           |
 | Gameplay.bb     |     .., 2026      | ./10     | 899           |
 
-**54.32%** of lines translated, **96.92%** of those lines are functionally accurate.
-
-Copilot was used to help with the repetitive copy pasting.
+Copilot and Antigravity were used to help with the first translation pass. Then a second or third manual read is done line by line to confirm the code is accurate. The Accuracy column is how confident I am that the code is functionaly accurate to the original.
 
 ### Blitz3D API status
 There're only placeholder functions without implementations - for building without compile errors.

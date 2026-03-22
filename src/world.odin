@@ -229,7 +229,7 @@ LoadLighting :: proc() {
 	// use lights in scene
 	no_lights = 0
 	for count in i32(1)..=10 {
-		digit := Dig(count,10)
+		digit := Dig(count,10, context.allocator)
 		light_string := fmt.aprint("Light", digit)
 		limb := bb.FindChild(world, light_string)
 		if limb > 0 {

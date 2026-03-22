@@ -37,8 +37,10 @@ Load3DSound :: proc(filename: string) -> uintptr { return 1 }
 SoundPitch :: proc(sound: uintptr, pitch: i32) {}
 SoundVolume :: proc(sound: uintptr, volume: f32) {}
 EmitSound :: proc(sound: uintptr, entity: uintptr) -> uintptr { return 0}
-PlaySound :: proc(sound: uintptr) {}
+PlaySound :: proc(sound: uintptr) -> uintptr { return 1 }
 CreateListener :: proc(entity: uintptr, roll, dopp, dist: f32) -> uintptr { return 1}
+LoopSound :: proc(sound: uintptr) {}
+ChannelVolume :: proc(channel: uintptr, volume: f32) {}
 
 // ------Images/Textures-----
 CreateImage :: proc(width, height: i32) -> uintptr { return 1}
@@ -82,6 +84,7 @@ NextFiles :: proc(allocator := context.allocator) -> string { return "" }
 // Rnd :: proc{rnd_int, rnd_float}
 RndI :: proc{rnd_int}
 RndF :: proc{rnd_float}
+SeedRnd :: proc(seed: i32) {}
 
 // -------String-------
 StringWidth :: proc(text: string) -> i32 { return 1 }

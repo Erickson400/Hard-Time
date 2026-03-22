@@ -27,9 +27,11 @@ Audio:
 - StopChannel
 - EmitSound
 - ChannelPlaying
+- ChannelVolume
 - SoundVolume
 - SoundPitch
 - CreateListener
+- LoopSound
 
 Image/Textures:
 - CreateImage
@@ -73,6 +75,7 @@ File:
 Math:
 - RndI
 - RndF
+- SeedRnd
 
 Time:
 - CreateTimer

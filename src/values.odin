@@ -25,7 +25,7 @@ go: i32
 gotim: i32
 foc: i32
 //subfoc: i32 // Unused
-timer: i32
+timer: uintptr
 keytim: i32
 file: i32
 //saver: i32 // Unused
