@@ -14,6 +14,7 @@ import "core:strings"
 //---------------------------------------------------------------
 CourtCase :: proc() {
 	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
+	sentence: string
 	//load setting
 	Loader("Please Wait", "Preparing Court Case")
 	world = bb.LoadAnimMesh("World/Courtroom/Courtroom.3ds")
@@ -267,6 +268,400 @@ CourtCase :: proc() {
 			}
 		}
 		// 1. DISSENT
+		if gamWarrant[slot] == 1 {
+			// statements
+			if promoStage == 0 {
+				if promoTim > 350 && promoTim < 650 {
+					Speak(2, 1)
+					Outline(fmt.tprint(CellName(pChar[1], context.temp_allocator), " seems to have a problem with authority!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("He disrupts the system by ignoring my orders...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 450 && promoReact[2] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[2] = 1
+					}
+				}
+				if promoTim > 675 && promoTim < 975 {
+					Speak(1, 1)
+					Outline("I'm not out of control - he's a control freak!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("Nothing the prisoners do is ever enough for him...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 775 && promoReact[3] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[3] = 1
+					}
+				}
+				if promoTim > 1000 {
+					promoStage = 1
+					promoTim = 300
+				}
+			}
+			// positive verdict
+			if promoStage == 2 && promoVerdict == 1 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 2
+					Outline(fmt.tprint(charName[pChar[2]], ", i'm not here to do your job!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("You should be able to handle your own prisoners...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoStage == 2 && promoTim > 650 && promoTim < 950 && promoVerdict == 1 {
+					Speak(5, 1)
+					pFoc[5] = 2
+					Outline("I've got my own rules to uphold - i haven't got", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("time for yours! Just try to be more tolerant...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+			// negative verdict
+			if promoStage == 2 && promoVerdict == 2 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					Outline("When the wardens tell you to do something, you", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("do it! You're in no position to disagree...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 650 && promoTim < 950 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					if promoEffect == 0 {
+						bb.PlaySound(sPaper)
+						statTim[6] = -100
+						charSentence[gamChar[slot]] = charSentence[gamChar[slot]] + 1
+						promoEffect = 1
+					}
+					Outline("I'm sentencing you to another day to make up for", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("the one you've wasted! Take it as a warning...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+		}
+		// 2. GANG MEMBERSHIP
+		if gamWarrant[slot] == 2 {
+			// statements
+			if promoStage == 0 {
+				if promoTim > 350 && promoTim < 650 {
+					Speak(2, 1)
+					Outline(fmt.tprint(CellName(pChar[1], context.temp_allocator), " is a known member of '", textGang[charGang[gamChar[slot]]], "';"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("a gang which conspires against the prison system!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 450 && promoReact[2] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[2] = 1
+					}
+				}
+				if promoTim > 675 && promoTim < 975 {
+					Speak(1, 1)
+					Outline("I've simply found my place in a community!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("Our only agenda is to support each other...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 775 && promoReact[3] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[3] = 1
+					}
+				}
+				if promoTim > 1000 {
+					promoStage = 1
+					promoTim = 300
+				}
+			}
+			// positive verdict
+			if promoStage == 2 && promoVerdict == 1 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 2
+					Outline(fmt.tprint("You've got quite an imagination, ", charName[pChar[2]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("This supposed 'gang' shouldn't affect your job...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoStage == 2 && promoTim > 650 && promoTim < 950 && promoVerdict == 1 {
+					Speak(5, 2)
+					pFoc[5] = 2
+					Outline("On the contrary, relationships can offer stability.", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("Perhaps you need to find some friends of your own!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+			// negative verdict
+			if promoStage == 2 && promoVerdict == 2 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					Outline("I know that gang culture offers sanctuary, but", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("it comes at a deadly price and must be avoided!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 650 && promoTim < 950 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					if promoEffect == 0 {
+						bb.PlaySound(sPaper)
+						bb.PlaySound(sCash)
+						statTim[7] = -100
+						if gamMoney[slot] > 0 do gamMoney[slot] = 0
+						ChangeGang(gamChar[slot], 0)
+						promoEffect = 1
+					}
+					Outline("I have no choice but to seize your bank account", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("and terminate your affiliation with the gang...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+		}
+		// 3. TRYING TO ESCAPE
+		if gamWarrant[slot] == 3 {
+			if promoStage == 0 {
+				if promoTim > 350 && promoTim < 650 {
+					Speak(2, 1)
+					Outline(fmt.tprint(CellName(pChar[1], context.temp_allocator), " was caught out of his cell during"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("lockdown! He was obviously trying to escape...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 450 && promoReact[2] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[2] = 1
+					}
+				}
+				if promoTim > 675 && promoTim < 975 {
+					Speak(1, 1)
+					Outline("I wasn't trying to escape! I was making my way", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("back to my cell when this guy grabbed me...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 775 && promoReact[3] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[3] = 1
+					}
+				}
+				if promoTim > 1000 {
+					promoStage = 1
+					promoTim = 300
+				}
+			}
+			// positive verdict
+			if promoStage == 2 && promoVerdict == 1 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 2
+					Outline(fmt.tprint("You've got quite an imagination, ", charName[pChar[2]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("An inmate can't just 'stroll' out of the prison...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoStage == 2 && promoTim > 650 && promoTim < 950 && promoVerdict == 1 {
+					Speak(5, 2)
+					pFoc[5] = 2
+					Outline("I see no evidence of an escape attempt here.", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("All you had to do was usher him to his cell...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+			// negative verdict
+			if promoStage == 2 && promoVerdict == 2 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					Outline("You've got no reason to be outside of your block", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("during lockdown! All it does is arouse suspicion...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 650 && promoTim < 950 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					if promoEffect == 0 {
+						bb.PlaySound(sPaper)
+						statTim[6] = -100
+						charSentence[gamChar[slot]] += 1
+						bb.PlaySound(sCash)
+						statTim[7] = -100
+						if gamMoney[slot] > 0 do gamMoney[slot] = 0
+						promoEffect = 1
+					}
+					Outline("I have no choice but to seize your bank account", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("and add another day for the one you've wasted...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+		}
+		// 4. ILLEGAL ITEM
+		if gamWarrant[slot] == 4 {
+			if promoStage == 0 {
+				if promoTim > 350 && promoTim < 650 {
+					Speak(2, 1)
+					if weapHabitat[weapType[gamItem[slot]]] == 0 {
+						Outline(fmt.tprint(CellName(pChar[1], context.temp_allocator), " was seen wielding a ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+						Outline("A prisoner has no right to such weapons...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					}
+					if weapHabitat[weapType[gamItem[slot]]] > 0 {
+						Outline(fmt.tprint(CellName(pChar[1], context.temp_allocator), " was caught carrying a ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), " where"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+						Outline("it didn't belong! God knows what he had planned...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					}
+					if promoTim > 450 && promoReact[2] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[2] = 1
+					}
+				}
+				if promoTim > 675 && promoTim < 975 {
+					Speak(1, 1)
+					Outline(fmt.tprint("I found that ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), ", and was on my way to"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("report it to the wardens when they grabbed me!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 775 && promoReact[3] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[3] = 1
+					}
+				}
+				if promoTim > 1000 {
+					promoStage = 1
+					promoTim = 300
+				}
+			}
+			// positive verdict
+			if promoStage == 2 && promoVerdict == 1 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 2
+					Outline(fmt.tprint(charName[pChar[2]], ", there's no evidence to suggest"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline(fmt.tprint("that this ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), " was used for any crime!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoStage == 2 && promoTim > 650 && promoTim < 950 && promoVerdict == 1 {
+					Speak(5, 1)
+					pFoc[5] = 2
+					Outline("I can't punish this man over your suspicions!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("Simply confiscate the item and leave it at that...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+			// negative verdict
+			if promoStage == 2 && promoVerdict == 2 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					Outline("A prisoner has no business carrying a", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline(fmt.tprint(strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "! It just looks suspicious..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 650 && promoTim < 950 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					if promoEffect == 0 {
+						bb.PlaySound(sPaper)
+						statTim[6] = -100
+						randy := bb.RndI(1, 5)
+						charSentence[gamChar[slot]] += randy
+						if randy == 1 {
+							sentence = strings.clone("a day", context.temp_allocator)
+						} else {
+							sentence = fmt.tprint(randy, " days")
+						}
+						promoEffect = 1
+					}
+					Outline("I'd like to nip this in the bud by adding", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline(fmt.tprint(sentence, " to your sentence. Take it as a warning!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+		}
+		// 5. DRUG ABUSE
+		if gamWarrant[slot] == 5 {
+			if promoStage == 0 {
+				if promoTim > 350 && promoTim < 650 {
+					Speak(2, 1)
+					Outline("This junkie has descended into a life of drug abuse!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("He cares more about his fix than rehabilitation...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 450 && promoReact[2] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[2] = 1
+					}
+				}
+				if promoTim > 675 && promoTim < 975 {
+					Speak(1, 1)
+					Outline("I wasn't doing anything wrong! I was simply making", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("use of the medication that the prison provides...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+					if promoTim > 775 && promoReact[3] == 0 {
+						bb.PlaySound(sJury[bb.RndI(1, 2)])
+						promoReact[3] = 1
+					}
+				}
+				if promoTim > 1000 {
+					promoStage = 1
+					promoTim = 300
+				}
+			}
+			// positive verdict
+			if promoStage == 2 && promoVerdict == 1 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 2
+					Outline(fmt.tprint("You've got quite an imagination, ", charName[pChar[2]], "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("There's a difference between 'using' and 'abusing'...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoStage == 2 && promoTim > 650 && promoTim < 950 && promoVerdict == 1 {
+					Speak(5, 2)
+					pFoc[5] = 2
+					Outline("I can't blame this man for taking the edge off", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("prison life! Just try to be more compassionate...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+			// negative verdict
+			if promoStage == 2 && promoVerdict == 2 {
+				if promoTim > 325 && promoTim < 625 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					Outline("That medication is there to be used - not abused!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("You've done nothing to help your rehabilitation...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 650 && promoTim < 950 {
+					Speak(5, 1)
+					pFoc[5] = 1
+					if promoEffect == 0 {
+						bb.PlaySound(sPaper)
+						statTim[6] = -100
+						randy := bb.RndI(1, 5)
+						charSentence[gamChar[slot]] += randy
+						if randy == 1 {
+							sentence = strings.clone("a day", context.temp_allocator)
+						} else {
+							sentence = fmt.tprint(randy, " days")
+						}
+						bb.PlaySound(sCash)
+						statTim[7] = -100
+						gamMoney[slot] -= promoCash
+						if charCrime[gamChar[slot]] < 3 do charCrime[gamChar[slot]] = 3
+						promoEffect = 1
+					}
+					Outline(fmt.tprint("I'm fining you $", GetFigure(promoCash, context.temp_allocator), ", and adding ", sentence, " to"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline("make up for the ones you've spent in a stupor!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+				}
+				if promoTim > 950 {
+					promoStage = 3
+					promoTim = 9975
+					camFoc = 1
+				}
+			}
+		}
+		// 6. TRADING ITEMS
 
 	}
 
