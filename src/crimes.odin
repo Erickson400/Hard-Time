@@ -1566,12 +1566,389 @@ CourtCase :: proc() {
 //----------------------------------------------------------------------
 CrimePromos :: proc(cyc, v: i32, y: f32) {
 	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
-
-
-
-
-
-
-
+	// 101. ARRESTED FOR DISSENT
+	if gamPromo == 101 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("We've had enough of your attitude, ", CellName(pChar[v], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Perhaps a judge will teach you some respect...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 102. ARRESTED FOR CONSPIRACY
+	if gamPromo == 102 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("You joined the wrong gang, ", CellName(pChar[v], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint(textGang[charGang[pChar[v]]], " are under investigation..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 103. ARRESTED FOR TRYING TO ESCAPE
+	if gamPromo == 103 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline("Your little adventure is over, Magellan!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("Let's see you explain this to a judge...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 104. ARRESTED FOR ILLEGAL ITEM
+	if gamPromo == 104 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("We caught you red-handed, ", CellName(pChar[v], context.temp_allocator), "! You're"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("under arrest for carrying a ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 105. ARRESTED FOR DRUG ABUSE
+	if gamPromo == 105 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("Sorry to blow your high, ", CellName(pChar[v], context.temp_allocator), ", but"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("that poison won't help your rehabilitation!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 106. ARRESTED FOR ILLEGAL TRADING
+	if gamPromo == 106 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("Business is over, ", CellName(pChar[v], context.temp_allocator), "! You're under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("arrest for trading ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "s..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 107. ARRESTED FOR STEALING
+	if gamPromo == 107 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("I saw you take that ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), ", ", CellName(pChar[v], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You're under arrest for stealing...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 108. ARRESTED FOR ASSAULT
+	if gamPromo == 108 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("You've thrown your last punch, ", CellName(pChar[v], context.temp_allocator), "! You're"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("under arrest for assaulting another inmate...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 109. ARRESTED FOR ASSAULTING A WARDEN
+	if gamPromo == 109 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("You just picked the wrong fight, ", CellName(pChar[v], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You're under arrest for assaulting a warden...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 110. ARRESTED FOR ASSAULT WITH WEAPON
+	if gamPromo == 110 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("You could've killed someone with that ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You're under arrest for assault with a weapon...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 111. ARRESTED FOR ATTEMPTED MURDER
+	if gamPromo == 111 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint(charName[gamVictim[slot]], " is scarred for life because of you!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You're under arrest for grievous bodily harm...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 112. ARRESTED FOR ATTEMPTED MURDER
+	if gamPromo == 112 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("You almost killed ", charName[gamVictim[slot]], ", you animal!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You're under arrest for attempted murder...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 113. ARRESTED FOR MURDER
+	if gamPromo == 113 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint("You killed ", charName[gamVictim[slot]], ", you animal!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You're going down for murder...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 114. ARRESTED FOR SERIAL KILLING
+	if gamPromo == 114 {
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			promoAccuser = pChar[cyc]
+			DropWeapon(v, 0)
+			Outline(fmt.tprint(charName[gamVictim[slot]], " is your last victim, ", CellName(pChar[v], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("You're going down for serial murder...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	//////////////////////////// ALARMS ////////////////////////////
+	// 121. WANTED FOR DISSENT
+	if gamPromo == 121 {
+		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("arrest for disobeying the prison rules!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 122. WANTED FOR CONSPIRACY
+	if gamPromo == 122 {
+		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("for engaging in gang activity!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 123. WANTED FOR ESCAPE
+	if gamPromo == 123 {
+		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("arrest for conspiring to escape!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 124. WANTED FOR ILLEGAL ITEM
+	if gamPromo == 124 {
+		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("arrest for carrying a ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 125. WANTED FOR DRUG ABUSE
+	if gamPromo == 125 {
+		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("wanted for drug abuse!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 126. WANTED FOR ILLEGAL TRADING
+	if gamPromo == 126 {
+		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("arrest for trading ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "s!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 127. WANTED FOR ILLEGAL TRADING (stealing)
+	if gamPromo == 127 {
+		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("for stealing a ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 128. WANTED FOR ASSAULT
+	if gamPromo == 128 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("for assaulting another inmate!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 129. WANTED FOR ASSAULTING A WARDEN
+	if gamPromo == 129 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("arrest for assaulting a warden!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 130. WANTED FOR ASSAULT WITH WEAPON
+	if gamPromo == 130 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("for using a ", bb.Lower(weapName[weapType[gamItem[slot]]]), " as a weapon!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 131. WANTED FOR GRIEVIOUS BODILY HARM
+	if gamPromo == 131 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted for"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("mutilating the body of ", charName[gamVictim[slot]], "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 132. WANTED FOR ATTEMPTED MURDER
+	if gamPromo == 132 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted for"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("the attempted murder of ", charName[gamVictim[slot]], "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
+	// 133. WANTED FOR MURDER
+	if gamPromo == 133 || gamPromo == 134 {
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
+		if promoTim > 25 && promoTim < 325 {
+			Speak(cyc, 1)
+			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted for"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("the murder of ", charName[gamVictim[slot]], "!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+		}
+		if promoTim > 325 && promoTim < 9975 {
+			promoTim = 9975
+			promoUsed[gamPromo] = 1
+		}
+	}
 	mem.end_arena_temp_memory(checkpoint)
 }
