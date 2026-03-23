@@ -6,6 +6,12 @@ description: Instructions for translating BlitzBasic Crimes.bb (Court Case) into
 # Translating Crimes.bb to Odin
 When translating the `CourtCase` function and related logic from `Crimes.bb` to Odin, follow these specific guidelines:
 
+## General
+- CellName is not in bb.
+- weapName is not in bb.
+- PlaySound is part of bb
+- `gamMoney[slot] = gamMoney[slot] - promoCash` -> `gamMoney[slot] -= promoCash`
+
 ## Function Structure
 `Crimes.bb` is primarily one large function. In Odin, wrap the entire logic in `CourtCase :: proc()`.
 
@@ -52,3 +58,4 @@ The `While go=0` loop translates to `for go == 0`.
 - `Rnd(1, 14)` -> `bb.RndI(1, 14)`
 - `EntityTexture FindChild(world,"Crowd"+Dig$(count,10)),tCrowd,Rnd(0,3)` -> `bb.EntityTexture(bb.FindChild(world, fmt.tprint("Crowd", Dig(count, 10))), tCrowd, 0, bb.RndI(0, 3))`
 - `PositionEntity p(cyc),pX#(cyc),pY#(cyc),pZ#(cyc)` -> `bb.PositionEntity(p[cyc], pX[cyc], pY[cyc], pZ[cyc])`
+- `rX(400)` -> `i32(rX(400))`
