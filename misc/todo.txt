@@ -1,5 +1,5 @@
 ---- Tasks ----
 
-
+Replace bb.Lower with strings.lower and an explicit allocator.
 
 
