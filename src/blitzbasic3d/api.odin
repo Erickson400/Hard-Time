@@ -57,6 +57,7 @@ ResizeImage :: proc(image: uintptr, new_width, new_height: i32) {}
 LoadSprite :: proc(filename: string, flags: i32) -> uintptr { return 1}
 ScaleSprite :: proc(sprite: uintptr, scalex, scaley: f32) {}
 SpriteViewMode :: proc(mode, other: uintptr) {}
+CreateSprite :: proc(parent: uintptr = 0) -> uintptr { return 1}
 
 // -------Text--------
 LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> uintptr { return 0}
@@ -139,6 +140,7 @@ EntityRadius :: proc(entity: uintptr, x_radius: f32, y_radious: f32 = 0) {}
 CreatePivot :: proc() -> uintptr { return 1}
 CameraRange :: proc(camera: uintptr, near, far: f32) {}
 CameraFogColor :: proc(camera: uintptr, r, g, b: f32) {}
+CameraClsMode :: proc(camera: uintptr, cls_color, cls_zbuffer: i32) {}
 
 // -------Models--------
 LoadAnimMesh :: proc(filename: string) -> uintptr { return 1}

@@ -28,7 +28,7 @@ lines_translated% =  scored_rows_total / total_line_count
 | AI.bb           | Mar 20, 2026      | 10/10    | 1094          |
 | Promos.bb       | Mar 16, 2026      |  8/10    | 4890          |
 | Crimes.bb       | Mar 23, 2026      |  9/10    | 1384          |
-| Missions.bb     |     .., 2026      |  ./10    | 941           |
+| Missions.bb     | Mar 31, 2026      |  9/10    | 941           |
 | Credits.bb      |     .., 2026      |  ./10    | 752           |
 | Gameplay.bb     |     .., 2026      |  ./10    | 899           |
 

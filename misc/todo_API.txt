@@ -112,6 +112,7 @@ Entity:
 - GetChild
 - FindChild
 - CountChildren
+- CreateSprite
 
 Camera:
 - CreateCamera
@@ -120,6 +121,7 @@ Camera:
 - CameraFogMode
 - CameraFogRange
 - CameraFogColor
+- CameraClsMode
 
 World:
 - UpdateWorld
