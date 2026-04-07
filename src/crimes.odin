@@ -81,7 +81,7 @@ CourtCase :: proc() {
 		pSeq[cyc][3] = bb.ExtractAnimSeq(p[cyc], 1215, 1255, pSeq[cyc][603]) //sitting
 		ApplyCostume(cyc)
 		pEyes[cyc], pOldEyes[cyc] = 2, -1
-		for limb in 1 ..= 40 {
+		for limb in 1 ..=40 {
 			pScar[cyc][limb] = charScar[pChar[cyc]][limb]
 			if pLimb[cyc][limb] > 0 && pScar[cyc][limb] >= 5 {
 				bb.HideEntity(pLimb[cyc][limb])
@@ -125,9 +125,11 @@ CourtCase :: proc() {
 	oldfoc: i32 = 1
 	go, gotim, keytim = 0, -20, 0
 	for go == 0 {
+
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
 		for _ in 1 ..=frames {
+
 			// counters
 			keytim -= 1
 			if keytim < 1 do keytim = 0
@@ -163,7 +165,7 @@ CourtCase :: proc() {
 						bb.Animate(p[cyc], 1, bb.RndF(0.1, 0.3), pSeq[cyc][1], 10)
 						pState[cyc] = 1
 					}
-					if pSpeaking[cyc] != 0 && pState[cyc] != 2 {
+					if cast(bool)pSpeaking[cyc] && pState[cyc] != 2 {
 						bb.Animate(p[cyc], 1, bb.RndF(0.25, 0.5), pSeq[cyc][2], 10)
 						pState[cyc] = 2
 					}
@@ -328,7 +330,7 @@ CourtCase :: proc() {
 					if promoEffect == 0 {
 						bb.PlaySound(sPaper)
 						statTim[6] = -100
-						charSentence[gamChar[slot]] = charSentence[gamChar[slot]] + 1
+						charSentence[gamChar[slot]] += 1
 						promoEffect = 1
 					}
 					Outline("I'm sentencing you to another day to make up for", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
@@ -758,7 +760,7 @@ CourtCase :: proc() {
 				if promoTim > 350 && promoTim < 650 {
 					Speak(2, 1)
 					lower := strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator)
-					Outline(fmt.tprint(CellName(pChar[1], context.temp_allocator), "was caught stealing a", fmt.tprint(lower, "!")), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline(fmt.tprint(CellName(pChar[1], context.temp_allocator), "was caught stealing a", lower, "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 					Outline("The thief can't keep his hands to himself...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 					if promoTim > 450 && promoReact[2] == 0 {
 						bb.PlaySound(sJury[bb.RndI(1, 2)])
@@ -768,7 +770,7 @@ CourtCase :: proc() {
 				if promoTim > 675 && promoTim < 975 {
 					Speak(1, 1)
 					lower := strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator)
-					Outline(fmt.tprint("I didn't 'steal' that", fmt.tprint(lower, "! I was just")), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline(fmt.tprint("I didn't 'steal' that", lower, "! I was just"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 					Outline("trying to take back what was mine...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 					if promoTim > 775 && promoReact[3] == 0 {
 						bb.PlaySound(sJury[bb.RndI(1, 2)])
@@ -785,7 +787,7 @@ CourtCase :: proc() {
 				if promoTim > 325 && promoTim < 625 {
 					Speak(5, 1)
 					pFoc[5] = 2
-					Outline(fmt.tprint(fmt.tprint(charName[pChar[2]], ","), "it's not my job to share"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+					Outline(fmt.tprint(charName[pChar[2]], ",", "it's not my job to share"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 					Outline("out the toys amongst the children!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 				}
 				if promoStage == 2 && promoTim > 650 && promoTim < 950 && promoVerdict == 1 {
@@ -823,7 +825,7 @@ CourtCase :: proc() {
 						}
 						bb.PlaySound(sCash)
 						statTim[7] = -100
-						gamMoney[slot] = gamMoney[slot] - weapValue[weapType[gamItem[slot]]]
+						gamMoney[slot] -= weapValue[weapType[gamItem[slot]]]
 						if charCrime[gamChar[slot]] < 6 {
 							charCrime[gamChar[slot]] = 6
 						}
@@ -903,7 +905,7 @@ CourtCase :: proc() {
 						bb.PlaySound(sPaper)
 						statTim[6] = -100
 						randy := bb.RndI(1, 5)
-						charSentence[gamChar[slot]] = charSentence[gamChar[slot]] + randy
+						charSentence[gamChar[slot]] += randy
 						if randy == 1 {
 							sentence = strings.clone("1 day", context.temp_allocator)
 						} else {
@@ -1473,7 +1475,8 @@ CourtCase :: proc() {
 		}
 		// take photo
 		if camFoc > 0 && camFoc == oldfoc {
-			if pSpeaking[camFoc] > 0 && cast(bool)ReachedCord(camX, camZ, camTX, camTZ, 5) && cast(bool)ReachedCord(camPivX, camPivZ, camPivTX, camPivTZ, 5) {
+			if pSpeaking[camFoc] > 0 && cast(bool)ReachedCord(camX, camZ, camTX, camTZ, 5) \
+			&& cast(bool)ReachedCord(camPivX, camPivZ, camPivTX, camPivTZ, 5) {
 				if charSnapped[pChar[camFoc]] == 0 do TakePhoto(pChar[camFoc])
 				if camFoc <= 2 && charSnapped[camFoc] == 0 do TakePhoto(camFoc)
 			}
@@ -1493,12 +1496,8 @@ CourtCase :: proc() {
 	bb.FreeEntity(cam)
 	bb.FreeEntity(camPivot)
 	bb.FreeEntity(dummy)
-	for cyc in 1..=no_lights {
-		bb.FreeEntity(light[cyc])
-	}
-	for cyc in 1..=no_plays {
-		bb.FreeEntity(p[cyc])
-	}
+	for cyc in 1..=no_lights do bb.FreeEntity(light[cyc])
+	for cyc in 1..=no_plays do bb.FreeEntity(p[cyc])
 	//verdict effects
 	if gamWarrant[slot] > 0 {
 		RemovePromo(28)
@@ -1765,7 +1764,10 @@ CrimePromos :: proc(cyc, v: i32, y: f32) {
 	//////////////////////////// ALARMS ////////////////////////////
 	// 121. WANTED FOR DISSENT
 	if gamPromo == 121 {
-		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
@@ -1778,7 +1780,10 @@ CrimePromos :: proc(cyc, v: i32, y: f32) {
 	}
 	// 122. WANTED FOR CONSPIRACY
 	if gamPromo == 122 {
-		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		}
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
@@ -1791,7 +1796,10 @@ CrimePromos :: proc(cyc, v: i32, y: f32) {
 	}
 	// 123. WANTED FOR ESCAPE
 	if gamPromo == 123 {
-		if promoEffect == 0 do ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1) ; promoEffect = 1
+		if promoEffect == 0 {
+			ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
+			promoEffect = 1
+		} 
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is under"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
