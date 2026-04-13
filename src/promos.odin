@@ -1000,7 +1000,7 @@ DisplayPromo :: proc() {
 			Speak(cyc, 1)
 			full_cell_name := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", stop where you are! What")
 			Outline(full_cell_name, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			lower := bb.Lower(weapName[weapType[pWeapon[v]]])
+			lower := strings.to_lower(weapName[weapType[pWeapon[v]]], context.temp_allocator)
 			full_lower := fmt.tprint("are you doing with that ", lower, "?")
 			Outline(full_lower, i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
@@ -1501,7 +1501,7 @@ DisplayPromo :: proc() {
 		optionB = strings.clone("No, it's mine!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
-			weap_name := bb.Lower(weapName[weapType[pWeapon[v]]])
+			weap_name := strings.to_lower(weapName[weapType[pWeapon[v]]], context.temp_allocator)
 			full_string := fmt.tprint("Hey, ", charName[pChar[v]], ", i need that ", weap_name, "!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("Give it to me or i'll take it by force...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
@@ -1553,7 +1553,7 @@ DisplayPromo :: proc() {
 		optionB = strings.clone("No, it's mine!")
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc,1)
-			lower := bb.Lower(weapName[weapType[pWeapon[v]]])
+			lower := strings.to_lower(weapName[weapType[pWeapon[v]]], context.temp_allocator)
 			full_string := fmt.tprint("Hey, ", charName[pChar[v]], ", that's my ", lower, "!")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("Give it back or i'll show you what it's for...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
@@ -1615,7 +1615,7 @@ DisplayPromo :: proc() {
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 {
 			Speak(cyc,1)
 			promoVariable := weapType[pWeapon[v]]
-			lower := bb.Lower(weapName[promoVariable])
+			lower := strings.to_lower(weapName[promoVariable], context.temp_allocator)
 			full_string := fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", stop where you are! What")
 			Outline(full_string, i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			full_string2 := fmt.tprint("are you doing with that ", lower, "?")
@@ -1980,7 +1980,7 @@ DisplayPromo :: proc() {
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 2)
-			lower := bb.Lower(textCrime[charCrime[gamRelease[slot]]])
+			lower := strings.to_lower(textCrime[charCrime[gamRelease[slot]]], context.temp_allocator)
 			Outline(fmt.tprint("He served his sentence for ", lower), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("and we now welcome him back into society...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}

@@ -1903,7 +1903,7 @@ CrimePromos :: proc(cyc, v: i32, y: f32) {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
 			Outline(fmt.tprint("ATTENTION! Prisoner ", CellName(gamChar[slot], context.temp_allocator), " is wanted"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			Outline(fmt.tprint("for using a ", bb.Lower(weapName[weapType[gamItem[slot]]]), " as a weapon!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("for using a ", strings.to_lower(weapName[weapType[gamItem[slot]]], context.temp_allocator), " as a weapon!"), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoTim > 325 && promoTim < 9975 {
 			promoTim = 9975

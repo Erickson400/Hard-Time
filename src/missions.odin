@@ -203,7 +203,7 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 3)
-			Outline(fmt.tprint("I've been looking everywhere for a ", bb.Lower(weapName[gamTarget[slot]]), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("I've been looking everywhere for a ", strings.to_lower(weapName[gamTarget[slot]], context.temp_allocator), "!"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline(fmt.tprint("See if you can get me one by ", gamDeadline[slot], ":00 tomorrow..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoTim > 650 && promoTim < 9975 {
@@ -238,7 +238,7 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 				promoEffect = 1
 			}
 			Outline(fmt.tprint("Find ", charName[gamTarget[slot]], " in the ", textLocation[charLocation[gamTarget[slot]]], " and"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			Outline(fmt.tprint("give him this ", bb.Lower(weapName[gamItem[slot]]), " by ", gamDeadline[slot], ":00 tomorrow..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("give him this ", strings.to_lower(weapName[gamItem[slot]], context.temp_allocator), " by ", gamDeadline[slot], ":00 tomorrow..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoTim > 650 && promoTim < 9975 {
 			promoTim = 9975
@@ -268,7 +268,7 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 		if promoTim > 350 && promoTim < 9975 do ShowPhoto(gamTarget[slot])
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 3)
-			Outline(fmt.tprint("I need to get a ", bb.Lower(weapName[gamItem[slot]]), " to a guy"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("I need to get a ", strings.to_lower(weapName[gamItem[slot]], context.temp_allocator), " to a guy"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline(fmt.tprint("called '", charName[gamTarget[slot]], "' in the ", textLocation[charLocation[gamTarget[slot]]], "..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoTim > 675 && promoTim < 975 {
@@ -353,7 +353,7 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 		}
 		if promoTim > 350 && promoTim < 650 {
 			Speak(cyc, 3)
-			Outline(fmt.tprint("I need to reach someone called '", charName[gamTarget[slot]], "'.", sep=""), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("I need to reach someone called '", charName[gamTarget[slot]], "'."), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			hair := "unusual"
 			if charHair[gamTarget[slot]] <= 2 do hair = "dark"
 			if charHair[gamTarget[slot]] >= 3 && charHair[gamTarget[slot]] <= 4 do hair = "brown"
@@ -362,7 +362,7 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 			if charHair[gamTarget[slot]] >= 8 && charHair[gamTarget[slot]] <= 9 do hair = "grey"
 			if charHairStyle[gamTarget[slot]] == 0 do hair = "no"
 			if charHairStyle[gamTarget[slot]] == 1 do hair = "shaved"
-			Outline(fmt.tprint("He's a", bb.Lower(textModel[charModel[gamTarget[slot]]]), textRace[GetRace(gamTarget[slot])], "guy with", hair, "hair..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			Outline(fmt.tprint("He's a", strings.to_lower(textModel[charModel[gamTarget[slot]]], context.temp_allocator), textRace[GetRace(gamTarget[slot])], "guy with", hair, "hair..."), i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoTim > 675 && promoTim < 975 {
 			Speak(cyc, 3)
@@ -799,7 +799,6 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 			// promoUsed[gamPromo] = 1
 		}
 	}
-
 	// 176. FOUND & DELIVERED ITEM
 	if gamPromo == 176 {
 		if promoTim > 25 && promoTim < 325 {
@@ -836,7 +835,6 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 			// promoUsed[gamPromo] = 1
 		}
 	}
-
 	// 177. MET CHARACTER
 	if gamPromo == 177 {
 		if promoTim > 25 && promoTim < 325 {
@@ -865,7 +863,6 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 			// promoUsed[gamPromo] = 1
 		}
 	}
-
 	// 178. IDENTIFIED CHARACTER
 	if gamPromo == 178 {
 		if promoTim > 25 && promoTim < 325 {
@@ -896,9 +893,10 @@ MissionPromos :: proc(cyc, v: i32, y: f32) {
 	}
 	if gamPromo == 179 {
 		// intro
+		delete(optionA)
+		delete(optionB)
 		optionA = strings.clone("Yes, abort mission...", context.allocator)
 		optionB = strings.clone("No, forget it!", context.allocator)
-		
 		if promoStage == 0 && promoTim > 25 && promoTim < 325 && gamClient[slot] == 0 {
 			Speak(cyc, 1)
 			Outline(fmt.tprint("Hey, ", CellName(pChar[v], context.temp_allocator), ", i hear you're running errands"), i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)

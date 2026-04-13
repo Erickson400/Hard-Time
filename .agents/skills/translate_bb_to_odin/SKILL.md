@@ -34,7 +34,7 @@ These functions are typical in the BlitzBasic codebase and should be mapped simi
 - `rX#(val)` -> `i32(rX(val))`
 - `rY#(val)` -> `i32(rY(val))`
 - `PercentOf#(val, pct)` -> `PercentOf(val, pct)`
-- `Lower$(str)` -> `bb.Lower(str)`
+- `Lower$(str)` -> `strings.to_lower(str, context.temp_allocator)`
 
 ## String Formatting (Crucial)
 BlitzBasic uses many concatenated strings where types are mixed (`"str" + val`). Use `fmt.tprint` for these in Odin:
