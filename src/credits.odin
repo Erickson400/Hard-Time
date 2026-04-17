@@ -110,6 +110,7 @@ Credits :: proc() {
 	gotim = 0
 	keytim = 20
 	for go == 0 {
+
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
 		for _ in 1..=frames {
@@ -176,7 +177,6 @@ Credits :: proc() {
 		
 		bb.RenderWorld(1)
 		bb.Flip()
-		
 		// screenshot (F12)
 		if cast(bool)bb.KeyHit(88) do Screenshot()
 	}
@@ -226,6 +226,8 @@ Outro :: proc() {
 			if musicVol < 0.0 do musicVol = 0.0
 			bb.ChannelVolume(chTheme, musicVol)
 			bb.UpdateWorld()
+
+
 		}
 		bb.RenderWorld(1)
 
@@ -303,7 +305,7 @@ Ending :: proc() {
 	//load character
 	cyc: i32 = 1
 	pChar[cyc] = gamChar[slot]
-	p[cyc] = bb.LoadAnimMesh(fmt.tprint("Characters/Models/Model", Dig(charModel[pChar[cyc]], 10), ".3ds", sep=""))
+	p[cyc] = bb.LoadAnimMesh(fmt.tprint("Characters/Models/Model", Dig(charModel[pChar[cyc]], 10), ".3ds"))
 	pSeq[cyc][603] = bb.LoadAnimSeq(p[cyc], "Characters/Sequences/Standard03.3ds")
 	pSeq[cyc][604] = bb.LoadAnimSeq(p[cyc], "Characters/Sequences/Standard04.3ds")
 	pSeq[cyc][1] = bb.ExtractAnimSeq(p[cyc], 770, 850, pSeq[cyc][604]) //standing
@@ -459,7 +461,6 @@ Ending :: proc() {
 			}
 			bb.Color(0, 0, 0)
 			bb.Rect(i32(rX(0)), i32(rY(0)), i32(rX(800)), i32(rY(y)), 1)
-			
 			if promoTim <= 100 {
 				y = 600 - f32(PercentOf(120, f32(promoTim)))
 			} else {
@@ -479,7 +480,6 @@ Ending :: proc() {
 			}
 			bb.Color(50, 50, 50)
 			bb.Rect(i32(rX(f32(x))) - 75, i32(rY(f32(y))) - 50, 150, 100, 0)
-			
 			scriptA, scriptB: string
 			// scriptA = "Steve Austin never left the prison system.180"
 			if endFate[page] == 0 {
@@ -783,8 +783,8 @@ Ending :: proc() {
 		bb.Flip()
 		// screenshot (F12)
 		if cast(bool)bb.KeyHit(88) do Screenshot()
-	}
 
+	}
 	// restore sound
 	if bb.ChannelPlaying(chAtmos) > 0 do bb.StopChannel(chAtmos)
 	// free entities

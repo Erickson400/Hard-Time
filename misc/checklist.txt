@@ -29,7 +29,7 @@ lines_translated% =  scored_rows_total / total_line_count
 | Promos.bb       | Mar 16, 2026      |  8/10    | 4890          |
 | Crimes.bb       | Apr 16, 2026      | 10/10    | 1384          |
 | Missions.bb     | Apr 13, 2026      | 10/10    | 941           |
-| Credits.bb      | Apr 01, 2026      |  9/10    | 752           |
+| Credits.bb      | Apr 16, 2026      | 10/10    | 752           |
 | Gameplay.bb     |     .., 2026      |  ./10    | 899           |
 
 
