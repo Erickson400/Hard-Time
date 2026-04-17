@@ -60,7 +60,7 @@ CourtCase :: proc() {
 	pX[5], pY[5], pZ[5], pA[5] = 7, 19, 127, 180
 	//load models
 	for cyc in 1 ..=no_plays {
-		digit := Dig(charModel[pChar[cyc]], 10)
+		digit := Dig(charModel[pChar[cyc]], 10, context.temp_allocator)
 		p[cyc] = bb.LoadAnimMesh(fmt.tprint("Characters/Models/Model", digit, ".3ds"))
 		pSeq[cyc][601] = bb.LoadAnimSeq(p[cyc], "Characters/Sequences/Standard01.3ds")
 		pSeq[cyc][602] = bb.LoadAnimSeq(p[cyc], "Characters/Sequences/Standard02.3ds")
@@ -181,6 +181,7 @@ CourtCase :: proc() {
 
 			// OVERRIDE ANIMATION
 			if pFoc[5] > 0 do PointHead(5, pLimb[pFoc[5]][1])
+			
 		}
 		bb.RenderWorld(1)
 
@@ -1487,6 +1488,7 @@ CourtCase :: proc() {
 		bb.Flip()
 		// screenshot (F12)
 		if cast(bool)bb.KeyHit(88) do Screenshot()
+
 	}
 	//restore sound
 	if bb.ChannelPlaying(chAtmos) > 0 do bb.StopChannel(chAtmos)
