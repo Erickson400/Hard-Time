@@ -47,6 +47,9 @@ Image/Textures:
 - ResizeImage
 - AutoMidHandle
 - PositionTexture
+- ColorRed
+- ColorGreen
+- ColorBlue
 
 Sprite:
 - LoadSprite

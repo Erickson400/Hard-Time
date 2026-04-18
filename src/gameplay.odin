@@ -136,7 +136,7 @@ Gameplay :: proc() {
 	Loader("Please Wait", "Finalizing World")
 	timer = bb.CreateTimer(30)
 	// MAIN LOOP
-	zoom := 1.0
+	//zoom := 1.0 // Unused
 	go = 0
 	gotim = -50
 	keytim = 20
@@ -666,9 +666,9 @@ Gameplay :: proc() {
 				pY[cyc] = pLeaveY[cyc]
 				pA[cyc] = pLeaveA[cyc]
 			}
-			charX[pChar[cyc]] = pX[cyc];
+			charX[pChar[cyc]] = pX[cyc]
 			charZ[pChar[cyc]] = pZ[cyc]
-			charY[pChar[cyc]] = pY[cyc];
+			charY[pChar[cyc]] = pY[cyc]
 			charA[pChar[cyc]] = pA[cyc]
 		}
 		if pHealth[cyc] <= 0 && charLocation[pChar[cyc]] > 0 && pChar[cyc] != gamChar[slot] {
@@ -795,6 +795,259 @@ Gameplay :: proc() {
 		screen = 6
 	}
 	mem.end_arena_temp_memory(checkpoint)
+}
+
+
+//-----------------------------------------------------------------
+//////////////////////// RELATED FUNCTIONS ////////////////////////
+//-----------------------------------------------------------------
+// GET STAT COLOUR
+GetStatColour :: proc(stat: i32) {
+	bb.Color(200, 200, 200)
+	if statTim[stat] > 0 do bb.Color(100, 220, 100)
+	if statTim[stat] < 0 do bb.Color(220, 100, 100)
+}
+
+
+// DISPLAY STATUS
+DisplayStatus :: proc(char: i32, x: f32, y: f32) {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
+	// check first
+	LimitStats(char)
+	// money
+	bb.DrawImage(gMoney, i32(rX(x)), i32(rY(y)))
+	bb.SetFont(fontMoney)
+	r: i32 = 230
+	g: i32 = 250
+	b: i32 = 130
+	if statTim[7] < 0 || gamMoney[slot] < 0 {
+		r = 220
+		g = 100
+		b = 100
+	}
+	if statTim[7] > 0 {
+		r = 255
+		g = 230
+		b = 100
+	}
+	Outline(fmt.tprintf("$%v", GetFigure(gamMoney[slot], context.temp_allocator)), i32(rX(x)), i32(rY(y)), 0, 0, 0, r, g, b)
+	// health meter
+	bb.Color(0, 0, 0)
+	bb.Rect(i32(rX(x)) + 75, i32(rY(y)) - 10, 200, 10, 1)
+	bb.Color(150, 80, 75)
+	bb.Rect(i32(rX(x)) + 74, i32(rY(y)) - 11, 200, 10, 1)
+	bb.Color(130, 0, 0)
+	bb.Rect(i32(rX(x)) + 74, i32(rY(y)) - 11, 200, 10, 0)
+	if charHealth[char] > 0 {
+		if charInjured[char] > 0 {
+			bb.Color(bb.RndI(130, 220), 0, 0)
+		}else {
+			bb.Color(90, 200, 50)
+		}
+		bb.Rect(i32(rX(x)) + 74, i32(rY(y)) - 11, i32(charHealth[char]) * 2, 10, 1)
+		if charInjured[char] > 0 {
+			bb.Color(80, 0, 0)
+		}else {
+			bb.Color(0, 130, 0)
+		}
+		bb.Rect(i32(rX(x)) + 74, i32(rY(y)) - 11, i32(charHealth[char]) * 2, 10, 0)
+	}
+	bb.DrawImage(gHealth, i32(rX(x)) + 68, i32(rY(y)) - 6)
+	// happiness meter
+	bb.Color(0, 0, 0)
+	bb.Rect(i32(rX(x)) + 75, i32(rY(y)) + 4, 200, 10, 1)
+	bb.Color(150, 80, 75)
+	bb.Rect(i32(rX(x)) + 74, i32(rY(y)) + 3, 200, 10, 1)
+	bb.Color(130, 0, 0)
+	bb.Rect(i32(rX(x)) + 74, i32(rY(y)) + 3, 200, 10, 0)
+	if charHappiness[char] > 0 {
+		if charBreakdown[char] > 0 {
+			bb.Color(bb.RndI(130, 220), 0, 0)
+		}else {
+			bb.Color(220, 210, 35)
+		}
+		bb.Rect(i32(rX(x)) + 74, i32(rY(y)) + 3, i32(charHappiness[char]) * 2, 10, 1)
+		if charBreakdown[char] > 0 {
+			bb.Color(80, 0, 0)
+		}else {
+			bb.Color(130, 120, 0)
+		}
+		bb.Rect(i32(rX(x)) + 74, i32(rY(y)) + 3, i32(charHappiness[char]) * 2, 10, 0)
+	}
+	bb.DrawImage(gHappiness, i32(rX(x)) + 68, i32(rY(y)) + 8)
+	// attribute headers
+	bb.SetFont(font[1])
+	Outline("Strength:", i32(rX(x)) + 112, i32(rY(y)) - 22, 0, 0, 0, 255, 255, 255)
+	Outline("Agility:", i32(rX(x)) + 201, i32(rY(y)) - 22, 0, 0, 0, 255, 255, 255)
+	Outline("Intelligence:", i32(rX(x)) + 104, i32(rY(y)) + 24, 0, 0, 0, 255, 255, 255)
+	Outline("Reputation:", i32(rX(x)) + 211, i32(rY(y)) + 24, 0, 0, 0, 255, 255, 255)
+	// attribute numbers
+	bb.SetFont(fontNumber)
+	GetStatColour(1)
+	Outline(fmt.tprint(charStrength[char], "%"), i32(rX(x)) + 158, i32(rY(y)) - 22, 0, 0, 0, bb.ColorRed(), bb.ColorGreen(), bb.ColorBlue())
+	GetStatColour(2)
+	Outline(fmt.tprint(charAgility[char], "%"), i32(rX(x)) + 241, i32(rY(y)) - 22, 0, 0, 0, bb.ColorRed(), bb.ColorGreen(), bb.ColorBlue())
+	GetStatColour(3)
+	Outline(fmt.tprint(charIntelligence[char], "%"), i32(rX(x)) + 156, i32(rY(y)) + 24, 0, 0, 0, bb.ColorRed(), bb.ColorGreen(), bb.ColorBlue())
+	GetStatColour(4)
+	Outline(fmt.tprint(charReputation[char], "%"), i32(rX(x)) + 265, i32(rY(y)) + 24, 0, 0, 0, bb.ColorRed(), bb.ColorGreen(), bb.ColorBlue())
+	mem.end_arena_temp_memory(checkpoint)
+}
+
+
+// DISPLAY TIME
+DisplayTime :: proc(x: f32, y: f32) {
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
+	// time
+	bb.SetFont(fontClock)
+	r: i32 = 200
+	g: i32 = 50
+	b: i32 = 50
+	if statTim[5] > 0 { r = 255; g = 0; b = 0 }
+	Outline(fmt.tprint(Dig(gamHours[slot], 10), ":", Dig(gamMins[slot], 10)), i32(rX(x)), i32(rY(y)), 0, 0, 0, r, g, b)
+	// sentence (days)
+	offset: f32 = 14
+	if charSentence[gamChar[slot]] >= 100 do offset = 17
+	if charSentence[gamChar[slot]] >= 1000 do offset = 20
+	bb.SetFont(font[1])
+	Outline("Days", i32(rX(x) + offset), i32(rY(y)) + 25, 0, 0, 0, 255, 255, 255)
+	bb.SetFont(fontNumber)
+	GetStatColour(6)
+	Outline(GetFigure(charSentence[gamChar[slot]], context.temp_allocator), i32(rX(x) - (offset - 1)), i32(rY(y)) + 25, 0, 0, 0, bb.ColorRed(), bb.ColorGreen(), bb.ColorBlue())
+	// breakdown
+	// bb.SetFont(font[1])
+	// r=255; g=255; b=255
+	// if statTim[6]>0 { r=100; g=220; b=100 }
+	// if statTim[6]<0 { r=220; g=100; b=100 }
+	// Outline(GetSentence(charSentence[gamChar[slot]]), i32(rX(x)), i32(rY(y))+25, 0, 0, 0, r, g, b)
+	mem.end_arena_temp_memory(checkpoint)
+}
+
+
+// DISPLAY FILE
+DisplayFile :: proc(char: i32, x, y: f32) { // 100,530
+	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
+	// photo
+	if charSnapped[char] > 0 && charPhoto[char] > 0 {
+		bb.DrawImage(charPhoto[char], i32(rX(x)), i32(rY(y)))
+		bb.Color(0, 0, 0)
+		bb.Rect(i32(rX(x)) - 75, i32(rY(y)) - 50, 150, 100, 0)
+	} else {
+		bb.DrawImage(gPhoto, i32(rX(x)), i32(rY(y)))
+	}
+	DrawLine(i32(rX(x)) + 15, i32(rY(y)) - 60, i32(rX(x)) + 245, i32(rY(y)) - 60, 0, 255, 130)
+	// file ID
+	bb.SetFont(fontComputer)
+	OutlineStraight("FILE:", i32(rX(x)) - 75, i32(rY(y)) - 61, 0, 0, 0, 0, 255, 130)
+	Outline(fmt.tprint(char, "/", no_chars), i32(rX(x)) - 15, i32(rY(y)) - 61, 0, 0, 0, 160, 255, 200)
+	OutlineStraight("NAME:", i32(rX(x)) + 80, i32(rY(y)) - 39, 0, 0, 0, 0, 255, 130)
+	OutlineStraight(strings.to_upper(charName[char], context.temp_allocator), i32(rX(x)) + 129, i32(rY(y)) - 39, 0, 0, 0, 160, 255, 200)
+	OutlineStraight("AREA:", i32(rX(x)) + 80, i32(rY(y)) - 22, 0, 0, 0, 0, 255, 130)
+	namer := strings.to_upper(textLocation[charLocation[char]], context.temp_allocator)
+	if charRole[char] == 0 do namer = fmt.tprint("CELL ", charCell[char], ", ", strings.to_upper(textBlock[charBlock[char]], context.temp_allocator))
+	if charLocation[char] == 0 && charHealth[char] <= 0 do namer = "DECEASED"
+	if charLocation[char] == 0 && charHealth[char] > 0 do namer = "RELEASED"
+	if charRole[char] == 2 do namer = "COURTROOM"
+	OutlineStraight(namer, i32(rX(x)) + 127, i32(rY(y)) - 22, 0, 0, 0, 160, 255, 200)
+	// health data
+	if gamLocation[slot] == 6 {
+		OutlineStraight("HEALTH:", i32(rX(x)) + 80, i32(rY(y)) + 2, 0, 0, 0, 0, 255, 130)
+		affix := ""
+		if charInjured[char] > 0 do affix = " (INJURED)"
+		if charRole[char] <= 1 && charLocation[char] == 0 && charHealth[char] == 0 do affix = " (DEAD)"
+		OutlineStraight(fmt.tprint(charHealth[char], "%", affix), i32(rX(x)) + 143, i32(rY(y)) + 2, 0, 0, 0, 160, 255, 200)
+		OutlineStraight("STRENGTH:", i32(rX(x)) + 80, i32(rY(y)) + 19, 0, 0, 0, 0, 255, 130)
+		OutlineStraight(fmt.tprint(charStrength[char], "%"), i32(rX(x)) + 163, i32(rY(y)) + 19, 0, 0, 0, 160, 255, 200)
+		OutlineStraight("AGILITY:", i32(rX(x)) + 80, i32(rY(y)) + 36, 0, 0, 0, 0, 255, 130)
+		OutlineStraight(fmt.tprint(charAgility[char], "%"), i32(rX(x)) + 141, i32(rY(y)) + 36, 0, 0, 0, 160, 255, 200)
+	}
+	// mental data
+	if gamLocation[slot] == 4 {
+		OutlineStraight("HAPPINESS:", i32(rX(x)) + 80, i32(rY(y)) + 2, 0, 0, 0, 0, 255, 130)
+		affix := ""
+		if charBreakdown[char] > 0 do affix = " (MANIC)"
+		OutlineStraight(fmt.tprint(charHappiness[char], "%", affix), i32(rX(x)) + 171, i32(rY(y)) + 2, 0, 0, 0, 160, 255, 200)
+		OutlineStraight("INTELLIGENCE:", i32(rX(x)) + 80, i32(rY(y)) + 19, 0, 0, 0, 0, 255, 130)
+		OutlineStraight(fmt.tprint(charIntelligence[char], "%", ), i32(rX(x)) + 185, i32(rY(y)) + 19, 0, 0, 0, 160, 255, 200)
+		OutlineStraight("REPUTATION:", i32(rX(x)) + 80, i32(rY(y)) + 36, 0, 0, 0, 0, 255, 130)
+		OutlineStraight(fmt.tprint(charReputation[char], "%", ), i32(rX(x)) + 177, i32(rY(y)) + 36, 0, 0, 0, 160, 255, 200)
+	}
+	// crime data
+	if gamLocation[slot] == 9 {
+		OutlineStraight("SENTENCE:", i32(rX(x)) + 80, i32(rY(y)) + 2, 0, 0, 0, 0, 255, 130)
+		namer2 := strings.to_upper(GetSentence(charSentence[char], context.temp_allocator), context.temp_allocator)
+		if charSentence[char] == 0 do namer2 = "NONE"
+		OutlineStraight(namer2, i32(rX(x)) + 161, i32(rY(y)) + 2, 0, 0, 0, 160, 255, 200)
+		OutlineStraight("CRIME:", i32(rX(x)) + 80, i32(rY(y)) + 19, 0, 0, 0, 0, 255, 130)
+		OutlineStraight(strings.to_upper(textCrime[charCrime[char]], context.temp_allocator), i32(rX(x)) + 133, i32(rY(y)) + 19, 0, 0, 0, 160, 255, 200)
+		OutlineStraight("GANG:", i32(rX(x)) + 80, i32(rY(y)) + 36, 0, 0, 0, 0, 255, 130)
+		OutlineStraight(strings.to_upper(textGang[charGang[char]], context.temp_allocator), i32(rX(x)) + 129, i32(rY(y)) + 36, 0, 0, 0, 160, 255, 200)
+	}
+	mem.end_arena_temp_memory(checkpoint)
+}
+
+
+//DESCRIBE SENTENCE
+GetSentence :: proc(sentence_in: i32, allocator: mem.Allocator) -> string {
+	sentence := sentence_in
+	thread := ""
+	plural := ""
+	more := ""
+	//calculate years
+	//years=sentence/360
+	//if years<0 do years=0
+	//if years>0 {
+	//sentence=sentence-(360*years)
+	//if years!=1 { plural="s" } else { plural="" }
+	//if sentence>0 { more=", " } else { more="" }
+	//thread=fmt.tprint(thread, years, " Year", plural, more)
+	//}
+	//calculate months
+	months := sentence / 30
+	if months < 0 do months = 0
+	if months > 0 {
+		sentence = sentence - (30 * months)
+		if months != 1 {
+			plural = "s"
+		} else {
+			plural = ""
+		}
+		if sentence > 0 {
+			more = ", "
+		} else {
+			more = ""
+		}
+		thread = fmt.aprint(thread, months, " Month", plural, more, allocator = allocator)
+	}
+	//calculate weeks
+	weeks := sentence / 7
+	if weeks < 0 do weeks = 0
+	if weeks > 0 {
+		sentence = sentence - (7 * weeks)
+		if weeks != 1 {
+			plural = "s"
+		} else {
+			plural = ""
+		}
+		if sentence > 0 {
+			more = ", "
+		} else {
+			more = ""
+		}
+		thread = fmt.aprint(thread, weeks, " Week", plural, more, allocator = allocator)
+	}
+	//calculate days
+	days := sentence
+	if days < 0 do days = 0
+	if days > 0 {
+		if days != 1 {
+			plural = "s"
+		} else {
+			plural = ""
+		}
+		thread = fmt.aprint(thread, days, " Day", plural, allocator = allocator)
+	}
+	return thread
 }
 
 

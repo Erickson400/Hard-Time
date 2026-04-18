@@ -57,6 +57,9 @@ SaveImage :: proc(image_handle: uintptr, path: string) -> i32 { return 1}
 ResizeImage :: proc(image: uintptr, new_width, new_height: i32) {}
 AutoMidHandle :: proc(enable: bool) {}
 PositionTexture :: proc(image: uintptr, u, v: f32) {}
+ColorRed :: proc() -> i32 { return 1}
+ColorGreen :: proc() -> i32 { return 1}
+ColorBlue :: proc() -> i32 { return 1}
 
 // -------Sprite---------
 LoadSprite :: proc(filename: string, flags: i32) -> uintptr { return 1}
