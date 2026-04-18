@@ -28,6 +28,9 @@ Rect :: proc(x, y, width, height, color: i32) {}
 GrabImage :: proc(image: uintptr, x, y: i32, frame: i32 = 0) {}
 Locate :: proc(x, y: i32) {}
 Graphics3D :: proc(width, height, color, fullscreen: i32) {}
+SetBuffer :: proc(buffer: uintptr) {}
+BackBuffer :: proc() -> uintptr { return 1}
+FrontBuffer :: proc() -> uintptr { return 1}
 
 // ------Audio-----
 ChannelPlaying :: proc(channel: uintptr) -> i32 { return 0 }
@@ -52,6 +55,8 @@ LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height
 }
 SaveImage :: proc(image_handle: uintptr, path: string) -> i32 { return 1}
 ResizeImage :: proc(image: uintptr, new_width, new_height: i32) {}
+AutoMidHandle :: proc(enable: bool) {}
+PositionTexture :: proc(image: uintptr, u, v: f32) {}
 
 // -------Sprite---------
 LoadSprite :: proc(filename: string, flags: i32) -> uintptr { return 1}
@@ -120,7 +125,6 @@ EntityRoll :: proc(entity: uintptr, global: i32 = 0) -> f32 { return 0}
 PointEntity :: proc(entity, entity_t: uintptr, roll: f32 = 0) -> f32 { return 0}
 CountCollisions :: proc(entity: uintptr) -> i32 { return 1}
 CollisionEntity :: proc(entity: uintptr, index: i32) -> uintptr { return 1}
-
 EntityX :: proc(entity: uintptr, x: f32 = 0) -> f32 { return 0}
 EntityY :: proc(entity: uintptr, y: f32 = 0) -> f32 { return 0}
 EntityZ :: proc(entity: uintptr, z: f32 = 0) -> f32 { return 0}
@@ -178,9 +182,11 @@ MouseX :: proc() -> i32 { return 0}
 MouseY :: proc() -> i32 { return 0}
 FlushKeys :: proc() {}
 Input :: proc(prompt: string) -> string { return ""}
+EnableDirectInput :: proc(enable: bool) {}
 
 // -------Collision--------
 Collisions :: proc(src_type, dest_type, method, response: i32) {}
+ClearCollisions :: proc() {}
 
 // -------Animation--------
 

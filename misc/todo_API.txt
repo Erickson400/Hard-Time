@@ -19,6 +19,9 @@ Graphics:
 - GraphicsHeight
 - TileImage
 - DrawImage
+- SetBuffer
+- BackBuffer
+- FrontBuffer
 
 Audio:
 - LoadSound
@@ -42,6 +45,8 @@ Image/Textures:
 - LoadAnimTexture
 - SaveImage
 - ResizeImage
+- AutoMidHandle
+- PositionTexture
 
 Sprite:
 - LoadSprite
@@ -151,6 +156,7 @@ Input:
 
 Collision:
 - Collisions
+- ClearCollisions
 
 Animation:
 - Animate
