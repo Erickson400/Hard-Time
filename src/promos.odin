@@ -5770,6 +5770,7 @@ DisplayPromo :: proc() {
 				for v2 in 1 ..=no_plays {
 					if pChar[v2] == promoVariable do ApplyCostume(v2)
 				}
+				delete(charName[promoVariable])
 				charName[promoVariable] = strings.clone(fmt.tprint(textFirstName[bb.RndI(0, 65)], charName[promoVariable][6:]))
 				promoEffect = 1
 			}

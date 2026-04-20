@@ -223,7 +223,8 @@ Gameplay :: proc() {
 			// ppppppppppppppppppppppp PAUSE LOOP pppppppppppppppppppppppppppppppp
 			// pause toggle
 			if cast(bool)bb.KeyDown(25) && gotim > 20 && keytim == 0 {
-				bb.PlaySound(sMenuSelect); keytim = 20
+				bb.PlaySound(sMenuSelect)
+				keytim = 20
 				gamPause = 0 if gamPause == 1 else 1
 			}
 			// pause loop
@@ -236,7 +237,13 @@ Gameplay :: proc() {
 					// timer
 					if promoStage != 1 do promoTim += 1
 					if promoTim > 50 && promoStage != 1 && keytim == 0 {
-						if cast(bool)bb.KeyDown(1) || cast(bool)bb.KeyDown(28) || cast(bool)ButtonPressed() || cast(bool)ActionPressed(gamPlayer[slot]) { promoTim += 100; keytim = 10 }
+						if cast(bool)bb.KeyDown(1) \
+						|| cast(bool)bb.KeyDown(28) \
+						|| cast(bool)ButtonPressed() \
+						|| cast(bool)ActionPressed(gamPlayer[slot]) {
+							promoTim += 100
+							keytim = 10
+						}
 					}
 					// options
 					if promoStage == 1 && keytim == 0 {
@@ -315,7 +322,8 @@ Gameplay :: proc() {
 						if randy <= no_chars && gamPromo == 0 && promoUsed[251] == 0 {
 							if charRole[randy] == 1 && charLocation[randy] > 0 && charSnapped[randy] > 0 {
 								ProduceSound(bb.FindChild(world, "Tanoy01"), sTanoy, 22050, 1)
-								promoVariable = randy; TriggerPromo(0, 0, 251)
+								promoVariable = randy
+								TriggerPromo(0, 0, 251)
 							}
 						}
 					}
@@ -568,7 +576,7 @@ Gameplay :: proc() {
 			bb.GrabImage(gamPhoto[slot], bb.GraphicsWidth() / 2, bb.GraphicsHeight() / 2)
 		}
 
-	} // Wend
+	}
 	// restore sound
 	if charHealth[gamChar[slot]] > 0 do Loader("Please Wait", "Restoring Sound")
 	if bb.ChannelPlaying(chAtmos) > 0 do bb.StopChannel(chAtmos)
@@ -672,7 +680,8 @@ Gameplay :: proc() {
 			charA[pChar[cyc]] = pA[cyc]
 		}
 		if pHealth[cyc] <= 0 && charLocation[pChar[cyc]] > 0 && pChar[cyc] != gamChar[slot] {
-			if charAttacker[pChar[cyc]] == gamChar[slot] && charWitness[gamChar[slot]] > 0 && charHealth[charWitness[gamChar[slot]]] > 0 {
+			if charAttacker[pChar[cyc]] == gamChar[slot] \
+			&& charWitness[gamChar[slot]] > 0 && charHealth[charWitness[gamChar[slot]]] > 0 {
 				if gamWarrant[slot] < 12 {
 					gamWarrant[slot] = bb.RndI(12, 13)
 					gamVictim[slot] = pChar[cyc]
@@ -684,10 +693,12 @@ Gameplay :: proc() {
 			for v in 1..=no_chars {
 				if v != gamChar[slot] && charPromo[v][gamChar[slot]] == 0 && charRelation[v][gamChar[slot]] >= 0 && charAngerTim[v][gamChar[slot]] == 0 {
 					if charRelation[gamChar[slot]][pChar[cyc]] > 0 && charRelation[v][pChar[cyc]] > 0 {
-						charPromo[v][gamChar[slot]] = 217; charPromoRef[v] = pChar[cyc]
+						charPromo[v][gamChar[slot]] = 217
+						charPromoRef[v] = pChar[cyc]
 					}
 					if charRelation[gamChar[slot]][pChar[cyc]] < 0 && charRelation[v][pChar[cyc]] < 0 {
-						charPromo[v][gamChar[slot]] = 218; charPromoRef[v] = pChar[cyc]
+						charPromo[v][gamChar[slot]] = 218
+						charPromoRef[v] = pChar[cyc]
 					}
 				}
 			}
@@ -772,7 +783,7 @@ Gameplay :: proc() {
 	}
 	// save & exit
 	if go == -1 {
-		gamName[slot] = strings.clone(fmt.tprint(CellName(gamChar[slot], context.temp_allocator), ": ", charName[gamChar[slot]]))
+		gamName[slot] = strings.clone(fmt.aprint(CellName(gamChar[slot], context.temp_allocator), ": ", charName[gamChar[slot]]))
 		bb.ResizeImage(gamPhoto[slot], 150, 100)
 		bb.SaveImage(gamPhoto[slot], fmt.tprint("Data/Slot0", slot, "/Photos/Game.bmp"))
 		bb.MaskImage(gamPhoto[slot], 255, 0, 255)
@@ -791,6 +802,7 @@ Gameplay :: proc() {
 	}
 	if charHealth[gamChar[slot]] == 0 {
 		gamEnded = 1
+		delete(gamName[slot])
 		gamName[slot] = ""
 		screen = 6
 	}
@@ -801,7 +813,6 @@ Gameplay :: proc() {
 //-----------------------------------------------------------------
 //////////////////////// RELATED FUNCTIONS ////////////////////////
 //-----------------------------------------------------------------
-// GET STAT COLOUR
 GetStatColour :: proc(stat: i32) {
 	bb.Color(200, 200, 200)
 	if statTim[stat] > 0 do bb.Color(100, 220, 100)
@@ -809,8 +820,7 @@ GetStatColour :: proc(stat: i32) {
 }
 
 
-// DISPLAY STATUS
-DisplayStatus :: proc(char: i32, x: f32, y: f32) {
+DisplayStatus :: proc(char: i32, x, y: f32) {
 	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
 	// check first
 	LimitStats(char)
@@ -830,7 +840,7 @@ DisplayStatus :: proc(char: i32, x: f32, y: f32) {
 		g = 230
 		b = 100
 	}
-	Outline(fmt.tprintf("$%v", GetFigure(gamMoney[slot], context.temp_allocator)), i32(rX(x)), i32(rY(y)), 0, 0, 0, r, g, b)
+	Outline(fmt.tprint("$", GetFigure(gamMoney[slot], context.temp_allocator)), i32(rX(x)), i32(rY(y)), 0, 0, 0, r, g, b)
 	// health meter
 	bb.Color(0, 0, 0)
 	bb.Rect(i32(rX(x)) + 75, i32(rY(y)) - 10, 200, 10, 1)
@@ -895,15 +905,18 @@ DisplayStatus :: proc(char: i32, x: f32, y: f32) {
 }
 
 
-// DISPLAY TIME
-DisplayTime :: proc(x: f32, y: f32) {
+DisplayTime :: proc(x, y: f32) {
 	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
 	// time
 	bb.SetFont(fontClock)
 	r: i32 = 200
 	g: i32 = 50
 	b: i32 = 50
-	if statTim[5] > 0 { r = 255; g = 0; b = 0 }
+	if statTim[5] > 0 {
+		r = 255
+		g = 0
+		b = 0
+	}
 	Outline(fmt.tprint(Dig(gamHours[slot], 10), ":", Dig(gamMins[slot], 10)), i32(rX(x)), i32(rY(y)), 0, 0, 0, r, g, b)
 	// sentence (days)
 	offset: f32 = 14
@@ -924,7 +937,6 @@ DisplayTime :: proc(x: f32, y: f32) {
 }
 
 
-// DISPLAY FILE
 DisplayFile :: proc(char: i32, x, y: f32) { // 100,530
 	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
 	// photo
@@ -987,9 +999,8 @@ DisplayFile :: proc(char: i32, x, y: f32) { // 100,530
 }
 
 
-//DESCRIBE SENTENCE
-GetSentence :: proc(sentence_in: i32, allocator: mem.Allocator) -> string {
-	sentence := sentence_in
+GetSentence :: proc(sentence: i32, allocator: mem.Allocator) -> string {
+	sentence := sentence
 	thread := ""
 	plural := ""
 	more := ""
@@ -1049,5 +1060,3 @@ GetSentence :: proc(sentence_in: i32, allocator: mem.Allocator) -> string {
 	}
 	return thread
 }
-
-
