@@ -953,6 +953,13 @@ LoadImages :: proc() {
 
 @(private="file")
 texture_loading :: proc() {
+	character_folder :: "assets/Characters/"
+	count_texture_files(character_folder + "Hair/", "HAIR", &no_hairs)
+	count_texture_files(character_folder + "Faces/", "FACE", &no_faces)
+	count_texture_files(character_folder + "Bodies/", "BODY", &no_bodies)
+	count_texture_files(character_folder + "Arms/", "ARM", &no_arms)
+	count_texture_files(character_folder + "Legs/", "LEGS", &no_legs)
+
 	count_texture_files :: proc(path, prefix: string, counter: ^i32) {
 		folder := os.open(path) or_else fmt.panicf("Folder not found: %v", path)
 		files := os.read_directory(folder, 100, context.allocator) or_else fmt.panicf("Could not read directory: %v", path)
@@ -968,13 +975,6 @@ texture_loading :: proc() {
 		os.file_info_slice_delete(files, context.allocator)
 		os.close(folder)
 	}
-
-	character_folder :: "assets/Characters/"
-	count_texture_files(character_folder + "Hair/", "HAIR", &no_hairs)
-	count_texture_files(character_folder + "Faces/", "FACE", &no_faces)
-	count_texture_files(character_folder + "Bodies/", "BODY", &no_bodies)
-	count_texture_files(character_folder + "Arms/", "ARM", &no_arms)
-	count_texture_files(character_folder + "Legs/", "LEGS", &no_legs)
 }
 
 
