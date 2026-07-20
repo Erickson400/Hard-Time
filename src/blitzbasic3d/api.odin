@@ -2,11 +2,8 @@ package blitzbasic3d
 /*
 	Here goes all the public functions and types exposed
 	by the blitz package to be used in the ported source code.
-
-	If the function name is not PascalCase, then its used by main.odin
 */
 
-import ray "vendor:raylib"
 import "core:strings"
 
 // ------Internals-------
@@ -195,24 +192,12 @@ ClearCollisions :: proc() {}
 
 
 //------Initialization---------
-init :: proc() {
-	ray.InitWindow(1280, 720, "Hard Time")
-	ray.InitAudioDevice()
-	ray.SetTargetFPS(120)
-	init_audio_system()
-	init_font_system()
-	init_image_system()
-	init_rendering_system()
+Init :: proc() {
+	
 }
 
-
-destroy :: proc() {
-	destroy_rendering_system()
-	destroy_image_system()
-	destroy_font_system()
-	destroy_audio_system()
-	ray.CloseAudioDevice()
-	ray.CloseWindow()
+Destroy :: proc() {
+	
 }
 
 

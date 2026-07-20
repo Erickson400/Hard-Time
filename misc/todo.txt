@@ -1,2 +1,7 @@
 ---- Tasks ----
 
+Create math.odin with these functions that appear in bbmath:
+    float	 bbRnd( float from,float to );
+    void	 bbSeedRnd( int seed );
+    Remember Rnd has two variants in my odin implementation.
+

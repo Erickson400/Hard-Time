@@ -34,8 +34,8 @@ main :: proc() {
 	defer log.destroy_file_logger(context.logger )
 	
 	// Initialize BlitzBasic3D
-	bb.init()
-	defer bb.destroy()
+	bb.Init()
+	defer bb.Destroy()
 
 	// Values.bb is the only file with global code execution, and global variable declarations.
 	init_values()
