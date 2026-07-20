@@ -85,13 +85,6 @@ CurrentDir :: proc(allocator := context.allocator) -> string { return "" }
 FileType :: proc(filePath: i32) -> i32 { return 0 }
 NextFiles :: proc(allocator := context.allocator) -> string { return "" }
 
-
-// -------Math-------
-// Rnd :: proc{rnd_int, rnd_float}
-RndI :: proc{rnd_int}
-RndF :: proc{rnd_float}
-SeedRnd :: proc(seed: i32) {}
-
 // -------String-------
 StringWidth :: proc(text: string) -> i32 { return 1 }
 Left :: proc(text: string, count: i32, allocator := context.allocator) -> string {

@@ -1,13 +1,13 @@
 ---- Blitz API Implementations ----
-The API will be in their corresponding files just like the original blitz source code.
-As I implement functions I should replace these categories with files.
+The API will be in in files based on either their Blitz file, or my custom file.
+Which one I will use will be decided as I read the Blitz source code.
 Ignore how it's organized in API.odin.
 Be careful to not delete any of these function names, only move them around.
 
 math.odin:
-
-
-
+- RndI --- Complete
+- RndF --- Complete
+- SeedRnd --- Complete
 
 Internal:
 - GfxMode3DExists
@@ -87,11 +87,6 @@ File:
 - CurrentDir
 - FileType
 - NextFiles
-
-Math:
-- RndI
-- RndF
-- SeedRnd
 
 Time:
 - CreateTimer
