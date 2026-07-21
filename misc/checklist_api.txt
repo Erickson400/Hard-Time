@@ -2,7 +2,8 @@
 The API will be in in files based on either their Blitz file, or my custom file.
 Which one I will use will be decided as I read the Blitz source code.
 Ignore how it's organized in API.odin.
-Be careful to not delete any of these function names, only move them around.
+Be careful to not delete any used function names, only move them around or remove
+if they have an odin equivalent.
 
 math.odin:
 - RndI --- Complete
@@ -19,6 +20,11 @@ filesystem.odin
 - ReadInt --- Complete
 - ReadFloat --- Complete
 - ReadString --- Complete
+
+string.odin
+- Upper --- Complete
+- Lower --- Complete
+- Left --- Complete
 
 
 
@@ -80,10 +86,6 @@ Sprite:
 Text:
 - LoadFont
 - StringWidth
-- Left
-- Right
-- Upper
-- Lower
 
 Time:
 - CreateTimer

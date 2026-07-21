@@ -1,10 +1,4 @@
 package blitzbasic3d
-/*
-	Here goes all the public functions and types exposed
-	by the blitz package to be used in the ported source code.
-*/
-
-import "core:strings"
 
 // ------Internals-------
 GfxMode3DExists :: proc(width, height, color: i32) -> i32 { return 0 }
@@ -66,21 +60,7 @@ CreateSprite :: proc(parent: uintptr = 0) -> uintptr { return 1}
 
 // -------Text--------
 LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> uintptr { return 0}
-Upper :: proc(text: string, allocator := context.temp_allocator) -> string { return "" }
-Lower :: proc(text: string, allocator := context.temp_allocator) -> string { return "" }
-
-// -------String-------
 StringWidth :: proc(text: string) -> i32 { return 1 }
-Left :: proc(text: string, count: i32, allocator := context.allocator) -> string {
-	result, ok := strings.substring_to(text, int(count))
-	if ok do return result
-	return text
-}
-Right :: proc(text: string, count: i32, allocator := context.allocator) -> string {
-	result, ok := strings.substring_from(text, int(count))
-	if ok do return result
-	return text
-}
 
 // -------Time----------
 CreateTimer :: proc(fps: i32) -> uintptr { return 1}
