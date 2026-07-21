@@ -11,8 +11,8 @@ RndF :: proc(min, max: f32) -> f32 {
 	return rand.float32_range(min, max)
 }
 
-SeedRnd :: proc(seed: u64) {
-	rand.reset_u64(seed)
+SeedRnd :: proc(seed: i32) {
+	rand.reset_u64(u64(seed))
 }
 
 

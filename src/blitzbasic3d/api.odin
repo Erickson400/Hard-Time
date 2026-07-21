@@ -69,22 +69,6 @@ LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> uint
 Upper :: proc(text: string, allocator := context.temp_allocator) -> string { return "" }
 Lower :: proc(text: string, allocator := context.temp_allocator) -> string { return "" }
 
-// -------File--------
-WriteFile :: proc(path: string, loc := #caller_location) -> i32 { return 0 }
-ReadFile :: proc(path: string, loc := #caller_location) -> i32 { return 0 }
-CloseFile :: proc(file: i32) {}
-WriteInt :: proc(file: i32, value: i32, loc := #caller_location) {}
-WriteFloat :: proc(file: i32, value: f32, loc := #caller_location)  {}
-WriteString :: proc(file: i32, text: string, loc := #caller_location) {}
-ReadInt :: proc(file: i32, loc := #caller_location) -> i32 { return 0 }
-ReadString :: proc(file: i32, loc := #caller_location) -> string { return "" }
-ReadFloat :: proc(file: i32, loc := #caller_location) -> f32 { return 0 }
-ReadDir :: proc(directory: string) -> i32 { return 0 }
-CloseDir :: proc(fileHandle: i32) {}
-CurrentDir :: proc(allocator := context.allocator) -> string { return "" }
-FileType :: proc(filePath: i32) -> i32 { return 0 }
-NextFiles :: proc(allocator := context.allocator) -> string { return "" }
-
 // -------String-------
 StringWidth :: proc(text: string) -> i32 { return 1 }
 Left :: proc(text: string, count: i32, allocator := context.allocator) -> string {

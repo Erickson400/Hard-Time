@@ -9,6 +9,19 @@ math.odin:
 - RndF --- Complete
 - SeedRnd --- Complete
 
+filesystem.odin
+- WriteFile --- Complete
+- ReadFile --- Complete
+- CloseFile --- Complete
+- WriteInt --- Complete
+- WriteFloat --- Complete
+- WriteString --- Complete
+- ReadInt --- Complete
+- ReadFloat --- Complete
+- ReadString --- Complete
+
+
+
 Internal:
 - GfxMode3DExists
 - Graphics3DWidth
@@ -71,22 +84,6 @@ Text:
 - Right
 - Upper
 - Lower
-
-File:
-- WriteFile
-- ReadFile
-- CloseFile
-- WriteInt
-- WriteFloat
-- WriteString
-- ReadInt
-- ReadFloat
-- ReadString
-- ReadDir
-- CloseDir
-- CurrentDir
-- FileType
-- NextFiles
 
 Time:
 - CreateTimer
