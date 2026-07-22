@@ -63,10 +63,10 @@ LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> uint
 StringWidth :: proc(text: string) -> i32 { return 1 }
 
 // -------Time----------
-CreateTimer :: proc(fps: i32) -> uintptr { return 1}
-WaitTimer :: proc(timer: uintptr) -> i32 { return 1}
-FreeTimer :: proc(timer: uintptr) {}
-MilliSecs :: proc() -> i32 { return 1}
+// CreateTimer :: proc(fps: i32) -> uintptr { return 1}
+// WaitTimer :: proc(timer: uintptr) -> i32 { return 1}
+// FreeTimer :: proc(timer: uintptr) {}
+// MilliSecs :: proc() -> i32 { return 1}
 
 // -------Entity-------
 EntityType :: proc(entity: uintptr, collision_type: i32, recursive: i32 = 0) -> i32 { return 1}

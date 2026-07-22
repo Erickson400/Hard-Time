@@ -22,8 +22,6 @@ filesystem.odin
 - ReadString --- Complete
 
 string.odin
-- Upper --- Complete
-- Lower --- Complete
 - Left --- Complete
 
 
@@ -91,7 +89,6 @@ Time:
 - CreateTimer
 - WaitTimer
 - FreeTimer
-- MilliSecs
 
 Entity:
 - EntityType

@@ -119,7 +119,7 @@ CourtCase :: proc() {
 	//frame ratings
 	Loader("Please Wait", "Preparing Court Case")
 	timer = bb.CreateTimer(30)
-	bb.SeedRnd(bb.MilliSecs())
+	bb.SeedRnd()
 	//MAIN LOOP
 	//foc := 1 // Unused
 	oldfoc: i32 = 1

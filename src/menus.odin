@@ -1,6 +1,7 @@
 package main
 
 import "core:fmt"
+import "core:time"
 import "core:strconv"
 import bb "blitzbasic3d"
 
@@ -994,7 +995,7 @@ Screenshot :: proc() {
 	screenshot := bb.CreateImage(bb.GraphicsWidth(), bb.GraphicsHeight())
 	bb.GrabImage(screenshot, bb.GraphicsWidth() / 2, bb.GraphicsHeight() / 2)
 	// title & save
-	temp := bb.MilliSecs() / 10
+	temp := i32(time.time_to_unix_nano(time.now()) / 1_000_000) / 10
 	namer := fmt.aprint("Screenshot - ", temp, ".bmp")
 	path := fmt.aprint("Photo Album/", namer)
 	bb.SaveImage(screenshot, path)

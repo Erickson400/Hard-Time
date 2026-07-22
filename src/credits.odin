@@ -369,7 +369,7 @@ Ending :: proc() {
 	endFate[10] = 0
 	//frame ratings
 	timer = bb.CreateTimer(30)
-	bb.SeedRnd(bb.MilliSecs())
+	bb.SeedRnd()
 	//MAIN LOOP
 	promoTim = 0
 	page := 1

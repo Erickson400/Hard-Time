@@ -20,7 +20,7 @@ entry_point :: proc() {
 	bb.SetBuffer(bb.BackBuffer())
 	bb.AutoMidHandle(true)
 	bb.EnableDirectInput(true)
-	bb.SeedRnd(bb.MilliSecs())   
+	bb.SeedRnd()   
 
 	// LOADING PROCESS
 	// intro
@@ -31,7 +31,7 @@ entry_point :: proc() {
 	LoadWeaponData()
 
 	// SCREEN MANAGEMENT
-	bb.SeedRnd(bb.MilliSecs())
+	bb.SeedRnd()
 	screen: i32 = 1
 	for {
 		// load screen
@@ -132,7 +132,7 @@ Gameplay :: proc() {
 	bb.UpdateWorld()
 	SetCollisions()
 	// frame rating
-	bb.SeedRnd(bb.MilliSecs())
+	bb.SeedRnd()
 	Loader("Please Wait", "Finalizing World")
 	timer = bb.CreateTimer(30)
 	// MAIN LOOP
