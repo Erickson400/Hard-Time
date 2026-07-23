@@ -24,7 +24,10 @@ filesystem.odin
 string.odin
 - Left --- Complete
 
-
+time.odin
+- CreateTimer -- Complete
+- WaitTimer -- Complete
+- FreeTimer -- Complete
 
 Internal:
 - GfxMode3DExists
@@ -84,11 +87,6 @@ Sprite:
 Text:
 - LoadFont
 - StringWidth
-
-Time:
-- CreateTimer
-- WaitTimer
-- FreeTimer
 
 Entity:
 - EntityType

@@ -1,6 +1,5 @@
 package blitzbasic3d
 
-
 import "core:time"
 import "core:sync"
 import "core:thread"
@@ -25,6 +24,7 @@ _timer_proc :: proc() {
 			sync.unlock(&timer.mutex)
 			break
 		}
+		timer.counter += 1
 		sync.cond_signal(&timer.cond)
 		sync.unlock(&timer.mutex)
 	}
@@ -55,6 +55,7 @@ FreeTimer :: proc(timer: ^Timer) {
 	timer.is_running = false
 	sync.unlock(&timer.mutex)
 	thread.join(timer.thread)
+	thread.destroy(timer.thread)
 	free(timer)
 }
 
