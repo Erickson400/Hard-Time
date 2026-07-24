@@ -1,4 +1,5 @@
 Build commands:
+Replace build with run to execute right away.
 (For active dev and debugging) ---- odin build ./src -o:none -debug -vet -vet-tabs -strict-style
 (For release) ---- N/A
 

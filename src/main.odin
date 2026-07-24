@@ -1,4 +1,3 @@
-#+vet !unused-imports
 package main
 
 import bb "blitzbasic3d"
@@ -38,8 +37,8 @@ main :: proc() {
 	defer bb.Destroy()
 
 	// Values.bb is the only file with global code execution, and global variable declarations.
-	init_values()
+	// init_values()
 
 	// Gameplay.bb entry point, the code section after the includes
-	entry_point()
+	// entry_point()
 }

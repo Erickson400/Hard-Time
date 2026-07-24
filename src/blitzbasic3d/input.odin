@@ -1,0 +1,215 @@
+package blitzbasic3d
+
+import sdl "vendor:sdl3"
+
+blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> sdl.Scancode {
+	table := [?]sdl.Scancode {
+		0 = sdl.Scancode.UNKNOWN,
+		1 = sdl.Scancode.ESCAPE,
+		2 = sdl.Scancode._1, 	 	 
+		3 = sdl.Scancode._2, 	 	 
+		4 = sdl.Scancode._3, 	 	 
+		5 = sdl.Scancode._4, 	 	 
+		6 = sdl.Scancode._5, 	 	 
+		7 = sdl.Scancode._6, 	 	 
+		8 = sdl.Scancode._7, 	 	 
+		9 = sdl.Scancode._8, 	 	 
+		10 = sdl.Scancode._9,
+		11 = sdl.Scancode._0,
+		12 = sdl.Scancode.MINUS,
+		13 = sdl.Scancode.EQUALS,
+		14 = sdl.Scancode.BACKSPACE,
+		15 = sdl.Scancode.TAB,
+		16 = sdl.Scancode.Q,
+		17 = sdl.Scancode.W,
+		18 = sdl.Scancode.E,
+		19 = sdl.Scancode.R,
+		20 = sdl.Scancode.T,
+		21 = sdl.Scancode.Y,
+		22 = sdl.Scancode.U,
+		23 = sdl.Scancode.I,
+		24 = sdl.Scancode.O,
+		25 = sdl.Scancode.P,
+		26 = sdl.Scancode.LEFTBRACKET,
+		27 = sdl.Scancode.RIGHTBRACKET,
+		28 = sdl.Scancode.RETURN,
+		29 = sdl.Scancode.LCTRL,
+		30 = sdl.Scancode.A,
+		31 = sdl.Scancode.S,
+		32 = sdl.Scancode.D,
+		33 = sdl.Scancode.F,
+		34 = sdl.Scancode.G,
+		35 = sdl.Scancode.H,
+		36 = sdl.Scancode.J,
+		37 = sdl.Scancode.K,
+		38 = sdl.Scancode.L,
+		39 = sdl.Scancode.SEMICOLON,
+		40 = sdl.Scancode.APOSTROPHE,
+		41 = sdl.Scancode.GRAVE,
+		42 = sdl.Scancode.LSHIFT,
+		43 = sdl.Scancode.BACKSLASH,
+		44 = sdl.Scancode.Z,
+		45 = sdl.Scancode.X,
+		46 = sdl.Scancode.C,
+		47 = sdl.Scancode.V,
+		48 = sdl.Scancode.B,
+		49 = sdl.Scancode.N,
+		50 = sdl.Scancode.M,
+		51 = sdl.Scancode.COMMA,
+		52 = sdl.Scancode.PERIOD,
+		53 = sdl.Scancode.SLASH,
+		54 = sdl.Scancode.RSHIFT,
+		55 = sdl.Scancode.KP_MULTIPLY,
+		56 = sdl.Scancode.LALT,
+		57 = sdl.Scancode.SPACE,
+		58 = sdl.Scancode.CAPSLOCK,
+		59 = sdl.Scancode.F1,
+		60 = sdl.Scancode.F2,
+		61 = sdl.Scancode.F3,
+		62 = sdl.Scancode.F4,
+		63 = sdl.Scancode.F5,
+		64 = sdl.Scancode.F6,
+		65 = sdl.Scancode.F7,
+		66 = sdl.Scancode.F8,
+		67 = sdl.Scancode.F9,
+		68 = sdl.Scancode.F10,
+		69 = sdl.Scancode.NUMLOCKCLEAR,
+		70 = sdl.Scancode.SCROLLLOCK,
+		71 = sdl.Scancode.KP_7,
+		72 = sdl.Scancode.KP_8,
+		73 = sdl.Scancode.KP_9,
+		74 = sdl.Scancode.KP_MINUS,
+		75 = sdl.Scancode.KP_4,
+		76 = sdl.Scancode.KP_5,
+		77 = sdl.Scancode.KP_6,
+		78 = sdl.Scancode.KP_PLUS,
+		79 = sdl.Scancode.KP_1,
+		80 = sdl.Scancode.KP_2,
+		81 = sdl.Scancode.KP_3,
+		82 = sdl.Scancode.KP_0,
+		83 = sdl.Scancode.KP_DECIMAL,
+		// OEM_102 	86 	On UK/Germany Keyboards
+		// F11 	87 	 
+		// F12 	88 	 
+		// F13 	100 	(NEC PC98)
+		// F14 	101 	(NEC PC98)
+		// F15 	102 	(NEC PC98)
+		// Kana 	112 	Japanese Keyboard
+		// ABNT_C1 	115 	/? on Portugese (Brazilian) keyboards
+		// Convert 	121 	Japanese Keyboard
+		// NoConvert 	123 	Japanese Keyboard
+		// Yen 	125 	Japanese Keyboard
+		// ABNT_C2 	126 	Numpad . on Portugese (Brazilian) keyboards
+		// Equals 	141 	= on numeric keypad (NEC PC98)
+		// PrevTrack 	144 	Previous Track (DIK_CIRCUMFLEX on Japanese keyboard)
+		// AT 	145 	(NEC PC98)
+		// Colon (:) 	146 	(NEC PC98)
+		// Underline 	147 	(NEC PC98)
+		// Kanji 	148 	Japanese Keyboard
+		// Stop 	149 	(NEC PC98)
+		// AX 	150 	Japan AX
+		// Unlabeled 	151 	(J3100)
+		// Next Track 	153 	Next Track
+		156 = sdl.Scancode.KP_ENTER,
+		157 = sdl.Scancode.RCTRL,
+		// Mute 	160 	Mute
+		// Calculator 	161 	Calculator
+		// Play/Pause 	162 	Play/Pause
+		// Media Stop 	164 	Media Stop
+		// Volume Down 	174 	Volume -
+		// Volume Up 	176 	Volume +
+		// Web Home 	178 	Web Home
+		179 = sdl.Scancode.KP_COMMA,
+		181 = sdl.Scancode.KP_DIVIDE,
+		// SysReq 	183 	 
+		184 = sdl.Scancode.RALT,
+		// Pause 	197 	Pause
+		199 = sdl.Scancode.HOME,
+		200 = sdl.Scancode.UP,
+		201 = sdl.Scancode.PAGEUP,
+		203 = sdl.Scancode.LEFT,
+		205 = sdl.Scancode.RIGHT,
+		207 = sdl.Scancode.END,
+		208 = sdl.Scancode.DOWN,
+		// Next 	209 	Next Key on Arrow Keypad
+		210 = sdl.Scancode.INSERT,
+		211 = sdl.Scancode.DELETE,
+		/// Left Windows 	219 	Left Windows Key
+		/// Right Windows 	220 	Right Windows Key
+		/// Apps 	221 	Apps Menu Key
+		/// Power 	222 	System Power
+		/// Sleep 	223 	System Sleep
+		/// Wake 	227 	System Wake
+		/// Web Search 	229 	 
+		/// Web Favorites 	230 	 
+		/// Web Refresh 	231 	 
+		/// Web Stop 	232 	 
+		/// Web Forward 	233 	 
+		/// Web Back 	234 	 
+		/// My Computer 	235 	 
+		/// Mail 	236 	 
+		/// Media Select 	237 	 
+	}
+	return table[blitz_scancode]
+}
+
+
+
+// Legacy windows feature
+EnableDirectInput :: proc(enable: bool) {}
+
+// Complicated, I need to create a text box with graphics.
+Input :: proc(prompt: string) -> string {
+	return "Player Name"
+}
+
+FlushKeys :: proc() {
+
+}
+
+KeyDown :: proc(scancode: i32) -> i32 {
+	key_array := sdl.GetKeyboardState(nil)
+	return cast(i32)key_array[blitz_scancode_to_sdl_scancode(scancode)]
+}
+
+KeyHit :: proc(scancode: i32) -> i32 {
+	return 0
+
+}
+
+JoyYDir :: proc() -> i32 {
+	return 0
+}
+
+JoyXDir :: proc() -> i32 {
+	return 0
+}
+
+JoyDown :: proc() -> i32 {
+	return 0
+}
+
+MoveMouse :: proc() -> i32 {
+	return 0
+}
+
+MouseDown :: proc() -> i32 {
+	return 0
+}
+
+MouseXSpeed :: proc() -> i32 {
+	return 0
+}
+
+MouseYSpeed :: proc() -> i32 {
+	return 0
+}
+
+MouseX :: proc() -> i32 {
+	return 0
+}
+
+MouseY :: proc() -> i32 {
+	return 0
+}
+

@@ -126,37 +126,23 @@ LightConeAngles :: proc(light: uintptr, inner_angle, outer_angle: f32) {}
 LightColor :: proc(light: uintptr, r, g, b: f32) {}
 
 // -------Input--------
-KeyDown :: proc(key: i32) -> i32 { return 0}
-JoyYDir :: proc() -> i32 { return 0}
-JoyXDir :: proc() -> i32 { return 0}
-JoyDown :: proc(something: i32) -> i32 { return 0}
-KeyHit :: proc(key: i32) -> i32 { return 1}
-MoveMouse :: proc(x, y: i32) {}
-MouseDown :: proc(button: i32) -> i32 { return 0}
-MouseXSpeed :: proc() -> i32 { return 0}
-MouseYSpeed :: proc() -> i32 { return 0}
-MouseX :: proc() -> i32 { return 0}
-MouseY :: proc() -> i32 { return 0}
-FlushKeys :: proc() {}
-Input :: proc(prompt: string) -> string { return ""}
-EnableDirectInput :: proc(enable: bool) {}
+// KeyDown :: proc(key: i32) -> i32 { return 0}
+// JoyYDir :: proc() -> i32 { return 0}
+// JoyXDir :: proc() -> i32 { return 0}
+// JoyDown :: proc(something: i32) -> i32 { return 0}
+// KeyHit :: proc(key: i32) -> i32 { return 1}
+// MoveMouse :: proc(x, y: i32) {}
+// MouseDown :: proc(button: i32) -> i32 { return 0}
+// MouseXSpeed :: proc() -> i32 { return 0}
+// MouseYSpeed :: proc() -> i32 { return 0}
+// MouseX :: proc() -> i32 { return 0}
+// MouseY :: proc() -> i32 { return 0}
+// FlushKeys :: proc() {}
+// Input :: proc(prompt: string) -> string { return ""}
+// EnableDirectInput :: proc(enable: bool) {}
 
 // -------Collision--------
 Collisions :: proc(src_type, dest_type, method, response: i32) {}
 ClearCollisions :: proc() {}
 
 // -------Animation--------
-
-
-//------Initialization---------
-Init :: proc() {
-	
-}
-
-Destroy :: proc() {
-	
-}
-
-
-
-

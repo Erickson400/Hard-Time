@@ -153,6 +153,7 @@ Input:
 - MouseYSpeed
 - MouseX
 - MouseY
+- EnableDirectInput
 
 Collision:
 - Collisions
