@@ -1,7 +1,25 @@
 package blitzbasic3d
 
 import sdl "vendor:sdl3"
+import "core:mem"
+import "core:math"
 
+JOYSTICK_DEADZONE :: 10_000		// -32768 (up/left) to 32767 (down/right).
+
+@(private)
+key_buffer: #sparse[sdl.Scancode]i32
+
+@(private, rodata)
+joystick_layout := [13]sdl.GamepadButton{
+	0 = sdl.GamepadButton.INVALID,
+	1 = sdl.GamepadButton.SOUTH,		// Attack
+	2 = sdl.GamepadButton.WEST,			// Throw 
+	3 = sdl.GamepadButton.EAST, 		// Defend
+	4 = sdl.GamepadButton.NORTH,		// Pickup
+	5..=12 = sdl.GamepadButton.INVALID,
+}
+
+@(private)
 blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> sdl.Scancode {
 	table := [?]sdl.Scancode {
 		0 = sdl.Scancode.UNKNOWN,
@@ -150,10 +168,10 @@ blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> sdl.Scancode {
 		/// Mail 	236 	 
 		/// Media Select 	237 	 
 	}
-	return table[blitz_scancode]
+	key := table[blitz_scancode]
+	assert(key != sdl.Scancode.UNKNOWN, "This blitz scancode is unknown")
+	return key
 }
-
-
 
 // Legacy windows feature
 EnableDirectInput :: proc(enable: bool) {}
@@ -164,7 +182,7 @@ Input :: proc(prompt: string) -> string {
 }
 
 FlushKeys :: proc() {
-
+	mem.set(rawptr(&key_buffer), 0, len(key_buffer)*size_of(int))
 }
 
 KeyDown :: proc(scancode: i32) -> i32 {
@@ -173,20 +191,47 @@ KeyDown :: proc(scancode: i32) -> i32 {
 }
 
 KeyHit :: proc(scancode: i32) -> i32 {
-	return 0
+	// Refresh input buffers
+	e: ^sdl.Event
+	for sdl.PollEvent(e) {
+		if e.type == .KEY_DOWN {
+			key_buffer[e.key.scancode] += 1
+		}
+	}
 
+	// Reset and return the specified scancode hit amount
+	sdl_scancode := blitz_scancode_to_sdl_scancode(scancode)
+	hits := key_buffer[sdl_scancode]
+	key_buffer[sdl_scancode] = 0
+	return hits
 }
 
 JoyYDir :: proc() -> i32 {
+	gamepad_count: i32
+	gamepad_ids := sdl.GetGamepads(&gamepad_count)
+	if gamepad_count == 0 do return 0	// No gamepads connected
+	y_axis := sdl.GetGamepadAxis(sdl.GetGamepadFromID(gamepad_ids[0]), .LEFTY)
+	if math.abs(y_axis) > JOYSTICK_DEADZONE do return 1
 	return 0
 }
 
 JoyXDir :: proc() -> i32 {
+	gamepad_count: i32
+	gamepad_ids := sdl.GetGamepads(&gamepad_count)
+	if gamepad_count == 0 do return 0	// No gamepads connected
+	x_axis := sdl.GetGamepadAxis(sdl.GetGamepadFromID(gamepad_ids[0]), .LEFTX)
+	if math.abs(x_axis) > JOYSTICK_DEADZONE do return 1
 	return 0
 }
 
-JoyDown :: proc() -> i32 {
-	return 0
+JoyDown :: proc(button: i32) -> i32 {
+	gamepad_count: i32
+	gamepad_ids := sdl.GetGamepads(&gamepad_count)
+	if gamepad_count == 0 do return 0	// No gamepads connected
+	gamepad := sdl.GetGamepadFromID(gamepad_ids[0])
+	sdl_button := joystick_layout[button]
+	if sdl_button == sdl.GamepadButton.INVALID do return 0
+	return cast(i32)sdl.GetGamepadButton(gamepad, sdl_button)
 }
 
 MoveMouse :: proc() -> i32 {
