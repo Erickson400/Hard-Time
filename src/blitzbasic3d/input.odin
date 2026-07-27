@@ -3,6 +3,7 @@ package blitzbasic3d
 import sdl "vendor:sdl3"
 import "core:mem"
 import "core:math"
+import "core:fmt"
 
 JOYSTICK_DEADZONE :: 10_000		// -32768 (up/left) to 32767 (down/right).
 
@@ -173,16 +174,13 @@ blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> sdl.Scancode {
 	return key
 }
 
-// Legacy windows feature
-EnableDirectInput :: proc(enable: bool) {}
-
 // Complicated, I need to create a text box with graphics.
 Input :: proc(prompt: string) -> string {
 	return "Player Name"
 }
 
 FlushKeys :: proc() {
-	mem.set(rawptr(&key_buffer), 0, len(key_buffer)*size_of(int))
+	mem.set(rawptr(&key_buffer), 0, len(key_buffer)*size_of(i32))
 }
 
 KeyDown :: proc(scancode: i32) -> i32 {
@@ -211,7 +209,7 @@ JoyYDir :: proc() -> i32 {
 	gamepad_ids := sdl.GetGamepads(&gamepad_count)
 	if gamepad_count == 0 do return 0	// No gamepads connected
 	y_axis := sdl.GetGamepadAxis(sdl.GetGamepadFromID(gamepad_ids[0]), .LEFTY)
-	if math.abs(y_axis) > JOYSTICK_DEADZONE do return 1
+	if math.abs(y_axis) > JOYSTICK_DEADZONE do return cast(i32)math.sign(y_axis)
 	return 0
 }
 
@@ -220,7 +218,7 @@ JoyXDir :: proc() -> i32 {
 	gamepad_ids := sdl.GetGamepads(&gamepad_count)
 	if gamepad_count == 0 do return 0	// No gamepads connected
 	x_axis := sdl.GetGamepadAxis(sdl.GetGamepadFromID(gamepad_ids[0]), .LEFTX)
-	if math.abs(x_axis) > JOYSTICK_DEADZONE do return 1
+	if math.abs(x_axis) > JOYSTICK_DEADZONE do return cast(i32)math.sign(x_axis)
 	return 0
 }
 
@@ -234,27 +232,42 @@ JoyDown :: proc(button: i32) -> i32 {
 	return cast(i32)sdl.GetGamepadButton(gamepad, sdl_button)
 }
 
-MoveMouse :: proc() -> i32 {
-	return 0
+MoveMouse :: proc(x, y: i32) {
+	ok := sdl.WarpMouseGlobal(cast(f32)x, cast(f32)y)
+	assert(ok, "Mouse warping is not supported")
 }
 
-MouseDown :: proc() -> i32 {
-	return 0
+MouseDown :: proc(button: i32) -> i32 {
+	mouse_state := sdl.GetRelativeMouseState(nil, nil)
+	if sdl.MouseButtonFlag.LEFT in mouse_state do return 1
+	if sdl.MouseButtonFlag.MIDDLE in mouse_state do return 2
+	if sdl.MouseButtonFlag.RIGHT in mouse_state do return 3
+	fmt.panicf("Mouse button %d is not in the range of 1 - 3", button)
 }
 
 MouseXSpeed :: proc() -> i32 {
-	return 0
+	x: f32
+	_ = sdl.GetRelativeMouseState(&x, nil)
+	return cast(i32)x
 }
 
 MouseYSpeed :: proc() -> i32 {
-	return 0
+	y: f32
+	_ = sdl.GetRelativeMouseState(nil, &y)
+	return cast(i32)y
 }
 
+// TODO: Clamp to screen width
 MouseX :: proc() -> i32 {
-	return 0
+	x: f32
+	_ = sdl.GetMouseState(&x, nil)
+	return cast(i32)x
 }
 
+// TODO: Clamp to screen height
 MouseY :: proc() -> i32 {
-	return 0
+	y: f32
+	_ = sdl.GetMouseState(nil, &y)
+	return cast(i32)y
 }
 

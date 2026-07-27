@@ -29,6 +29,23 @@ time.odin
 - WaitTimer -- Complete
 - FreeTimer -- Complete
 
+input.odin
+- KeyDown --- Complete
+- KeyHit --- Complete
+- FlushKeys --- Complete
+- JoyYDir --- Complete
+- JoyXDir --- Complete
+- JoyDown --- Complete
+- MoveMouse --- Complete
+- MouseDown --- Complete
+- MouseXSpeed --- Complete
+- MouseYSpeed --- Complete
+- MouseX --- Todo. Clamp to screen width.
+- MouseY --- Todo. Clamp to screen height.
+- Input --- Todo. I need a GUI text box.
+
+
+
 Internal:
 - GfxMode3DExists
 - Graphics3DWidth
@@ -138,22 +155,6 @@ Light:
 - LightRange
 - LightConeAngles
 - LightColor
-
-Input:
-- Input
-- KeyDown
-- KeyHit
-- FlushKeys
-- JoyYDir
-- JoyXDir
-- JoyDown
-- MoveMouse
-- MouseDown
-- MouseXSpeed
-- MouseYSpeed
-- MouseX
-- MouseY
-- EnableDirectInput
 
 Collision:
 - Collisions

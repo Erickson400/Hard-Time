@@ -32,10 +32,48 @@ The project has phases.
 | Credits.bb      | Apr 16, 2026      | 10/10    | 752           |
 | Gameplay.bb     | Apr 20, 2026      | 10/10    | 899           |
 
-Copilot and Antigravity were used to help with the first translation pass. Then a second or third manual read is done line by line to confirm the code is accurate. The Accuracy column is how confident I am that the code is functionaly accurate to the original.
+Copilot and Antigravity were used to help with the first translation pass. Then a second or third manual read was done line by line to confirm the code is accurate. The Accuracy column is how confident I am that the code is functionaly accurate to the original.
 
-I'm not re-reading Promos.bb's 4.8k lines of code to make it 10/10 accurate, sorry 😅
+I'm not re-reading Promos.bb's 4.8k lines of code to make it 10/10 accurate, at least for now.
 
-### Blitz3D API Status: TBA
-There're only placeholder functions without implementations - for building without compile errors.
-Check the `todo_API.txt` file for the API functions that Hard Time uses.
+### Blitz3D API Status:
+math.odin:
+- RndI --- Complete
+- RndF --- Complete
+- SeedRnd --- Complete
+
+filesystem.odin:
+- WriteFile --- Complete
+- ReadFile --- Complete
+- CloseFile --- Complete
+- WriteInt --- Complete
+- WriteFloat --- Complete
+- WriteString --- Complete
+- ReadInt --- Complete
+- ReadFloat --- Complete
+- ReadString --- Complete
+
+string.odin:
+- Left --- Complete
+
+time.odin:
+- CreateTimer -- Complete
+- WaitTimer -- Complete
+- FreeTimer -- Complete
+
+input.odin:
+- KeyDown --- Complete
+- KeyHit --- Complete
+- FlushKeys --- Complete
+- JoyYDir --- Complete
+- JoyXDir --- Complete
+- JoyDown --- Complete
+- MoveMouse --- Complete
+- MouseDown --- Complete
+- MouseXSpeed --- Complete
+- MouseYSpeed --- Complete
+- MouseX --- Todo. Clamp to screen width.
+- MouseY --- Todo. Clamp to screen height.
+- Input --- Todo. I need a GUI text box.
+
+For more info on the API milestone check the `checklist_api.txt` file for a full list of Blitz functions used in Hard Time. 

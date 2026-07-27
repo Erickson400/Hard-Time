@@ -19,7 +19,7 @@ entry_point :: proc() {
 	ChangeResolution(optRes, 0)
 	bb.SetBuffer(bb.BackBuffer())
 	bb.AutoMidHandle(true)
-	bb.EnableDirectInput(true)
+	// bb.EnableDirectInput(true)	// Legacy windows feature
 	bb.SeedRnd()   
 
 	// LOADING PROCESS
