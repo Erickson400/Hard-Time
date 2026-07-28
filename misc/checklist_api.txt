@@ -44,11 +44,10 @@ input.odin
 - MouseY --- Todo. Clamp to screen height.
 - Input --- Todo. I need a GUI text box.
 
+graphics.odin
+- GfxMode3DExists --- Complete
 
 
-Internal:
-- GfxMode3DExists
-- Graphics3DWidth
 
 Graphics:
 - Graphics3D

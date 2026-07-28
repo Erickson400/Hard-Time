@@ -1,8 +1,8 @@
 package blitzbasic3d
 
 // ------Internals-------
-GfxMode3DExists :: proc(width, height, color: i32) -> i32 { return 0 }
-Graphics3DWidth :: proc(width, height, color, thingy: i32) {}
+// GfxMode3DExists :: proc(width, height, color: i32) -> i32 { return 0 }
+// Graphics3DWidth :: proc(width, height, color, thingy: i32) {}
 
 // ------Graphics-------
 Cls :: proc() { cls() }
@@ -18,7 +18,7 @@ DrawImage :: proc(image: uintptr, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
 GrabImage :: proc(image: uintptr, x, y: i32, frame: i32 = 0) {}
 Locate :: proc(x, y: i32) {}
-Graphics3D :: proc(width, height, color, fullscreen: i32) {}
+// Graphics3D :: proc(width, height, color, fullscreen: i32) {}
 SetBuffer :: proc(buffer: uintptr) {}
 BackBuffer :: proc() -> uintptr { return 1}
 FrontBuffer :: proc() -> uintptr { return 1}
@@ -61,12 +61,6 @@ CreateSprite :: proc(parent: uintptr = 0) -> uintptr { return 1}
 // -------Text--------
 LoadFont :: proc(filename: string, height, bold, italic, underline: i32) -> uintptr { return 0}
 StringWidth :: proc(text: string) -> i32 { return 1 }
-
-// -------Time----------
-// CreateTimer :: proc(fps: i32) -> uintptr { return 1}
-// WaitTimer :: proc(timer: uintptr) -> i32 { return 1}
-// FreeTimer :: proc(timer: uintptr) {}
-// MilliSecs :: proc() -> i32 { return 1}
 
 // -------Entity-------
 EntityType :: proc(entity: uintptr, collision_type: i32, recursive: i32 = 0) -> i32 { return 1}
@@ -125,24 +119,6 @@ LightRange :: proc(light: uintptr, range: f32) {}
 LightConeAngles :: proc(light: uintptr, inner_angle, outer_angle: f32) {}
 LightColor :: proc(light: uintptr, r, g, b: f32) {}
 
-// -------Input--------
-// KeyDown :: proc(key: i32) -> i32 { return 0}
-// JoyYDir :: proc() -> i32 { return 0}
-// JoyXDir :: proc() -> i32 { return 0}
-// JoyDown :: proc(something: i32) -> i32 { return 0}
-// KeyHit :: proc(key: i32) -> i32 { return 1}
-// MoveMouse :: proc(x, y: i32) {}
-// MouseDown :: proc(button: i32) -> i32 { return 0}
-// MouseXSpeed :: proc() -> i32 { return 0}
-// MouseYSpeed :: proc() -> i32 { return 0}
-// MouseX :: proc() -> i32 { return 0}
-// MouseY :: proc() -> i32 { return 0}
-// FlushKeys :: proc() {}
-// Input :: proc(prompt: string) -> string { return ""}
-// EnableDirectInput :: proc(enable: bool) {}
-
 // -------Collision--------
 Collisions :: proc(src_type, dest_type, method, response: i32) {}
 ClearCollisions :: proc() {}
-
-// -------Animation--------
