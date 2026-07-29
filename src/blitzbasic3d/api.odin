@@ -7,12 +7,12 @@ package blitzbasic3d
 // ------Graphics-------
 Cls :: proc() { cls() }
 Flip :: proc() { flip() }
-Color :: proc(r, g, b: i32) {}
+// Color :: proc(r, g, b: i32) {}
 SetFont :: proc(font: uintptr) {}
 Text :: proc(x, y: i32, text: string, centerx, centery: i32) {}
 Line :: proc(p1x, p1y, p2x, p2y: i32) {}
-GraphicsWidth :: proc() -> i32 { return 1}
-GraphicsHeight :: proc() -> i32 { return 1}
+// GraphicsWidth :: proc() -> i32 { return 1}
+// GraphicsHeight :: proc() -> i32 { return 1}
 TileImage :: proc(image: uintptr) {}
 DrawImage :: proc(image: uintptr, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
@@ -48,9 +48,9 @@ SaveImage :: proc(image_handle: uintptr, path: string) -> i32 { return 1}
 ResizeImage :: proc(image: uintptr, new_width, new_height: i32) {}
 AutoMidHandle :: proc(enable: bool) {}
 PositionTexture :: proc(image: uintptr, u, v: f32) {}
-ColorRed :: proc() -> i32 { return 1}
-ColorGreen :: proc() -> i32 { return 1}
-ColorBlue :: proc() -> i32 { return 1}
+// ColorRed :: proc() -> i32 { return 1}
+// ColorGreen :: proc() -> i32 { return 1}
+// ColorBlue :: proc() -> i32 { return 1}
 
 // -------Sprite---------
 LoadSprite :: proc(filename: string, flags: i32) -> uintptr { return 1}

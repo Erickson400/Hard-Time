@@ -2,16 +2,21 @@ package blitzbasic3d
 
 import "core:os"
 import "core:fmt"
+import "core:path/filepath"
 
 WriteFile :: proc(path: string) -> ^os.File {
-	file, err := os.open(path, {.Write, .Trunc, .Create})
-	if err != nil do fmt.panicf("File could not be opened: %s", path)
+	full_path, _ := filepath.join({"assets", path})
+	file, err := os.open(full_path, {.Write, .Trunc, .Create})
+	if err != nil do fmt.panicf("File could not be opened: %s", full_path)
+	delete(full_path)
 	return file
 }
 
 ReadFile :: proc(path: string) -> ^os.File {
-	file, err := os.open(path)
-	if err != nil do fmt.panicf("File could not be opened: %s", path)
+	full_path, _ := filepath.join({"assets", path})
+	file, err := os.open(full_path)
+	if err != nil do fmt.panicf("File could not be opened: %s", full_path)
+	delete(full_path)
 	return file
 }
 

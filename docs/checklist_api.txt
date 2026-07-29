@@ -46,21 +46,24 @@ input.odin
 
 graphics.odin
 - GfxMode3DExists --- Complete
+- Graphics3D --- Complete
+- GraphicsWidth --- Complete
+- GraphicsHeight --- Complete
+- Color --- Complete
+- ColorRed --- Complete
+- ColorGreen --- Complete
+- ColorBlue --- Complete
 
 
 
 Graphics:
-- Graphics3D
 - Cls
 - Flip
-- Color
 - Locate
 - SetFont
 - Text
 - Line
 - Rect
-- GraphicsWidth
-- GraphicsHeight
 - TileImage
 - DrawImage
 - SetBuffer
@@ -91,9 +94,6 @@ Image/Textures:
 - ResizeImage
 - AutoMidHandle
 - PositionTexture
-- ColorRed
-- ColorGreen
-- ColorBlue
 
 Sprite:
 - LoadSprite

@@ -5,6 +5,7 @@ import "core:fmt"
 import "core:log"
 import "core:mem"
 import "core:os"
+import "core:time"
 
 main :: proc() {
 	// Create tracking allocator
@@ -26,9 +27,9 @@ main :: proc() {
 	}
 
 	// Create file logger. (Info level for debug, Error level for release)
-	log_file, _ := os.open("logs.txt", {.Create, .Trunc})
+	log_file, err := os.open("logs.txt", {.Create, .Write, .Trunc}); assert(err == nil)
 	context.logger = log.create_file_logger(log_file)
-	context.logger.lowest_level = .Info when ODIN_DEBUG else .Error
+	context.logger.lowest_level = .Debug when ODIN_DEBUG else .Error
 	defer os.close(log_file)
 	defer log.destroy_file_logger(context.logger )
 	
@@ -36,8 +37,11 @@ main :: proc() {
 	bb.Init()
 	defer bb.Destroy()
 
+	time.sleep(1 * time.Second)
+
 	// Values.bb is the only file with global code execution, and global variable declarations.
-	// init_values()
+	init_values()
+	log.info("Values initialized")
 
 	// Gameplay.bb entry point, the code section after the includes
 	// entry_point()
