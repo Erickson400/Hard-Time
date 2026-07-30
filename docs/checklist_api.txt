@@ -40,9 +40,8 @@ input.odin
 - MouseDown --- Complete
 - MouseXSpeed --- Complete
 - MouseYSpeed --- Complete
-- MouseX --- Todo. Clamp to screen width.
-- MouseY --- Todo. Clamp to screen height.
-- Input --- Todo. I need a GUI text box.
+- MouseX --- Complete
+- MouseY --- Complete
 
 graphics.odin
 - GfxMode3DExists --- Complete
@@ -70,6 +69,21 @@ Graphics:
 - BackBuffer
 - FrontBuffer
 
+Image/Textures:
+- CreateImage
+- LoadImage
+- MaskImage
+- GrabImage --- I have to render the game into a texture to grab a rect from it.
+- LoadTexture
+- LoadAnimTexture
+- SaveImage
+- ResizeImage
+- AutoMidHandle
+- PositionTexture
+
+Input:
+- Input --- I need a GUI text box first.
+
 Audio:
 - LoadSound
 - Load3DSound
@@ -82,18 +96,6 @@ Audio:
 - SoundPitch
 - CreateListener
 - LoopSound
-
-Image/Textures:
-- CreateImage
-- LoadImage
-- MaskImage
-- GrabImage
-- LoadTexture
-- LoadAnimTexture
-- SaveImage
-- ResizeImage
-- AutoMidHandle
-- PositionTexture
 
 Sprite:
 - LoadSprite

@@ -9,6 +9,7 @@ GfxMode3DExists :: proc(width, height, depth: i32) -> i32 {
 
 window: ^sdl.Window
 
+
 init_graphics :: proc() {
 	window = sdl.CreateWindow("Hard Time", 800, 600, {.VULKAN}); assert(window != nil)
 }

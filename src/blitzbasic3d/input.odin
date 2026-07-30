@@ -4,6 +4,7 @@ import sdl "vendor:sdl3"
 import "core:mem"
 import "core:math"
 import "core:fmt"
+import "core:os"
 
 JOYSTICK_DEADZONE :: 10_000		// -32768 (up/left) to 32767 (down/right).
 
@@ -195,6 +196,9 @@ KeyHit :: proc(scancode: i32) -> i32 {
 		if e.type == .KEY_DOWN {
 			key_buffer[e.key.scancode] += 1
 		}
+		if e.type == .QUIT {
+			os.exit(0)
+		}
 	}
 
 	// Reset and return the specified scancode hit amount
@@ -257,17 +261,19 @@ MouseYSpeed :: proc() -> i32 {
 	return cast(i32)y
 }
 
-// TODO: Clamp to screen width
 MouseX :: proc() -> i32 {
 	x: f32
+	w: i32
 	_ = sdl.GetMouseState(&x, nil)
-	return cast(i32)x
+	_ = sdl.GetWindowSizeInPixels(window, &w, nil)
+	return math.clamp(cast(i32)x, 0, w)
 }
 
-// TODO: Clamp to screen height
 MouseY :: proc() -> i32 {
 	y: f32
+	h: i32
 	_ = sdl.GetMouseState(nil, &y)
-	return cast(i32)y
+	_ = sdl.GetWindowSizeInPixels(window, nil, &h)
+	return math.clamp(cast(i32)y, 0, h)
 }
 

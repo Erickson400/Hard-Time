@@ -1,0 +1,37 @@
+How the SDL_GPU rendering pipeline works
+and what the terms mean.
+
+A Window is the OS window where graphics will lay. It can be moved, closed, resized, fullscreened...etc.
+The Window must be claimed by a GPU device for the GPU to render onto the Window.
+
+A GPUDevice is an abstract handler that represents the GPU Hardware and the underlying API (Vulkan, DX11, Metal).
+
+GPU Driver is Vulkan, DX11, or Metal. Also knows as graphics APIs.
+
+GPUShader is a static SPIR-V compiled program that can be a vertex, fragment, or compute shaders.
+
+GPUBuffer is a buffer that stores vertex data, index data, uniform data, storage uniform data, or compute data.
+They must be uploaded to VRAM.
+
+GPUTexture is a texture that stores raw image data like diffuse, z-buffer, shadow mappping etc..
+They must be uploaded to VRAM.
+
+GPUSampler is a set of instructions that tell the GPU how to read and filter a texture for drawing.
+
+GPUGraphicsPipeline is like an assembly line that goes from raw buffer data, to texels on the screen.
+They take shaders, the primitive shape, blending settings, depth testing, and other rendering properties,
+
+GPUSwapchain is a frame buffer. Get an available swapchain by calling SDL_WaitAndAcquireGPUSwapchainTexture().
+I must pass the swapchain object into the command buffer with SDL_SubmitGPUCommandBuffer() to present it to the screen.
+
+GPUCommandBuffer collects rendering instructions that will be submitted to the GPU in batch.
+They contain render passes and are the ones that aquire the swapchain.
+They have to be aquired and submitted. This is the final stage before presenting the graphics
+
+A Render Target is either a writable texture or a swapchain texture.
+
+GPURenderPass is where the rendering is done, as in where the buffers are binded and the draw calls are done.
+They live inside command buffers.
+
+
+
