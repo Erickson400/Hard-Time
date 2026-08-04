@@ -339,15 +339,15 @@ LoadChars :: proc() {
 LoadPhotos :: proc() {
 	Loader("Please Wait","Loading Photos")
 	for char in i32(1)..=no_chars {
-		charPhoto[char] = 0
+		charPhoto[char] = nil
 		if charSnapped[char] > 0 {
 			digit := Dig(char, 100)
 			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.bmp", slot, digit)
 			delete(digit)
 			defer delete(path)
 			charPhoto[char] = bb.LoadImage(path)
-			if charPhoto[char] > 0 do bb.MaskImage(charPhoto[char], 255, 0, 255)
-			if charPhoto[char] == 0 do charSnapped[char] = 0
+			if charPhoto[char] != nil do bb.MaskImage(charPhoto[char], 255, 0, 255)
+			if charPhoto[char] == nil do charSnapped[char] = 0
 		}
 	}
 }
@@ -356,7 +356,7 @@ LoadPhotos :: proc() {
 SavePhotos :: proc() {
 	if charHealth[gamChar[slot]] > 0 do Loader("Please Wait","Saving Photos")
 	for char in i32(1)..=no_chars {
-		if charPhoto[char] > 0 {
+		if charPhoto[char] != nil {
 			digit := Dig(char, 100)
 			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.bmp", slot, digit)
 			delete(digit)
@@ -543,7 +543,7 @@ GenerateCharacter :: proc(char, role: i32) {
 	charRole[char] = role
 	delete(charName[char])
 	charName[char] = GenerateName(char, context.allocator)
-	charPhoto[char] = 0; charSnapped[char] = 0
+	charPhoto[char] = nil; charSnapped[char] = 0
 	randy := bb.RndI(0, 5)
 	charModel[char] = 2 if randy == 0 else bb.RndI(1, no_models)
 	randy = bb.RndI(0, 2)

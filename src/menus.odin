@@ -604,7 +604,7 @@ SlotSelect :: proc() {
 		bb.DrawImage(gMDickie, i32(rX(400.0)), i32(rY(515.0)))
 		// game preview
 		if foc >= 1 && foc <= 3 {
-			if gamName[foc] != "" && gamPhoto[foc] > 0 {
+			if gamName[foc] != "" && gamPhoto[foc] != nil {
 				bb.DrawImage(gamPhoto[foc], i32(rX(400.0) - 160), i32(rY(20.0 + 55.0 * f32(foc))))
 				bb.Color(0, 0, 0)
 				bb.Rect(i32(rX(400.0) - 235), i32(rY(20.0 + 55.0 * f32(foc)) - 50), 150, 100, 0)
@@ -748,7 +748,7 @@ EditSelect :: proc() {
 		DrawMainLogo(rX(400.0), rY(300.0))
 		bb.DrawImage(gMDickie, i32(rX(400.0)), i32(rY(515.0)))
 		// options
-		if charSnapped[gamChar[0]] > 0 && charPhoto[gamChar[0]] > 0 {
+		if charSnapped[gamChar[0]] > 0 && charPhoto[gamChar[0]] != nil {
 			bb.DrawImage(charPhoto[gamChar[0]], i32(rX(400.0)), i32(rY(185.0) - 80.0))
 		} else {
 			bb.DrawImage(gPhoto, i32(rX(400.0)), i32(rY(185.0) - 80.0))

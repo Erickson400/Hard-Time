@@ -45,7 +45,7 @@ gamFile: i32
 gamDoor: i32
 gamEnded: i32
 gamName: [4]string
-gamPhoto: [4]uintptr
+gamPhoto: [4]^bb.Image
 gamChar: [4]i32
 gamPlayer: [4]i32
 gamLocation: [4]i32
@@ -353,7 +353,7 @@ charExperience: [optCharLim + 1]i32
 // status
 charPlayer: [optCharLim + 1]i32
 charName: [optCharLim + 1]string
-charPhoto: [optCharLim + 1]uintptr
+charPhoto: [optCharLim + 1]^bb.Image
 charSnapped: [optCharLim + 1]i32
 charRole: [optCharLim + 1]i32 // 0=prisoner, 1=warden
 charSentence: [optCharLim + 1]i32
@@ -390,16 +390,16 @@ fontNumber: uintptr
 fontComputer: uintptr
 fontMoney: uintptr
 fontClock: uintptr
-gLogo: [4]uintptr
-gMenu: [11]uintptr
-gTile: uintptr
-gMDickie: uintptr
-gHealth: uintptr
-gHappiness: uintptr
-gMoney: uintptr
-gPhoto: uintptr
-gMap: uintptr
-gMarker: uintptr
+gLogo: [4]^bb.Image
+gMenu: [11]^bb.Image
+gTile: ^bb.Image
+gMDickie: ^bb.Image
+gHealth: ^bb.Image
+gHappiness: ^bb.Image
+gMoney: ^bb.Image
+gPhoto: ^bb.Image
+gMap: ^bb.Image
+gMarker: ^bb.Image
 
 /////////////////////////////////////////////////////////
 //--------------------- TEXTURES ------------------------
@@ -943,7 +943,7 @@ LoadImages :: proc() {
 	// game previews
 	for count in 1..=3 {
 		gamPhoto[count] = bb.LoadImage(fmt.tprintf("Data/Slot0%d/Photos/Game.bmp", count))
-		if gamPhoto[count] > 0 {
+		if gamPhoto[count] != nil {
 			bb.MaskImage(gamPhoto[count], 255, 0, 255)
 		}
 	}

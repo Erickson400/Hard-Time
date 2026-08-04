@@ -13,10 +13,10 @@ Text :: proc(x, y: i32, text: string, centerx, centery: i32) {}
 Line :: proc(p1x, p1y, p2x, p2y: i32) {}
 // GraphicsWidth :: proc() -> i32 { return 1}
 // GraphicsHeight :: proc() -> i32 { return 1}
-TileImage :: proc(image: uintptr) {}
-DrawImage :: proc(image: uintptr, x, y: i32) {}
+TileImage :: proc(image: ^Image) {}
+DrawImage :: proc(image: ^Image, x, y: i32) {}
 Rect :: proc(x, y, width, height, color: i32) {}
-GrabImage :: proc(image: uintptr, x, y: i32, frame: i32 = 0) {}
+GrabImage :: proc(image: ^Image, x, y: i32, frame: i32 = 0) {}
 Locate :: proc(x, y: i32) {}
 // Graphics3D :: proc(width, height, color, fullscreen: i32) {}
 SetBuffer :: proc(buffer: uintptr) {}
@@ -37,16 +37,16 @@ LoopSound :: proc(sound: uintptr) {}
 ChannelVolume :: proc(channel: uintptr, volume: f32) {}
 
 // ------Images/Textures-----
-CreateImage :: proc(width, height: i32) -> uintptr { return 1}
-LoadImage :: proc(filename: string) -> uintptr { return 1 }
-MaskImage :: proc(image: uintptr, r: u8, g: u8, b: u8) {  }
+// CreateImage :: proc(width, height: i32) -> uintptr { return 1}
+// LoadImage :: proc(filename: string) -> uintptr { return 1 }
+// MaskImage :: proc(image: uintptr, r: u8, g: u8, b: u8) {  }
 LoadTexture :: proc(filename: string, flags: i32 = 1) -> uintptr { return 1 }
 LoadAnimTexture :: proc(filenames: string, flags: i32, frame_width, frame_height: i32, first_frame, frame_count: i32) -> uintptr { 
 	return 1
 }
-SaveImage :: proc(image_handle: uintptr, path: string) -> i32 { return 1}
-ResizeImage :: proc(image: uintptr, new_width, new_height: i32) {}
-AutoMidHandle :: proc(enable: bool) {}
+// SaveImage :: proc(image_handle: uintptr, path: string) -> i32 { return 1}
+// ResizeImage :: proc(image: ^Image, new_width, new_height: i32) {}
+// AutoMidHandle :: proc(enable: bool) {}
 PositionTexture :: proc(image: uintptr, u, v: f32) {}
 // ColorRed :: proc() -> i32 { return 1}
 // ColorGreen :: proc() -> i32 { return 1}

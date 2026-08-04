@@ -53,7 +53,13 @@ graphics.odin
 - ColorGreen --- Complete
 - ColorBlue --- Complete
 
-
+image.odin
+- CreateImage
+- LoadImage
+- MaskImage
+- SaveImage
+- ResizeImage
+- AutoMidHandle
 
 Graphics:
 - Cls
@@ -70,15 +76,9 @@ Graphics:
 - FrontBuffer
 
 Image/Textures:
-- CreateImage
-- LoadImage
-- MaskImage
 - GrabImage --- I have to render the game into a texture to grab a rect from it.
 - LoadTexture
 - LoadAnimTexture
-- SaveImage
-- ResizeImage
-- AutoMidHandle
 - PositionTexture
 
 Input:

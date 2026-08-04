@@ -940,7 +940,7 @@ DisplayTime :: proc(x, y: f32) {
 DisplayFile :: proc(char: i32, x, y: f32) { // 100,530
 	checkpoint := mem.begin_arena_temp_memory(cast(^mem.Arena)context.temp_allocator.data)
 	// photo
-	if charSnapped[char] > 0 && charPhoto[char] > 0 {
+	if charSnapped[char] > 0 && charPhoto[char] != nil {
 		bb.DrawImage(charPhoto[char], i32(rX(x)), i32(rY(y)))
 		bb.Color(0, 0, 0)
 		bb.Rect(i32(rX(x)) - 75, i32(rY(y)) - 50, 150, 100, 0)

@@ -2,19 +2,31 @@ package blitzbasic3d
 
 import sdl "vendor:sdl3"
 import "core:math"
+import "core:mem"
 
 GfxMode3DExists :: proc(width, height, depth: i32) -> i32 {
 	return 1 // Legacy feature for old hardware
 }
 
 window: ^sdl.Window
-
+device: ^sdl.GPUDevice
+TRANSFER_BUFFER_SIZE :: 64 * mem.Megabyte
+transfer_buffer: ^sdl.GPUTransferBuffer
 
 init_graphics :: proc() {
 	window = sdl.CreateWindow("Hard Time", 800, 600, {.VULKAN}); assert(window != nil)
+	device = sdl.CreateGPUDevice({.SPIRV}, true, "vulkan")
+	ok := sdl.ClaimWindowForGPUDevice(device, window); assert(ok)
+	transfer_buffer = sdl.CreateGPUTransferBuffer(device, {
+		usage = .UPLOAD,
+		size = TRANSFER_BUFFER_SIZE,
+	})
 }
 
 destroy_graphics :: proc() {
+	sdl.ReleaseGPUTransferBuffer(device, transfer_buffer)
+	sdl.ReleaseWindowFromGPUDevice(device, window)
+	sdl.DestroyGPUDevice(device)
 	sdl.DestroyWindow(window)
 }
 

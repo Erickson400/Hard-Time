@@ -473,7 +473,7 @@ Ending :: proc() {
 		if promoTim >= 125 && promoTim <= 275 && page >= 1 && page <= 10 {
 			x: i32 = 82
 			y: i32 = 539
-			if charSnapped[endChar[page]] > 0 && charPhoto[endChar[page]] > 0 {
+			if charSnapped[endChar[page]] > 0 && charPhoto[endChar[page]] != nil {
 				bb.DrawImage(charPhoto[endChar[page]], i32(rX(f32(x))), i32(rY(f32(y))))
 			} else {
 				bb.DrawImage(gPhoto, i32(rX(f32(x))), i32(rY(f32(y))))
