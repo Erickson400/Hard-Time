@@ -1,3 +1,4 @@
+#+feature dynamic-literals 
 package blitzbasic3d
 
 import sdl "vendor:sdl3"
@@ -22,8 +23,8 @@ joystick_layout := [13]sdl.GamepadButton{
 }
 
 @(private)
-blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> sdl.Scancode {
-	table := [?]sdl.Scancode {
+blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> (sdl.Scancode, bool) {
+	table := map[i32]sdl.Scancode {
 		0 = sdl.Scancode.UNKNOWN,
 		1 = sdl.Scancode.ESCAPE,
 		2 = sdl.Scancode._1, 	 	 
@@ -109,8 +110,8 @@ blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> sdl.Scancode {
 		82 = sdl.Scancode.KP_0,
 		83 = sdl.Scancode.KP_DECIMAL,
 		// OEM_102 	86 	On UK/Germany Keyboards
-		// F11 	87 	 
-		// F12 	88 	 
+		87 = sdl.Scancode.F11,
+		88 = sdl.Scancode.F12,
 		// F13 	100 	(NEC PC98)
 		// F14 	101 	(NEC PC98)
 		// F15 	102 	(NEC PC98)
@@ -170,9 +171,8 @@ blitz_scancode_to_sdl_scancode :: proc(blitz_scancode: i32) -> sdl.Scancode {
 		/// Mail 	236 	 
 		/// Media Select 	237 	 
 	}
-	key := table[blitz_scancode]
-	assert(key != sdl.Scancode.UNKNOWN, "This blitz scancode is unknown")
-	return key
+	defer delete(table)
+	return table[blitz_scancode]
 }
 
 // Complicated, I need to create a text box with graphics.
@@ -186,13 +186,17 @@ FlushKeys :: proc() {
 
 KeyDown :: proc(scancode: i32) -> i32 {
 	key_array := sdl.GetKeyboardState(nil)
-	return cast(i32)key_array[blitz_scancode_to_sdl_scancode(scancode)]
+	sdl_scancode, ok := blitz_scancode_to_sdl_scancode(scancode)
+	if !ok {
+		fmt.panicf("This blitz scancode is unknown: %d", sdl_scancode)
+	}
+	return cast(i32)key_array[sdl_scancode]
 }
 
 KeyHit :: proc(scancode: i32) -> i32 {
 	// Refresh input buffers
-	e: ^sdl.Event
-	for sdl.PollEvent(e) {
+	e: sdl.Event
+	for sdl.PollEvent(&e) {
 		if e.type == .KEY_DOWN {
 			key_buffer[e.key.scancode] += 1
 		}
@@ -200,9 +204,11 @@ KeyHit :: proc(scancode: i32) -> i32 {
 			os.exit(0)
 		}
 	}
-
 	// Reset and return the specified scancode hit amount
-	sdl_scancode := blitz_scancode_to_sdl_scancode(scancode)
+	sdl_scancode, ok := blitz_scancode_to_sdl_scancode(scancode)
+	if !ok {
+		fmt.panicf("This blitz scancode is unknown: %d", sdl_scancode)
+	}
 	hits := key_buffer[sdl_scancode]
 	key_buffer[sdl_scancode] = 0
 	return hits

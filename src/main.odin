@@ -45,7 +45,6 @@ main :: proc() {
 
 	// Values.bb is the only file with global code execution, and global variable declarations.
 	init_values()
-	log.info("Values initialized")
 
 	// Gameplay.bb entry point, the code section after the includes
 	entry_point()

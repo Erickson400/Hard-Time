@@ -51,7 +51,7 @@ CreateImage :: proc(width, height: i32) -> ^Image {
 }
 
 // TODO: I have to Upload the image to the GPU as a Texture.
-LoadImage :: proc(filename: string) -> ^Image {
+LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
 	path, err := strings.concatenate({"assets/", filename}); assert(err==nil)
 	defer delete(path)
 	image := new(Image)
@@ -60,7 +60,7 @@ LoadImage :: proc(filename: string) -> ^Image {
 		fmt.panicf("Failed to load image at: %s", path)
 	}
 	image.surface = sdl.ConvertSurface(image.surface, .RGBA8888)
-	log.infof("Created image and texture for: %s", path)
+	log.infof("Created image and texture for: %s", path, location = location)
 	return image
 }
 
@@ -74,11 +74,13 @@ SaveImage :: proc(image: ^Image, filename: string) {
 	log.infof("Saved image to: %s", path)
 }
 
+// TODO: I have to update the texture too.
 MaskImage :: proc(image: ^Image, r, g, b: u8) {
 	color_to_replace := sdl.MapRGBA(sdl.GetPixelFormatDetails(image.surface.format), nil, r, g, b, 255)
 	sdl.SetSurfaceColorKey(image.surface, true, color_to_replace)
 }
 
+// TODO: I have to update the texture too.
 ResizeImage :: proc(image: ^Image, width, height: i32) {
 	resized_surface := sdl.ScaleSurface(image.surface, width, height, .NEAREST); assert(resized_surface != nil)
 	sdl.DestroySurface(image.surface)

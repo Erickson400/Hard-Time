@@ -46,7 +46,6 @@ Intro :: proc() {
 		bb.Cls()
 		frames := bb.WaitTimer(timer)
 		for _ in 1..=frames {
-			
 			// PROCESS     
 			gotim += 1
 			logoX1 += 40

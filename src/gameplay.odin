@@ -4,6 +4,7 @@ import bb "blitzbasic3d"
 import "core:fmt"
 import "core:mem"
 import "core:strings"
+import "core:log"
 
 //-------------------------------------------------------------------------
 ///////////////////////////////// HARD TIME ///////////////////////////////
@@ -25,6 +26,7 @@ entry_point :: proc() {
 	// LOADING PROCESS
 	// intro
 	Intro()
+	log.infof("Intro initialized")
 	// load media
 	LoadImages()
 	LoadTextures()
