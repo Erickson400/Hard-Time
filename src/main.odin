@@ -28,21 +28,25 @@ main :: proc() {
 
 	// Create file logger. (Info level for debug, Error level for release)
 	log_file, err := os.open("logs.txt", {.Create, .Write, .Trunc}); assert(err == nil)
-	context.logger = log.create_file_logger(log_file)
-	context.logger.lowest_level = .Debug when ODIN_DEBUG else .Error
+	context.logger = log.create_file_logger(
+		log_file,
+		.Debug when ODIN_DEBUG else .Error,
+		{.Level, .Time, .Short_File_Path, .Line},
+	)
 	defer os.close(log_file)
 	defer log.destroy_file_logger(context.logger )
-	
+
 	// Initialize BlitzBasic3D
 	bb.Init()
 	defer bb.Destroy()
 
-	time.sleep(1 * time.Second)
+	// time.sleep(1 * time.Second)
+	time.sleep(0 * time.Second)
 
 	// Values.bb is the only file with global code execution, and global variable declarations.
 	init_values()
 	log.info("Values initialized")
 
 	// Gameplay.bb entry point, the code section after the includes
-	// entry_point()
+	entry_point()
 }

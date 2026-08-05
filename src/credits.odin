@@ -24,13 +24,13 @@ Intro :: proc() {
 	gTile = bb.LoadImage("Graphics/Tile.png")
 	bb.MaskImage(gTile, 255, 0, 255)
 	for count in 1..=3 {
-		gLogo[count] = bb.LoadImage(fmt.tprint("Graphics/Logo0", count, ".png"))
+		gLogo[count] = bb.LoadImage(fmt.tprintf("Graphics/Logo0%d.png", count))
 		bb.MaskImage(gLogo[count], 255, 0, 255)
 	}
 	gMDickie = bb.LoadImage("Graphics/MDickie.png")
 	bb.MaskImage(gMDickie, 255, 0, 255)
 	for count in 1..=4 {
-		gMenu[count] = bb.LoadImage(fmt.tprint("Graphics/Menu0", count, ".png"))
+		gMenu[count] = bb.LoadImage(fmt.tprintf("Graphics/Menu0%d.png", count))
 		bb.MaskImage(gMenu[count], 255, 0, 255)
 	}
 	// frame rating

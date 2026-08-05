@@ -4,6 +4,7 @@ import sdl "vendor:sdl3"
 import "core:strings"
 import "core:fmt"
 import "core:mem"
+import "core:log"
 
 Image :: struct {
 	surface: ^sdl.Surface,
@@ -23,7 +24,7 @@ CreateImage :: proc(width, height: i32) -> ^Image {
 		width = cast(u32)image.surface.w,
 		height = cast(u32)image.surface.h,
 		layer_count_or_depth = 1,
-		num_levels = 1
+		num_levels = 1,
 	}
 	image.texture = sdl.CreateGPUTexture(device, texture_create_info)
 	transfer_ptr := sdl.MapGPUTransferBuffer(device, transfer_buffer, false)
@@ -44,7 +45,8 @@ CreateImage :: proc(width, height: i32) -> ^Image {
 	sdl.UploadToGPUTexture(copy_pass, source, destination, false)
 	sdl.EndGPUCopyPass(copy_pass)
 	fence := sdl.SubmitGPUCommandBufferAndAcquireFence(command_buffer)
-	ok := sdl.WaitForGPUFences(device, true, transmute([^]^sdl.GPUFence)fence, 1); assert(ok)
+	ok := sdl.WaitForGPUFences(device, true, cast([^]^sdl.GPUFence)fence, 1); assert(ok)
+	log.infof("Created blank image and texture.")
 	return image
 }
 
@@ -55,9 +57,10 @@ LoadImage :: proc(filename: string) -> ^Image {
 	image := new(Image)
 	image.surface = sdl.LoadPNG(strings.unsafe_string_to_cstring(path))
 	if image.surface == nil {
-		fmt.panicf("Failed to load iamge at: %s", path)
+		fmt.panicf("Failed to load image at: %s", path)
 	}
 	image.surface = sdl.ConvertSurface(image.surface, .RGBA8888)
+	log.infof("Created image and texture for: %s", path)
 	return image
 }
 
@@ -68,6 +71,7 @@ SaveImage :: proc(image: ^Image, filename: string) {
 	if !ok {
 		fmt.panicf("Failed to save iamge at: %s", path)
 	}
+	log.infof("Saved image to: %s", path)
 }
 
 MaskImage :: proc(image: ^Image, r, g, b: u8) {
