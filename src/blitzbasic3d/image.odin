@@ -18,9 +18,32 @@ mid_handle := false
 CreateImage :: proc(width, height: i32) -> ^Image {
 	image := new(Image)
 	image.surface = sdl.CreateSurface(width, height, .RGBA8888); assert(image.surface != nil)
+	load_texture_from_surface(image)
+	log.infof("Created blank image and texture.")
+	return image
+}
+
+// TODO: I have to Upload the image to the GPU as a Texture.
+LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
+	path, err := strings.concatenate({"assets/", filename}); assert(err==nil)
+	defer delete(path)
+	image := new(Image)
+	image.surface = sdl.LoadPNG(strings.unsafe_string_to_cstring(path))
+	if image.surface == nil {
+		fmt.panicf("Failed to load image at: %s", path, loc = location)
+	}
+	image.surface = sdl.ConvertSurface(image.surface, .RGBA8888)
+	load_texture_from_surface(image)
+	log.infof("Created image and texture for: %s", path, location = location)
+	return image
+}
+
+@(private="file")
+load_texture_from_surface :: proc(image: ^Image) {
 	image_size := image.surface.w * image.surface.w * 4 // Note that its 4 bytes per pixel in case format changes.
 	texture_create_info := sdl.GPUTextureCreateInfo{
-		format = sdl.GetGPUTextureFormatFromPixelFormat(image.surface.format),
+		format = .R8G8B8A8_UNORM,
+		usage = {.SAMPLER},
 		width = cast(u32)image.surface.w,
 		height = cast(u32)image.surface.h,
 		layer_count_or_depth = 1,
@@ -44,24 +67,11 @@ CreateImage :: proc(width, height: i32) -> ^Image {
 	}
 	sdl.UploadToGPUTexture(copy_pass, source, destination, false)
 	sdl.EndGPUCopyPass(copy_pass)
-	fence := sdl.SubmitGPUCommandBufferAndAcquireFence(command_buffer)
-	ok := sdl.WaitForGPUFences(device, true, cast([^]^sdl.GPUFence)fence, 1); assert(ok)
-	log.infof("Created blank image and texture.")
-	return image
-}
-
-// TODO: I have to Upload the image to the GPU as a Texture.
-LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
-	path, err := strings.concatenate({"assets/", filename}); assert(err==nil)
-	defer delete(path)
-	image := new(Image)
-	image.surface = sdl.LoadPNG(strings.unsafe_string_to_cstring(path))
-	if image.surface == nil {
-		fmt.panicf("Failed to load image at: %s", path, loc = location)
-	}
-	image.surface = sdl.ConvertSurface(image.surface, .RGBA8888)
-	log.infof("Created image and texture for: %s", path, location = location)
-	return image
+	fence := sdl.SubmitGPUCommandBufferAndAcquireFence(command_buffer); assert(fence != nil)
+	fence_array := [1]^sdl.GPUFence{fence}
+	ok := sdl.WaitForGPUFences(device, true,  raw_data(fence_array[:]), 1); assert(ok)
+	// ok := sdl.WaitForGPUFences(device, true, cast([^]^sdl.GPUFence)fence, 1); assert(ok)
+	log.debugf("This is running")
 }
 
 SaveImage :: proc(image: ^Image, filename: string) {
