@@ -26,9 +26,10 @@ entry_point :: proc() {
 	// LOADING PROCESS
 	// intro
 	Intro()
-	log.infof("Intro initialized")
+	log.debugf("Intro initialized")
 	// load media
 	LoadImages()
+	log.debugf("Images loaded")
 	LoadTextures()
 	LoadWeaponData()
 
@@ -787,7 +788,7 @@ Gameplay :: proc() {
 	if go == -1 {
 		gamName[slot] = strings.clone(fmt.aprint(CellName(gamChar[slot], context.temp_allocator), ": ", charName[gamChar[slot]]))
 		bb.ResizeImage(gamPhoto[slot], 150, 100)
-		bb.SaveImage(gamPhoto[slot], fmt.tprint("Data/Slot0", slot, "/Photos/Game.bmp"))
+		bb.SaveImage(gamPhoto[slot], fmt.tprint("Data/Slot0", slot, "/Photos/Game.png"))
 		bb.MaskImage(gamPhoto[slot], 255, 0, 255)
 		screen = 5
 	}

@@ -57,7 +57,7 @@ LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
 	image := new(Image)
 	image.surface = sdl.LoadPNG(strings.unsafe_string_to_cstring(path))
 	if image.surface == nil {
-		fmt.panicf("Failed to load image at: %s", path)
+		fmt.panicf("Failed to load image at: %s", path, loc = location)
 	}
 	image.surface = sdl.ConvertSurface(image.surface, .RGBA8888)
 	log.infof("Created image and texture for: %s", path, location = location)

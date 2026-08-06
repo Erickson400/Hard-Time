@@ -996,7 +996,7 @@ Screenshot :: proc() {
 	bb.GrabImage(screenshot, bb.GraphicsWidth() / 2, bb.GraphicsHeight() / 2)
 	// title & save
 	temp := i32(time.time_to_unix_nano(time.now()) / 1_000_000) / 10
-	namer := fmt.aprint("Screenshot - ", temp, ".bmp")
+	namer := fmt.aprint("Screenshot - ", temp, ".png")
 	path := fmt.aprint("Photo Album/", namer)
 	bb.SaveImage(screenshot, path)
 	delete(namer)

@@ -5,6 +5,7 @@ import "core:os"
 import "core:strings"
 import "core:fmt"
 import "core:mem"
+// import "core:log"
 
 ////////////////////////////////////////////////////////////////////////////////
 //--------------------------- HARD TIME: VARIABLES -----------------------------
@@ -942,7 +943,7 @@ LoadImages :: proc() {
 	bb.MaskImage(gPhoto, 255, 0, 255)
 	// game previews
 	for count in 1..=3 {
-		gamPhoto[count] = bb.LoadImage(fmt.tprintf("Data/Slot0%d/Photos/Game.bmp", count))
+		gamPhoto[count] = bb.LoadImage(fmt.tprintf("Data/Slot0%d/Photos/Game.png", count))
 		if gamPhoto[count] != nil {
 			bb.MaskImage(gamPhoto[count], 255, 0, 255)
 		}

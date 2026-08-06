@@ -5,7 +5,7 @@ import "core:fmt"
 import "core:log"
 import "core:mem"
 import "core:os"
-import "core:time"
+// import "core:time"
 
 main :: proc() {
 	// Create tracking allocator
@@ -41,10 +41,10 @@ main :: proc() {
 	defer bb.Destroy()
 
 	// time.sleep(1 * time.Second)
-	time.sleep(0 * time.Second)
 
 	// Values.bb is the only file with global code execution, and global variable declarations.
 	init_values()
+	log.debugf("Values initialized")
 
 	// Gameplay.bb entry point, the code section after the includes
 	entry_point()

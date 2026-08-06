@@ -460,7 +460,7 @@ Editor :: proc() {
 	bb.GrabImage(charPhoto[char], i32(rX(210)), i32(rY(f32(220 - charHeight[char]))))
 	bb.ResizeImage(charPhoto[char], 150, 100)
 	digits := Dig(char, 100)
-	photo_path := fmt.aprintf("Data/Slot0%s/Photos/Photo%s.bmp", slot, digits)
+	photo_path := fmt.aprintf("Data/Slot0%s/Photos/Photo%s.png", slot, digits)
 	bb.SaveImage(charPhoto[char], photo_path)
 	delete(digits)
 	delete(photo_path)

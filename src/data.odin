@@ -342,7 +342,7 @@ LoadPhotos :: proc() {
 		charPhoto[char] = nil
 		if charSnapped[char] > 0 {
 			digit := Dig(char, 100)
-			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.bmp", slot, digit)
+			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.png", slot, digit)
 			delete(digit)
 			defer delete(path)
 			charPhoto[char] = bb.LoadImage(path)
@@ -358,7 +358,7 @@ SavePhotos :: proc() {
 	for char in i32(1)..=no_chars {
 		if charPhoto[char] != nil {
 			digit := Dig(char, 100)
-			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.bmp", slot, digit)
+			path := fmt.aprintf("Data/Slot0%s/Photo/Photo%s.png", slot, digit)
 			delete(digit)
 			defer delete(path)
 			bb.SaveImage(charPhoto[char], path)

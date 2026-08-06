@@ -11,7 +11,7 @@ import bb "blitzbasic3d"
 //-----------------------------------------------------------------
 LoadParticles :: proc() {
 	for cyc in 1..=no_particles {
-		part[cyc] = bb.LoadSprite("World/Sprites/Particle.bmp", 0)
+		part[cyc] = bb.LoadSprite("World/Sprites/Particle.png", 0)
 		bb.EntityFX(part[cyc], 9)
 		partState[cyc] = 0
 		bb.HideEntity(part[cyc])
