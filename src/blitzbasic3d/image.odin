@@ -40,38 +40,38 @@ LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
 
 @(private="file")
 load_texture_from_surface :: proc(image: ^Image) {
-	image_size := image.surface.w * image.surface.w * 4 // Note that its 4 bytes per pixel in case format changes.
-	texture_create_info := sdl.GPUTextureCreateInfo{
+	// Create the texture and copy it's pixel data to the transfer buffer.
+	image_size := image.surface.w * image.surface.h * 4
+	image.texture = sdl.CreateGPUTexture(device, {
 		format = .R8G8B8A8_UNORM,
 		usage = {.SAMPLER},
 		width = cast(u32)image.surface.w,
 		height = cast(u32)image.surface.h,
 		layer_count_or_depth = 1,
 		num_levels = 1,
-	}
-	image.texture = sdl.CreateGPUTexture(device, texture_create_info)
-	transfer_ptr := sdl.MapGPUTransferBuffer(device, transfer_buffer, false)
+	})
+	transfer_ptr := sdl.MapGPUTransferBuffer(device, transfer_buffer, false); assert(transfer_ptr != nil)
 	mem.copy(transfer_ptr, image.surface.pixels, cast(int)image_size)
 	sdl.UnmapGPUTransferBuffer(device, transfer_buffer)
 
+	// Upload the the texture data from the transfer buffer to the GPU.
 	command_buffer := sdl.AcquireGPUCommandBuffer(device); assert(command_buffer != nil)
 	copy_pass := sdl.BeginGPUCopyPass(command_buffer)
-	source := sdl.GPUTextureTransferInfo{
-		transfer_buffer = transfer_buffer,
-		// Do I have to put the pixels per row and rows per layer?
-	}
-	destination := sdl.GPUTextureRegion{
-		texture = image.texture,
-		w = cast(u32)image.surface.w,
-		h = cast(u32)image.surface.h,
-	}
-	sdl.UploadToGPUTexture(copy_pass, source, destination, false)
+	sdl.UploadToGPUTexture(copy_pass,
+		{
+			transfer_buffer = transfer_buffer,
+		},
+		{
+			texture = image.texture,
+			w = cast(u32)image.surface.w,
+			h = cast(u32)image.surface.h,
+			d = 1,
+		},
+		false,
+	)
 	sdl.EndGPUCopyPass(copy_pass)
 	fence := sdl.SubmitGPUCommandBufferAndAcquireFence(command_buffer); assert(fence != nil)
-	fence_array := [1]^sdl.GPUFence{fence}
-	ok := sdl.WaitForGPUFences(device, true,  raw_data(fence_array[:]), 1); assert(ok)
-	// ok := sdl.WaitForGPUFences(device, true, cast([^]^sdl.GPUFence)fence, 1); assert(ok)
-	log.debugf("This is running")
+	ok := sdl.WaitForGPUFences(device, true,  &fence, 1); assert(ok)
 }
 
 SaveImage :: proc(image: ^Image, filename: string) {
