@@ -9,7 +9,6 @@ import "core:log"
 Image :: struct {
 	surface: ^sdl.Surface,
 	texture: ^sdl.GPUTexture,
-	// I might not need a sampler because most images are rendered in the same way.
 }
 
 @(private="file")
@@ -23,7 +22,6 @@ CreateImage :: proc(width, height: i32) -> ^Image {
 	return image
 }
 
-// TODO: I have to Upload the image to the GPU as a Texture.
 LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
 	path, err := strings.concatenate({"assets/", filename}); assert(err==nil)
 	defer delete(path)
@@ -38,7 +36,35 @@ LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
 	return image
 }
 
-@(private="file")
+SaveImage :: proc(image: ^Image, filename: string) {
+	path, err := strings.concatenate({"assets/", filename}); assert(err==nil)
+	defer delete(path)
+	ok := sdl.SavePNG(image.surface, strings.unsafe_string_to_cstring(path))
+	if !ok {
+		fmt.panicf("Failed to save image to: %s", path)
+	}
+	log.infof("Saved image to: %s", path)
+}
+
+MaskImage :: proc(image: ^Image, r, g, b: u8) {
+	color_to_replace := sdl.MapRGBA(sdl.GetPixelFormatDetails(image.surface.format), nil, r, g, b, 255)
+	sdl.SetSurfaceColorKey(image.surface, true, color_to_replace)
+	sdl.ReleaseGPUTexture(device, image.texture)
+	load_texture_from_surface(image)
+}
+
+ResizeImage :: proc(image: ^Image, width, height: i32) {
+	resized_surface := sdl.ScaleSurface(image.surface, width, height, .NEAREST); assert(resized_surface != nil)
+	sdl.DestroySurface(image.surface)
+	image.surface = resized_surface
+	load_texture_from_surface(image)
+}
+
+AutoMidHandle :: proc(enable: bool) {
+	mid_handle = enable
+}
+
+@(private)
 load_texture_from_surface :: proc(image: ^Image) {
 	// Create the texture and copy it's pixel data to the transfer buffer.
 	image_size := image.surface.w * image.surface.h * 4
@@ -73,36 +99,6 @@ load_texture_from_surface :: proc(image: ^Image) {
 	fence := sdl.SubmitGPUCommandBufferAndAcquireFence(command_buffer); assert(fence != nil)
 	ok := sdl.WaitForGPUFences(device, true,  &fence, 1); assert(ok)
 }
-
-SaveImage :: proc(image: ^Image, filename: string) {
-	path, err := strings.concatenate({"assets/", filename}); assert(err==nil)
-	defer delete(path)
-	ok := sdl.SavePNG(image.surface, strings.unsafe_string_to_cstring(path))
-	if !ok {
-		fmt.panicf("Failed to save iamge at: %s", path)
-	}
-	log.infof("Saved image to: %s", path)
-}
-
-// TODO: I have to update the texture too.
-MaskImage :: proc(image: ^Image, r, g, b: u8) {
-	color_to_replace := sdl.MapRGBA(sdl.GetPixelFormatDetails(image.surface.format), nil, r, g, b, 255)
-	sdl.SetSurfaceColorKey(image.surface, true, color_to_replace)
-}
-
-// TODO: I have to update the texture too.
-ResizeImage :: proc(image: ^Image, width, height: i32) {
-	resized_surface := sdl.ScaleSurface(image.surface, width, height, .NEAREST); assert(resized_surface != nil)
-	sdl.DestroySurface(image.surface)
-	free(image.surface)
-	image.surface = resized_surface
-}
-
-AutoMidHandle :: proc(enable: bool) {
-	mid_handle = enable
-}
-
-
 
 
 

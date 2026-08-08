@@ -54,12 +54,12 @@ graphics.odin
 - ColorBlue --- Complete
 
 image.odin
-- CreateImage
-- LoadImage
-- MaskImage
-- SaveImage
-- ResizeImage
-- AutoMidHandle
+- CreateImage --- Complete
+- LoadImage --- Complete
+- MaskImage --- Complete
+- SaveImage --- Complete
+- ResizeImage --- Complete
+- AutoMidHandle --- Complete
 
 Graphics:
 - Cls
@@ -94,7 +94,7 @@ Audio:
 - ChannelVolume
 - SoundVolume
 - SoundPitch
-- CreateListener
+- CreateListener --- I need entities first
 - LoopSound
 
 Sprite:
