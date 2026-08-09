@@ -412,44 +412,44 @@ no_arms: i32
 no_legs: i32
 
 // World variables
-tSign: [21]uintptr
-tBlock: [5]uintptr
-tCell: [21]uintptr
-tFence: uintptr
-tNet: uintptr
-tShower: uintptr
-tCrowd: uintptr
-tScreen: [11]uintptr
-tTray: [11]uintptr
+tSign: [21]^bb.Texture
+tBlock: [5]^bb.Texture
+tCell: [21]^bb.Texture
+tFence: ^bb.Texture
+tNet: ^bb.Texture
+tShower: ^bb.Texture
+tCrowd: ^bb.Texture
+tScreen: [11]^bb.Texture
+tTray: [11]^bb.Texture
 // Weapon variables
-tMachine: uintptr
-tPistol: uintptr
+tMachine: ^bb.Texture
+tPistol: ^bb.Texture
 // Character variables
-tShaved: uintptr
-tEars: uintptr
-tSeverEars: uintptr
-tEyes: [4]uintptr
-tMouth: [6]uintptr
-tSpecs: [4]uintptr
-tHair: [201]uintptr
-tFace: [101]uintptr
-tBody: [101]uintptr
-tArm: [101]uintptr
-tLegs: [101]uintptr
-tBodyShade: [11]uintptr
-tArmShade: [11]uintptr
-tFaceScar: [6]uintptr
-tBodyScar: [6]uintptr
-tArmScar: [6]uintptr
-tLegScar: [6]uintptr
-tSeverBody: [4]uintptr
-tSeverArm: [4]uintptr
-tSeverLegs: [4]uintptr
-tTattooBody: [7]uintptr
-tTattooVest: [7]uintptr
-tTattooArm: [7]uintptr
-tTattooTee: [7]uintptr
-tTattooSleeve: [7]uintptr
+tShaved: ^bb.Texture
+tEars: ^bb.Texture
+tSeverEars: ^bb.Texture
+tEyes: [4]^bb.Texture
+tMouth: [6]^bb.Texture
+tSpecs: [4]^bb.Texture
+tHair: [201]^bb.Texture
+tFace: [101]^bb.Texture
+tBody: [101]^bb.Texture
+tArm: [101]^bb.Texture
+tLegs: [101]^bb.Texture
+tBodyShade: [11]^bb.Texture
+tArmShade: [11]^bb.Texture
+tFaceScar: [6]^bb.Texture
+tBodyScar: [6]^bb.Texture
+tArmScar: [6]^bb.Texture
+tLegScar: [6]^bb.Texture
+tSeverBody: [4]^bb.Texture
+tSeverArm: [4]^bb.Texture
+tSeverLegs: [4]^bb.Texture
+tTattooBody: [7]^bb.Texture
+tTattooVest: [7]^bb.Texture
+tTattooArm: [7]^bb.Texture
+tTattooTee: [7]^bb.Texture
+tTattooSleeve: [7]^bb.Texture
 
 /////////////////////////////////////////////////////////
 //--------------------- WEAPONS -------------------------
@@ -486,7 +486,7 @@ weapBounce: [optWeapLim + 1]f32
 weapName: [weapList + 1]string
 weapFile: [weapList + 1]string
 weapSound: [weapList + 1]uintptr
-weapTex: [weapList + 1]uintptr
+weapTex: [weapList + 1]^bb.Texture
 weapSize: [weapList + 1]f32
 weapWeight: [weapList + 1]f32
 weapValue: [weapList + 1]i32
@@ -1096,42 +1096,42 @@ LoadWeaponData :: proc() {
 	weapName[0] = strings.clone("Thing")
 	// rock
 	n := 1 ; weapName[n] = strings.clone("Rock") ; weapFile[n] = strings.clone("Rock")
-	weapSound[n] = sRock ; weapTex[n] = 0 ; weapShiny[n] = 0
+	weapSound[n] = sRock ; weapTex[n] = nil ; weapShiny[n] = 0
 	weapSize[n] = 5 ; weapWeight[n] = 0.4
 	weapRange[n] = 6 ; weapDamage[n] = 3
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// wooden plank
 	n = 2 ; weapName[n] = strings.clone("Wooden Plank") ; weapFile[n] = strings.clone("Plank")
-	weapSound[n] = sWood ; weapTex[n] = 0 ; weapShiny[n] = 0
+	weapSound[n] = sWood ; weapTex[n] = nil ; weapShiny[n] = 0
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// steel pipe
 	n = 3 ; weapName[n] = strings.clone("Steel Pipe") ; weapFile[n] = strings.clone("Pipe")
-	weapSound[n] = sMetal ; weapTex[n] = 0 ; weapShiny[n] = 1.0
+	weapSound[n] = sMetal ; weapTex[n] = nil ; weapShiny[n] = 1.0
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// baseball bat
 	n = 4 ; weapName[n] = strings.clone("Baseball Bat") ; weapFile[n] = strings.clone("Bat")
-	weapSound[n] = sWood ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sWood ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n]= 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 2
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// pool cue
 	n = 5 ; weapName[n] = strings.clone("Pool Cue") ; weapFile[n] = strings.clone("Cue")
-	weapSound[n] = sCane ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sCane ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n] = 12 ; weapWeight[n] = 0.25
 	weapRange[n] = 10 ; weapDamage[n] = 2
 	weapStyle[n] = 1 ; weapHabitat[n] = 9
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// dagger
 	n = 6 ; weapName[n] = strings.clone("Knife") ; weapFile[n] = strings.clone("Dagger")
-	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
+	weapSound[n] = sBlade ; weapTex[n] = nil ; weapShiny[n] = 1
 	weapSize[n] = 6 ; weapWeight[n] = 0.25
 	weapRange[n] = 6 ; weapDamage[n] = 4
 	weapStyle[n] = 7 ; weapHabitat[n] = 8
@@ -1152,119 +1152,119 @@ LoadWeaponData :: proc() {
 	weapCreate[n] = 1 ; weapValue[n] = 100
 	// TNT
 	n = 9 ; weapName[n] = strings.clone("Explosive") ; weapFile[n] = strings.clone("TNT")
-	weapSound[n] = sGeneric ; weapTex[n] = 0 ; weapShiny[n] = 0
+	weapSound[n] = sGeneric ; weapTex[n] = nil ; weapShiny[n] = 0
 	weapSize[n] = 6 ; weapWeight[n] = 0.3
 	weapRange[n] = 5 ; weapDamage[n] = 2
 	weapStyle[n] = 6 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 100
 	// brick
 	n = 10 ; weapName[n] = strings.clone("Brick") ; weapFile[n] = strings.clone("Brick")
-	weapSound[n] = sRock ; weapTex[n] = 0 ; weapShiny[n] = 0
+	weapSound[n] = sRock ; weapTex[n] = nil ; weapShiny[n] = 0
 	weapSize[n] = 6 ; weapWeight[n] = 0.4
 	weapRange[n] = 6 ; weapDamage[n] = 3
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// dumbell
 	n = 11 ; weapName[n] = strings.clone("Dumbbell") ; weapFile[n] = strings.clone("Dumbell")
-	weapSound[n] = sAxe ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sAxe ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n] = 8 ; weapWeight[n] = 0.5
 	weapRange[n] = 6 ; weapDamage[n] = 5
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// nightstick
 	n = 12 ; weapName[n] = strings.clone("Nightstick") ; weapFile[n] = strings.clone("Baton")
-	weapSound[n] = sWood ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sWood ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n] = 6 ; weapWeight[n] = 0.3
 	weapRange[n] = 7 ; weapDamage[n] = 3
 	weapStyle[n] = 1 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// hammer
 	n = 13 ; weapName[n] = strings.clone("Hammer") ; weapFile[n] = strings.clone("Hammer")
-	weapSound[n] = sRock ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sRock ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n] = 5 ; weapWeight[n] = 0.4
 	weapRange[n] = 6 ; weapDamage[n] = 4
 	weapStyle[n] = 1 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// ball
 	n = 14 ; weapName[n] = strings.clone("Ball") ; weapFile[n] = strings.clone("Ball")
-	weapSound[n] = sBall ; weapTex[n] = 0 ; weapShiny[n] = 0
+	weapSound[n] = sBall ; weapTex[n] = nil ; weapShiny[n] = 0
 	weapSize[n] = 7 ; weapWeight[n] = 0.3
 	weapRange[n] = 5 ; weapDamage[n] = 1
 	weapStyle[n] = 0 ; weapHabitat[n] = 99
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// broom
 	n = 15 ; weapName[n] = strings.clone("Broom") ; weapFile[n] = strings.clone("Broom")
-	weapSound[n] = sCane ; weapTex[n] = 0 ; weapShiny[n] = 0
+	weapSound[n] = sCane ; weapTex[n] = nil ; weapShiny[n] = 0
 	weapSize[n] = 13 ; weapWeight[n] = 0.25
 	weapRange[n] = 11 ; weapDamage[n] = 2
 	weapStyle[n] = 1 ; weapHabitat[n] = 99
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// cigarette
 	n = 16 ; weapName[n] = strings.clone("Cigarette") ; weapFile[n] = strings.clone("Cigar")
-	weapSound[n] = sCigar ; weapTex[n] = 0 ; weapShiny[n] = 0
+	weapSound[n] = sCigar ; weapTex[n] = nil ; weapShiny[n] = 0
 	weapSize[n] = 4 ; weapWeight[n] = 0.15
 	weapRange[n] = 6 ; weapDamage[n] = 1
 	weapStyle[n] = 0 ; weapHabitat[n] = 2
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// syringe
 	n = 17 ; weapName[n] = strings.clone("Syringe") ; weapFile[n] = strings.clone("Syringe")
-	weapSound[n] = sSyringe ; weapTex[n] = 0 ; weapShiny[n] = 0.5
+	weapSound[n] = sSyringe ; weapTex[n] = nil ; weapShiny[n] = 0.5
 	weapSize[n] = 5 ; weapWeight[n] = 0.2
 	weapRange[n] = 6 ; weapDamage[n] = 2
 	weapStyle[n] = 7 ; weapHabitat[n] = 6
 	weapCreate[n] = 0 ; weapValue[n] = 20
 	// beer bottle
 	n = 18 ; weapName[n] = strings.clone("Bottle") ; weapFile[n] = strings.clone("Bottle")
-	weapSound[n] = sBottle ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sBottle ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n] = 5 ; weapWeight[n] = 0.25
 	weapRange[n] = 5 ; weapDamage[n] = 2
 	weapStyle[n] = 6 ; weapHabitat[n] = 8
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// fire extinguisher
 	n = 19 ; weapName[n] = strings.clone("Extinguisher") ; weapFile[n] = strings.clone("Extinguisher")
-	weapSound[n] = sMetal ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sMetal ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n] = 6 ; weapWeight[n] = 0.3
 	weapRange[n] = 5 ; weapDamage[n] = 3
 	weapStyle[n] = 6 ; weapHabitat[n] = 99
 	weapCreate[n] = 1 ; weapValue[n] = 50
 	// screwdriver
 	n = 20 ; weapName[n] = strings.clone("Screwdriver") ; weapFile[n] = strings.clone("Screw")
-	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
+	weapSound[n] = sBlade ; weapTex[n] = nil ; weapShiny[n] = 1
 	weapSize[n] = 5 ; weapWeight[n] = 0.25
 	weapRange[n] = 6 ; weapDamage[n] = 3
 	weapStyle[n] = 7 ; weapHabitat[n] = 10
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// scissors
 	n = 21 ; weapName[n] = strings.clone("Scissor") ; weapFile[n] = strings.clone("Scissors")
-	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
+	weapSound[n] = sBlade ; weapTex[n] = nil ; weapShiny[n] = 1
 	weapSize[n] = 5 ; weapWeight[n] = 0.25
 	weapRange[n] = 6 ; weapDamage[n] = 4
 	weapStyle[n] = 7 ; weapHabitat[n] = 4
 	weapCreate[n] = 1 ; weapValue[n] = 10
 	// meat cleaver
 	n = 22 ; weapName[n] = strings.clone("Meat Cleaver") ; weapFile[n] = strings.clone("Cleaver")
-	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
+	weapSound[n] = sBlade ; weapTex[n] = nil ; weapShiny[n] = 1
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 8 ; weapDamage[n] = 5
 	weapStyle[n] = 1 ; weapHabitat[n] = 8
 	weapCreate[n] = 1 ; weapValue[n] = 20
 	// samurai sword
 	n = 23 ; weapName[n] = strings.clone("Sword") ; weapFile[n] = strings.clone("Samurai")
-	weapSound[n] = sBlade ; weapTex[n] = 0 ; weapShiny[n] = 1
+	weapSound[n] = sBlade ; weapTex[n] = nil ; weapShiny[n] = 1
 	weapSize[n] = 8 ; weapWeight[n] = 0.3
 	weapRange[n] = 10 ; weapDamage[n] = 5
 	weapStyle[n] = 1 ; weapHabitat[n] = 0
 	weapCreate[n] = 1 ; weapValue[n] = 50
 	// comb
 	n = 24 ; weapName[n] = strings.clone("Comb") ; weapFile[n] = strings.clone("Comb")
-	weapSound[n] = sCigar ; weapTex[n] = 0 ; weapShiny[n] = 0.25
+	weapSound[n] = sCigar ; weapTex[n] = nil ; weapShiny[n] = 0.25
 	weapSize[n] = 5 ; weapWeight[n] = 0.2
 	weapRange[n] = 6 ; weapDamage[n] = 1
 	weapStyle[n] = 0 ; weapHabitat[n] = 99
 	weapCreate[n] = 0 ; weapValue[n] = 10
 	// mirror
 	n = 25 ; weapName[n] = strings.clone("Mirror") ; weapFile[n] = strings.clone("Mirror")
-	weapSound[n] = sGeneric ; weapTex[n] = 0 ; weapShiny[n] = 0.5
+	weapSound[n] = sGeneric ; weapTex[n] = nil ; weapShiny[n] = 0.5
 	weapSize[n] = 8 ; weapWeight[n] = 0.25
 	weapRange[n] = 7 ; weapDamage[n] = 2
 	weapStyle[n] = 1 ; weapHabitat[n] = 99

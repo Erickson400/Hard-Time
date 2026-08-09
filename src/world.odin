@@ -159,7 +159,7 @@ LoadWorld :: proc() {
 			if cyc >= 5 {
 				bb.RotateEntity(kit[cyc], 0, 90, 0)
 			}
-			if weapTex[kitType[cyc]] > 0 {
+			if weapTex[kitType[cyc]] != nil {
 				for count in i32(1)..=bb.CountChildren(kit[cyc]) {
 					bb.EntityTexture(bb.GetChild(kit[cyc], count), weapTex[kitType[cyc]])
 				}

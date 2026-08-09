@@ -19,7 +19,7 @@ LoadWeapons :: proc() {
 			weap[cyc] = bb.LoadAnimMesh(weapo_string)
 			delete(weapo_string)
 			bb.ScaleEntity(weap[cyc], 0.4, 0.4, 0.4)
-			if weapTex[weapType[cyc]] > 0 {
+			if weapTex[weapType[cyc]] != nil {
 				for count in 1..=bb.CountChildren(weap[cyc]) {
 					bb.EntityTexture(bb.GetChild(weap[cyc], count), weapTex[weapType[cyc]])
 				}
@@ -494,7 +494,7 @@ AttainWeapon :: proc(cyc, v: i32) {
 	pWeapon[cyc] = v
 	weapCarrier[v] = cyc
 	// texturing issues
-	if weapTex[weapType[v]] > 0 {
+	if weapTex[weapType[v]] != nil {
 		bb.EntityTexture(bb.FindChild(p[cyc], weapFile[weapType[v]]), weapTex[weapType[v]])
 	}
 	bb.EntityShininess(bb.FindChild(p[cyc], weapFile[weapType[v]]), weapShiny[weapType[v]])

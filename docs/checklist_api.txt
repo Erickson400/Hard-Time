@@ -61,6 +61,14 @@ image.odin
 - ResizeImage --- Complete
 - AutoMidHandle --- Complete
 
+texture.odin
+- LoadTexture
+- LoadAnimTexture
+- PositionTexture
+
+
+
+
 Graphics:
 - Cls
 - Flip
@@ -75,11 +83,8 @@ Graphics:
 - BackBuffer
 - FrontBuffer
 
-Image/Textures:
+Image:
 - GrabImage --- I have to render the game into a texture to grab a rect from it.
-- LoadTexture
-- LoadAnimTexture
-- PositionTexture
 
 Input:
 - Input --- I need a GUI text box first.
