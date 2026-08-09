@@ -47,7 +47,7 @@ SaveImage :: proc(image: ^Image, filename: string) {
 }
 
 MaskImage :: proc(image: ^Image, r, g, b: u8) {
-	color_to_replace := sdl.MapRGBA(sdl.GetPixelFormatDetails(image.surface.format), nil, r, g, b, 255)
+	color_to_replace := sdl.MapRGB(sdl.GetPixelFormatDetails(image.surface.format), nil, r, g, b)
 	sdl.SetSurfaceColorKey(image.surface, true, color_to_replace)
 	sdl.ReleaseGPUTexture(device, image.texture)
 	load_texture_from_surface(image)

@@ -58,7 +58,7 @@ EntityY :: proc(entity: uintptr, y: f32 = 0) -> f32 { return 0}
 EntityZ :: proc(entity: uintptr, z: f32 = 0) -> f32 { return 0}
 ResetEntity :: proc(entity: uintptr) {}
 MoveEntity :: proc(entity: uintptr, x, y, z: f32) {}
-EntityTexture :: proc(entity: uintptr, texture: ^Texture, sus: i32 = 0, sos: i32 = 0) {}
+EntityTexture :: proc(entity: uintptr, texture: ^Texture, frame: i32 = 0, index := 0) {}
 FindChild :: proc(parent: uintptr, name: string) -> uintptr { return 1}
 HideEntity :: proc(entity: uintptr) {}
 ShowEntity :: proc(entity: uintptr) {}

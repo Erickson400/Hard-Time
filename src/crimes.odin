@@ -20,7 +20,7 @@ CourtCase :: proc() {
 	world = bb.LoadAnimMesh("World/Courtroom/Courtroom.3ds")
 	for count in i32(1) ..= 10 {
 		digit := Dig(count, 10, context.temp_allocator)
-		bb.EntityTexture(bb.FindChild(world, fmt.tprint("Crowd", digit)), tCrowd, 0, bb.RndI(0, 3))
+		bb.EntityTexture(bb.FindChild(world, fmt.tprint("Crowd", digit)), tCrowd, bb.RndI(0, 3))
 	}
 	sAtmos = bb.LoadSound("Sound/Ambience/Crowd.wav")
 	//camera

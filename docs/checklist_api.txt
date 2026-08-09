@@ -62,9 +62,9 @@ image.odin
 - AutoMidHandle --- Complete
 
 texture.odin
-- LoadTexture
-- LoadAnimTexture
-- PositionTexture
+- LoadTexture --- Complete
+- LoadAnimTexture --- Complete
+- PositionTexture --- Complete
 
 
 
