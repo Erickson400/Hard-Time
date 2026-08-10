@@ -58,7 +58,3 @@ FreeTimer :: proc(timer: ^Timer) {
 	thread.destroy(timer.thread)
 	free(timer)
 }
-
-
-
-

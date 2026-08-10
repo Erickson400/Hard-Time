@@ -66,6 +66,17 @@ texture.odin
 - LoadAnimTexture --- Complete
 - PositionTexture --- Complete
 
+sound.odin
+- LoadSound
+- Load3DSound
+- PlaySound
+- StopChannel
+- ChannelPlaying
+- ChannelVolume
+- SoundVolume
+- SoundPitch
+- LoopSound
+
 
 
 
@@ -90,17 +101,8 @@ Input:
 - Input --- I need a GUI text box first.
 
 Audio:
-- LoadSound
-- Load3DSound
-- PlaySound
-- StopChannel
 - EmitSound --- I need entities first
-- ChannelPlaying
-- ChannelVolume
-- SoundVolume
-- SoundPitch
 - CreateListener --- I need entities first
-- LoopSound
 
 Sprite:
 - LoadSprite

@@ -2,8 +2,8 @@ package blitzbasic3d
 
 
 // ------Graphics-------
-Cls :: proc() { cls() }
-Flip :: proc() { flip() }
+Cls :: proc() {}
+Flip :: proc() {}
 SetFont :: proc(font: uintptr) {}
 Text :: proc(x, y: i32, text: string, centerx, centery: i32) {}
 Line :: proc(p1x, p1y, p2x, p2y: i32) {}
