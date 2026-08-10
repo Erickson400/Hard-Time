@@ -163,12 +163,12 @@ Dig :: proc(value, degree: i32, allocator := context.temp_allocator) -> string {
 	if value == 0 && degree == 100 do return fmt.aprint("000", allocator = allocator)
 	if value < degree {
 		if value < degree / 10 {
-			return fmt.aprintf("00%s", value, allocator = allocator)
+			return fmt.aprintf("00%d", value, allocator = allocator)
 		} else {
-			return fmt.aprintf("0%s", value, allocator = allocator)
+			return fmt.aprintf("0%d", value, allocator = allocator)
 		}
 	}
-	return fmt.aprintf("%s", value, allocator = allocator)
+	return fmt.aprintf("%d", value, allocator = allocator)
 }
 
 

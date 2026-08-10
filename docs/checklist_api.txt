@@ -94,7 +94,7 @@ Audio:
 - Load3DSound
 - PlaySound
 - StopChannel
-- EmitSound
+- EmitSound --- I need entities first
 - ChannelPlaying
 - ChannelVolume
 - SoundVolume
