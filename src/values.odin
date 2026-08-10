@@ -995,11 +995,11 @@ LoadTextures :: proc() {
 	}
 	// video screens
 	for count in i32(0)..=10 {
-		tScreen[count] = bb.LoadTexture(fmt.tprintf("World/Screens/Screen%s.JPG", Dig(count, 10)))
+		tScreen[count] = bb.LoadTexture(fmt.tprintf("World/Screens/Screen%s.png", Dig(count, 10)))
 	}
 	// food trays
 	for count in i32(0)..=7 {
-		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.JPG", Dig(count, 10)))
+		tTray[count] = bb.LoadTexture(fmt.tprintf("World/Sprites/Tray%s.png", Dig(count, 10)))
 	}
 	// world
 	tFence = bb.LoadTexture("World/Sprites/Fence.png", 4)
@@ -1011,36 +1011,36 @@ LoadTextures :: proc() {
 	tPistol = bb.LoadTexture("Weapons/Textures/Pistol.png", 4)
 	// facial expressions
 	Loader("Please Wait", "Loading Expressions")
-	tEars = bb.LoadTexture("Characters/Expressions/Ears.JPG")
+	tEars = bb.LoadTexture("Characters/Expressions/Ears.png")
 	for count in 1..=3 {
-		tEyes[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Eyes0%d.JPG", count))
+		tEyes[count - 1] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Eyes0%d.png", count))
 	}
 	for count in 0..=5 {
-		tMouth[count] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Mouth0%d.JPG", count))
+		tMouth[count] = bb.LoadTexture(fmt.tprintf("Characters/Expressions/Mouth0%d.png", count))
 	}
 	// costume variations
-	tShaved = bb.LoadTexture("Characters/Hair/Shaved.JPG")
+	tShaved = bb.LoadTexture("Characters/Hair/Shaved.png")
 	for count in i32(1)..=3 {
-		tSpecs[count] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.JPG", Dig(count, 10)))
+		tSpecs[count] = bb.LoadTexture(fmt.tprintf("Characters/Specs/Specs%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_hairs {
 		tHair[count] = bb.LoadTexture(fmt.tprintf("Characters/Hair/Hair%s.png", Dig(count, 10)), 4)
 	}
 	for count in i32(1)..=no_faces {
 		Loader("Please Wait", fmt.tprintf("Loading Face %s of %s", Dig(count, 10), no_faces))
-		tFace[count] = bb.LoadTexture(fmt.tprintf("Characters/Faces/Face%s.JPG", Dig(count, 10)))
+		tFace[count] = bb.LoadTexture(fmt.tprintf("Characters/Faces/Face%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_bodies {
 		Loader("Please Wait", fmt.tprintf("Loading Body %s of %s", Dig(count, 10), no_bodies))
-		tBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Bodies/Body%s.JPG", Dig(count, 10)))
+		tBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Bodies/Body%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_arms {
 		Loader("Please Wait", fmt.tprintf("Loading Arm %s of %s", Dig(count, 10), no_arms))
-		tArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Arms/Arm%s.JPG", Dig(count, 10)))
+		tArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Arms/Arm%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=no_legs {
 		Loader("Please Wait", fmt.tprintf("Loading Legs %s of %s", Dig(count, 10), no_legs))
-		tLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Legs/Legs%s.JPG", Dig(count, 10)))
+		tLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Legs/Legs%s.png", Dig(count, 10)))
 	}
 	// racial shades
 	Loader("Please Wait", "Loading Shades")
@@ -1052,36 +1052,38 @@ LoadTextures :: proc() {
 	}
 	// scarring
 	Loader("Please Wait", "Loading Scars")
-	for count in i32(0)..=5 {
-		tFaceScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Face%s.JPG", Dig(count, 10)))
+	// NOTE: Likely a bug. There is no Face05.png. Mat either forgot to create a texture,
+	// Or the loop is suppose to reach 4 only. I'll do the latter.
+	for count in i32(0)..=4 {
+		tFaceScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Face%s.png", Dig(count, 10)))
 	}
 	for count in i32(0)..=4 {
-		tBodyScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Body%s.JPG", Dig(count, 10)))
+		tBodyScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Body%s.png", Dig(count, 10)))
 	}
 	for count in i32(0)..=4 {
-		tArmScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Arm%s.JPG", Dig(count, 10)))
+		tArmScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Arm%s.png", Dig(count, 10)))
 	}
 	for count in i32(0)..=4 {
-		tLegScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Legs%s.JPG", Dig(count, 10)))
+		tLegScar[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Legs%s.png", Dig(count, 10)))
 	}
 	// wounds
-	tSeverEars = bb.LoadTexture("Characters/Scarring/Wounds/Ears.JPG")
+	tSeverEars = bb.LoadTexture("Characters/Scarring/Wounds/Ears.png")
 	for count in i32(1)..=3 {
-		tSeverBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Body%s.JPG", Dig(count, 10)))
+		tSeverBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Body%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=3 {
-		tSeverArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Arm%s.JPG", Dig(count, 10)))
+		tSeverArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Arm%s.png", Dig(count, 10)))
 	}
 	for count in i32(1)..=3 {
-		tSeverLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Legs%s.JPG", Dig(count, 10)))
+		tSeverLegs[count] = bb.LoadTexture(fmt.tprintf("Characters/Scarring/Wounds/Legs%s.png", Dig(count, 10)))
 	}
 	// tattoos
 	for count in i32(1)..=6 {
-		tTattooBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Body%s.JPG", Dig(count, 10)))
-		tTattooVest[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Vest%s.JPG", Dig(count, 10)))
-		tTattooArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Arm%s.JPG", Dig(count, 10)))
-		tTattooTee[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Tee%s.JPG", Dig(count, 10)))
-		tTattooSleeve[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Sleeve%s.JPG", Dig(count, 10)))
+		tTattooBody[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Body%s.png", Dig(count, 10)))
+		tTattooVest[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Vest%s.png", Dig(count, 10)))
+		tTattooArm[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Arm%s.png", Dig(count, 10)))
+		tTattooTee[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Tee%s.png", Dig(count, 10)))
+		tTattooSleeve[count] = bb.LoadTexture(fmt.tprintf("Characters/Tattoos/Sleeve%s.png", Dig(count, 10)))
 	}
 	mem.end_arena_temp_memory(checkpoint)
 }

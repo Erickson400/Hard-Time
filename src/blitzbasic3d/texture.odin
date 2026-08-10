@@ -44,7 +44,7 @@ LoadAnimTexture :: proc(filename: string, flags: i32, frame_width, frame_height,
 	// Blit into seperate surfaces.
 	column_count := (sprite_sheet.w / frame_width)
 	row_count := (sprite_sheet.h / frame_height)
-	assert(column_count == 0 || row_count == 0, "Frame size is bigger than the spritesheet")
+	assert(column_count != 0 && row_count != 0, "Frame size is bigger than the spritesheet")
 	frames := make([]^sdl.Surface, row_count * column_count)
 	for &frame in frames {
 		frame = sdl.CreateSurface(frame_width, frame_height, .RGBA8888)
