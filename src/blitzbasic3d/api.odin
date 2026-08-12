@@ -16,18 +16,9 @@ SetBuffer :: proc(buffer: uintptr) {}
 BackBuffer :: proc() -> uintptr { return 1}
 FrontBuffer :: proc() -> uintptr { return 1}
 
-// ------Audio-----
-ChannelPlaying :: proc(channel: uintptr) -> i32 { return 0 }
-StopChannel :: proc(channel: uintptr) {}
-LoadSound :: proc(filename: string) -> uintptr { return 1 }
-Load3DSound :: proc(filename: string) -> uintptr { return 1 }
-SoundPitch :: proc(sound: uintptr, pitch: i32) {}
-SoundVolume :: proc(sound: uintptr, volume: f32) {}
-EmitSound :: proc(sound: uintptr, entity: uintptr) -> uintptr { return 0}
-PlaySound :: proc(sound: uintptr) -> uintptr { return 1 }
-CreateListener :: proc(entity: uintptr, roll, dopp, dist: f32) -> uintptr { return 1}
-LoopSound :: proc(sound: uintptr) {}
-ChannelVolume :: proc(channel: uintptr, volume: f32) {}
+// -------Audio---------
+EmitSound :: proc(sound: ^Sound, entity: uintptr) -> ^Channel { return nil}
+CreateListener :: proc(entity: uintptr, rolloff: f32 = 1, doppler_scale: f32 = 1, distance_scale: f32 = 1) -> uintptr { return 1}
 
 // -------Sprite---------
 LoadSprite :: proc(filename: string, flags: i32) -> uintptr { return 1}

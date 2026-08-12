@@ -66,16 +66,16 @@ texture.odin
 - LoadAnimTexture --- Complete
 - PositionTexture --- Complete
 
-sound.odin
-- LoadSound
-- Load3DSound
-- PlaySound
-- StopChannel
-- ChannelPlaying
-- ChannelVolume
-- SoundVolume
-- SoundPitch
-- LoopSound
+audio.odin
+- LoadSound --- Complete
+- Load3DSound --- Complete
+- PlaySound --- Complete
+- StopChannel --- Complete
+- ChannelPlaying --- Complete
+- ChannelVolume --- Complete
+- SoundVolume --- Complete
+- SoundPitch --- Complete
+- LoopSound --- Complete
 
 
 

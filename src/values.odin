@@ -128,79 +128,79 @@ buttPickUp: i32 = 4
 //----------------------- SOUND -------------------------
 /////////////////////////////////////////////////////////
 // music & atmosphere
-sTheme: uintptr
-chTheme: uintptr
+sTheme: ^bb.Sound
+chTheme: ^bb.Channel
 musicVol: f32
-chAtmos: uintptr
-sAtmos: uintptr
-chPhone: uintptr
-chAlarm: uintptr
+chAtmos: ^bb.Channel
+sAtmos: ^bb.Sound
+chPhone: ^bb.Channel
+chAlarm: ^bb.Channel
 // menu effects
-sMenuBrowse: uintptr
-sMenuSelect: uintptr
-sMenuGo: uintptr
-sMenuBack: uintptr
-sVoid: uintptr
-sTrash: uintptr
-sCamera: uintptr
-sComputer: uintptr
-sCash: uintptr
-sPaper: uintptr
+sMenuBrowse: ^bb.Sound
+sMenuSelect: ^bb.Sound
+sMenuGo: ^bb.Sound
+sMenuBack: ^bb.Sound
+sVoid: ^bb.Sound
+sTrash: ^bb.Sound
+sCamera: ^bb.Sound
+sComputer: ^bb.Sound
+sCash: ^bb.Sound
+sPaper: ^bb.Sound
 // court reactions
-sMurmur: uintptr
-sJury: [3]uintptr
+sMurmur: ^bb.Sound
+sJury: [3]^bb.Sound
 // world
-sDoor: [4]uintptr
-sBuzzer: uintptr
-sBell: uintptr
-sRing: uintptr
-sAlarm: uintptr
-sTanoy: uintptr
-sBasket: uintptr
+sDoor: [4]^bb.Sound
+sBuzzer: ^bb.Sound
+sBell: ^bb.Sound
+sRing: ^bb.Sound
+sAlarm: ^bb.Sound
+sTanoy: ^bb.Sound
+sBasket: ^bb.Sound
 // movements
-sFall: uintptr
-sThud: uintptr
-sShuffle: [4]uintptr
-sStep: [7]uintptr
+sFall: ^bb.Sound
+sThud: ^bb.Sound
+sShuffle: [4]^bb.Sound
+sStep: [7]^bb.Sound
 // pain
-chDeath: uintptr
-sDeath: uintptr
-sChoke: uintptr
-sSnore: uintptr
-sBreakdown: uintptr
-sPain: [11]uintptr
-sAgony: [6]uintptr
+chDeath: ^bb.Channel
+sDeath: ^bb.Sound
+sChoke: ^bb.Sound
+sSnore: ^bb.Sound
+sBreakdown: ^bb.Sound
+sPain: [11]^bb.Sound
+sAgony: [6]^bb.Sound
 // impacts
-sSwing: uintptr
-sBleed: uintptr
-sStab: uintptr
-sEat: uintptr
-sDrink: uintptr
-sImpact: [7]uintptr
+sSwing: ^bb.Sound
+sBleed: ^bb.Sound
+sStab: ^bb.Sound
+sEat: ^bb.Sound
+sDrink: ^bb.Sound
+sImpact: [7]^bb.Sound
 // weapons
-sGeneric: uintptr
-sBlade: uintptr
-sMetal: uintptr
-sWood: uintptr
-sCane: uintptr
-sString: uintptr
-sRock: uintptr
-sAxe: uintptr
-sBall: uintptr
-sPhone: uintptr
-sCigar: uintptr
-sSyringe: uintptr
-sBottle: uintptr
-sSplash: uintptr
+sGeneric: ^bb.Sound
+sBlade: ^bb.Sound
+sMetal: ^bb.Sound
+sWood: ^bb.Sound
+sCane: ^bb.Sound
+sString: ^bb.Sound
+sRock: ^bb.Sound
+sAxe: ^bb.Sound
+sBall: ^bb.Sound
+sPhone: ^bb.Sound
+sCigar: ^bb.Sound
+sSyringe: ^bb.Sound
+sBottle: ^bb.Sound
+sSplash: ^bb.Sound
 // technology
-sShot: [6]uintptr
-sRicochet: [6]uintptr
-sReload: uintptr
-sGun: uintptr
-sMine: uintptr
-sExplosion: uintptr
-sBlaze: uintptr
-sLaser: uintptr
+sShot: [6]^bb.Sound
+sRicochet: [6]^bb.Sound
+sReload: ^bb.Sound
+sGun: ^bb.Sound
+sMine: ^bb.Sound
+sExplosion: ^bb.Sound
+sBlaze: ^bb.Sound
+sLaser: ^bb.Sound
 
 ////////////////////////////////////////////////////////
 //-------------------- PLAYERS -------------------------
@@ -485,7 +485,7 @@ weapBounce: [optWeapLim + 1]f32
 // type
 weapName: [weapList + 1]string
 weapFile: [weapList + 1]string
-weapSound: [weapList + 1]uintptr
+weapSound: [weapList + 1]^bb.Sound
 weapTex: [weapList + 1]^bb.Texture
 weapSize: [weapList + 1]f32
 weapWeight: [weapList + 1]f32

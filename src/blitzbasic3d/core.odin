@@ -6,10 +6,11 @@ Init :: proc() {
 	sdl.SetHint(sdl.HINT_VIDEO_DRIVER, "x11")
 	ok := sdl.Init({.VIDEO, .AUDIO, .GAMEPAD}); assert(ok)
 	init_graphics()
+	init_audio()
 }
 
-
 Destroy :: proc() {
+	destroy_audio()
 	destroy_graphics()
 	sdl.Quit()
 }

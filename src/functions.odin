@@ -9,7 +9,7 @@ import bb "blitzbasic3d"
 //--------------------------- UNIVERSAL FUNCTIONS ------------------------------
 ////////////////////////////////////////////////////////////////////////////////
 // Produce Variant Sound
-ProduceSound :: proc(entity, sound: uintptr, pitch: i32, vol: f32) {
+ProduceSound :: proc(entity: uintptr, sound: ^bb.Sound, pitch: i32, vol: f32) {
 	vol := vol
 	// fluctuate pitch
 	range1 := pitch - (pitch / 8)
@@ -18,7 +18,7 @@ ProduceSound :: proc(entity, sound: uintptr, pitch: i32, vol: f32) {
 	// fluctuate volume
 	if vol == 0.0 do vol = bb.RndF(0.4, 1.2)
 	// deliver sound
-	if sound > 0 && (gotim > 0 || screen != 50) {
+	if sound != nil && (gotim > 0 || screen != 50) {
 		if pitch > 0 do bb.SoundPitch(sound, pitcher)
 		bb.SoundVolume(sound, vol)
 		if entity > 0 do bb.EmitSound(sound, entity)
