@@ -18,7 +18,6 @@ CreateImage :: proc(width, height: i32) -> ^Image {
 	image := new(Image)
 	image.surface = sdl.CreateSurface(width, height, .RGBA8888); assert(image.surface != nil)
 	load_texture_from_surface(image)
-	log.infof("Created blank image and texture.")
 	return image
 }
 
@@ -32,7 +31,6 @@ LoadImage :: proc(filename: string, location := #caller_location) -> ^Image {
 	}
 	image.surface = sdl.ConvertSurface(image.surface, .RGBA8888)
 	load_texture_from_surface(image)
-	log.infof("Created image and texture for: %s", path, location = location)
 	return image
 }
 

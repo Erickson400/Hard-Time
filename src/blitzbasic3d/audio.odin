@@ -3,6 +3,7 @@ package blitzbasic3d
 import sdl "vendor:sdl3"
 import mix "vendor:sdl3/mixer"
 import "core:fmt"
+import "core:log"
 import "core:strings"
 
 Sound :: struct {
@@ -58,13 +59,11 @@ LoopSound :: proc(sound: ^Sound) {
 }
 
 PlaySound :: proc(sound: ^Sound) -> ^Channel {
-	fmt.printf("Playing Sound %s %d %f \n", sound.name, sound.pitch, sound.volume)
 	channel := mix.CreateTrack(mixer_device)
 	ok := mix.SetTrackAudio(channel, sound.audio); assert(ok)
-	// ok = mix.SetTrackGain(channel, sound.volume); assert(ok)
+	ok = mix.SetTrackGain(channel, sound.volume); assert(ok)
 	loops: i32 = -1 if sound.loop else 0
 	ok = mix.SetTrackLoops(channel, loops); assert(ok)
-	// ok = mix.SetTrackFrequencyRatio(channel, 1); assert(ok)
 	ok = mix.SetTrackFrequencyRatio(channel, f32(sound.pitch)/22050.0); assert(ok)
 	ok = mix.PlayTrack(channel, 0); assert(ok)
 	return channel

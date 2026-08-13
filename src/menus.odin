@@ -1,9 +1,9 @@
 package main
 
-import "core:fmt"
-import "core:time"
-import "core:strconv"
 import bb "blitzbasic3d"
+import "core:strconv"
+import "core:time"
+import "core:fmt"
 
 ////////////////////////////////////////////////////////////////////////////////
 //-------------------------- HARD TIME: MENU SCREENS ---------------------------
@@ -43,12 +43,18 @@ MainMenu :: proc() {
 				if cast(bool)bb.KeyDown(200) || bb.JoyYDir() == -1 {
 					foc -= 1
 					bb.PlaySound(sMenuSelect)
-					keytim = 6
+					//NOTE: Likely a bug. 6 frames is too fast for the keytim counter.
+					// I'll set it to a higher number to prevent earrape. 
+					// keytim = 6
+					keytim = 800
 				}
 				if cast(bool)bb.KeyDown(208) || bb.JoyYDir() == 1 {
 					foc += 1
 					bb.PlaySound(sMenuSelect)
-					keytim = 6
+					//NOTE: Likely a bug. 6 frames is too fast for the keytim counter.
+					// I'll set it to a higher number to prevent earrape. 
+					// keytim = 6
+					keytim = 800
 				}
 				if foc < 1 do foc = 4
 				if foc > 4 do foc = 1

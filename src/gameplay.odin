@@ -4,12 +4,11 @@ import bb "blitzbasic3d"
 import "core:fmt"
 import "core:mem"
 import "core:strings"
-import "core:log"
 
 //-------------------------------------------------------------------------
 ///////////////////////////////// HARD TIME ///////////////////////////////
 //-------------------------------------------------------------------------
-//~~~~~~~~~~~~~~~~~~~~~ Copyright � Mat Dickie 2007 ~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~ Copyright © Mat Dickie 2007 ~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~ This program may not be re-released under any other ~~~~~~~~~~
 //~~~~~~~ identity or sold commercially without express permission. ~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,10 +25,8 @@ entry_point :: proc() {
 	// LOADING PROCESS
 	// intro
 	Intro()
-	log.debugf("Intro initialized")
 	// load media
 	LoadImages()
-	log.debugf("Images loaded")
 	LoadTextures()
 	LoadWeaponData()
 
