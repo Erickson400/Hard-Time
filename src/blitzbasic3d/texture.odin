@@ -65,7 +65,7 @@ LoadAnimTexture :: proc(filename: string, flags: i32, frame_width, frame_height,
 	for i in 0..<len(textures) {
 		// Create the texture and copy it's pixel data to the transfer buffer.
 		image_size := frame_width * frame_height * 4
-		textures[i] = sdl.CreateGPUTexture(device, {
+		textures[i] = sdl.CreateGPUTexture(gpu_device, {
 			format = .R8G8B8A8_UNORM,
 			usage = {.SAMPLER},
 			width = cast(u32)frame_width,
@@ -74,12 +74,12 @@ LoadAnimTexture :: proc(filename: string, flags: i32, frame_width, frame_height,
 			num_levels = 1,
 		})
 
-		transfer_ptr := sdl.MapGPUTransferBuffer(device, transfer_buffer, false); assert(transfer_ptr != nil)
+		transfer_ptr := sdl.MapGPUTransferBuffer(gpu_device, transfer_buffer, false); assert(transfer_ptr != nil)
 		mem.copy(transfer_ptr, frames[i].pixels, cast(int)image_size)
-		sdl.UnmapGPUTransferBuffer(device, transfer_buffer)
+		sdl.UnmapGPUTransferBuffer(gpu_device, transfer_buffer)
 
 		// Upload the the texture data from the transfer buffer to the GPU.
-		command_buffer := sdl.AcquireGPUCommandBuffer(device); assert(command_buffer != nil)
+		command_buffer := sdl.AcquireGPUCommandBuffer(gpu_device); assert(command_buffer != nil)
 		copy_pass := sdl.BeginGPUCopyPass(command_buffer)
 		sdl.UploadToGPUTexture(copy_pass,
 			{
@@ -95,7 +95,8 @@ LoadAnimTexture :: proc(filename: string, flags: i32, frame_width, frame_height,
 		)
 		sdl.EndGPUCopyPass(copy_pass)
 		fence := sdl.SubmitGPUCommandBufferAndAcquireFence(command_buffer); assert(fence != nil)
-		ok := sdl.WaitForGPUFences(device, true,  &fence, 1); assert(ok)
+		ok := sdl.WaitForGPUFences(gpu_device, true,  &fence, 1); assert(ok)
+		sdl.ReleaseGPUFence(gpu_device, fence)
 	}
 
 	// Delete the surfaces, dont need them anymore

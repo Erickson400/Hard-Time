@@ -3,7 +3,6 @@ package blitzbasic3d
 import sdl "vendor:sdl3"
 import mix "vendor:sdl3/mixer"
 import "core:fmt"
-import "core:log"
 import "core:strings"
 
 Sound :: struct {

@@ -17,7 +17,7 @@ entry_point :: proc() {
 	// INITIATE ENGINE 
 	LoadOptions()
 	ChangeResolution(optRes, 0)
-	bb.SetBuffer(bb.BackBuffer())
+	// bb.SetBuffer(bb.BackBuffer())	// Not needed with my immediate rendering implementation.
 	bb.AutoMidHandle(true)
 	// bb.EnableDirectInput(true)	// Legacy windows feature
 	bb.SeedRnd()   

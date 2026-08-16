@@ -2,19 +2,19 @@ package blitzbasic3d
 
 
 // ------Graphics-------
-Cls :: proc() {}
+// Cls :: proc() {}
 Flip :: proc() {}
 SetFont :: proc(font: uintptr) {}
 Text :: proc(x, y: i32, text: string, centerx, centery: i32) {}
-Line :: proc(p1x, p1y, p2x, p2y: i32) {}
-TileImage :: proc(image: ^Image) {}
-DrawImage :: proc(image: ^Image, x, y: i32) {}
-Rect :: proc(x, y, width, height, color: i32) {}
-GrabImage :: proc(image: ^Image, x, y: i32, frame: i32 = 0) {}
+// Line :: proc(p1x, p1y, p2x, p2y: i32) {}
+// TileImage :: proc(image: ^Image) {}
+// DrawImage :: proc(image: ^Image, x, y: i32) {}
+// Rect :: proc(x, y, width, height, color: i32) {}
+// GrabImage :: proc(image: ^Image, x, y: i32, frame: i32 = 0) {}
 Locate :: proc(x, y: i32) {}
-SetBuffer :: proc(buffer: uintptr) {}
-BackBuffer :: proc() -> uintptr { return 1}
-FrontBuffer :: proc() -> uintptr { return 1}
+// SetBuffer :: proc(buffer: uintptr) {}
+// BackBuffer :: proc() -> uintptr { return 1}
+// FrontBuffer :: proc() -> uintptr { return 1}
 
 // -------Audio---------
 EmitSound :: proc(sound: ^Sound, entity: uintptr) -> ^Channel { return nil}

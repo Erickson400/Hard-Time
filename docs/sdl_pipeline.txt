@@ -18,7 +18,7 @@ They must be uploaded to VRAM.
 
 GPUSampler is a set of instructions that tell the GPU how to read and filter a texture for drawing.
 
-GPUGraphicsPipeline is like an assembly line that goes from raw buffer data, to texels on the screen.
+GPUGraphicsPipeline is like an assembly line that goes from raw buffer data, to pixels on the screen.
 They take shaders, the primitive shape, blending settings, depth testing, and other rendering properties,
 
 GPUSwapchain is a frame buffer. Get an available swapchain by calling SDL_WaitAndAcquireGPUSwapchainTexture().
@@ -33,5 +33,5 @@ A Render Target is either a writable texture or a swapchain texture.
 GPURenderPass is where the rendering is done, as in where the buffers are binded and the draw calls are done.
 They live inside command buffers.
 
-
+GPUCopyPass is where data is trasfered from the CPU to GPU using TransferBuffers.
 

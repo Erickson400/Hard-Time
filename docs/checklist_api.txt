@@ -90,9 +90,6 @@ Graphics:
 - Rect
 - TileImage
 - DrawImage
-- SetBuffer
-- BackBuffer
-- FrontBuffer
 
 Image:
 - GrabImage --- I have to render the game into a texture to grab a rect from it.

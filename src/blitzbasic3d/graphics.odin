@@ -3,30 +3,31 @@ package blitzbasic3d
 import sdl "vendor:sdl3"
 import "core:math"
 import "core:mem"
+import "core:container/queue"
 
 GfxMode3DExists :: proc(width, height, depth: i32) -> i32 {
 	return 1 // Legacy feature for old hardware
 }
 
 window: ^sdl.Window
-device: ^sdl.GPUDevice
+gpu_device: ^sdl.GPUDevice
 TRANSFER_BUFFER_SIZE :: 64 * mem.Megabyte
 transfer_buffer: ^sdl.GPUTransferBuffer
 
 init_graphics :: proc() {
 	window = sdl.CreateWindow("Hard Time", 800, 600, {.VULKAN}); assert(window != nil)
-	device = sdl.CreateGPUDevice({.SPIRV}, true, "vulkan")
-	ok := sdl.ClaimWindowForGPUDevice(device, window); assert(ok)
-	transfer_buffer = sdl.CreateGPUTransferBuffer(device, {
+	gpu_device = sdl.CreateGPUDevice({.SPIRV}, true, "vulkan")
+	ok := sdl.ClaimWindowForGPUDevice(gpu_device, window); assert(ok)
+	transfer_buffer = sdl.CreateGPUTransferBuffer(gpu_device, {
 		usage = .UPLOAD,
 		size = TRANSFER_BUFFER_SIZE,
 	})
 }
 
 destroy_graphics :: proc() {
-	sdl.ReleaseGPUTransferBuffer(device, transfer_buffer)
-	sdl.ReleaseWindowFromGPUDevice(device, window)
-	sdl.DestroyGPUDevice(device)
+	sdl.ReleaseGPUTransferBuffer(gpu_device, transfer_buffer)
+	sdl.ReleaseWindowFromGPUDevice(gpu_device, window)
+	sdl.DestroyGPUDevice(gpu_device)
 	sdl.DestroyWindow(window)
 }
 
@@ -65,3 +66,65 @@ ColorGreen :: proc() -> i32 { return drawing_color.g}
 
 ColorBlue :: proc() -> i32 { return drawing_color.b}
 
+// RenderWorld also flushes the 2D draw queue, but 3D geometry will be rendered on top of it.
+canvas: ^sdl.GPUTexture
+draw_queue: queue.Queue(DrawCall)
+
+DrawCall :: union {
+	RenderCls,
+	RenderLine,
+	RenderRect,
+	RenderTileImage,
+	RenderDrawImage,
+	RenderGrabImage,
+}
+
+RenderCls :: struct {
+	color: [3]i32,
+}
+
+RenderLine :: struct {
+	p1x, p1y, p2x, p2y: i32,
+}
+
+RenderRect :: struct {
+	x, y, width, height, color: i32,
+}
+
+RenderTileImage :: struct {
+	image: ^Image,
+}
+
+RenderDrawImage :: struct {
+	image: ^Image,
+	x, y: i32,
+}
+
+RenderGrabImage :: struct {
+	image: ^Image,
+	x, y, frame: i32,
+}
+
+Cls :: proc() {
+	queue.enqueue(&draw_queue, RenderCls{drawing_color})
+}
+
+Line :: proc(p1x, p1y, p2x, p2y: i32) {
+	queue.enqueue(&draw_queue, RenderLine{p1x, p1y, p2x, p2y})
+}
+
+TileImage :: proc(image: ^Image) {
+	queue.enqueue(&draw_queue, RenderTileImage{image})
+}
+
+DrawImage :: proc(image: ^Image, x, y: i32) {
+	queue.enqueue(&draw_queue, RenderDrawImage{image, x, y})
+}
+
+Rect :: proc(x, y, width, height, color: i32) {
+	queue.enqueue(&draw_queue, RenderRect{x, y, width, height, color})
+}
+
+GrabImage :: proc(image: ^Image, x, y: i32, frame: i32 = 0) {
+	queue.enqueue(&draw_queue, RenderGrabImage{image, x, y, frame})
+}
