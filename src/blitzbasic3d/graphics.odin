@@ -14,13 +14,24 @@ gpu_device: ^sdl.GPUDevice
 TRANSFER_BUFFER_SIZE :: 64 * mem.Megabyte
 transfer_buffer: ^sdl.GPUTransferBuffer
 
+SCREEN_WIDTH :: 800
+SCREEN_HEIGHT :: 600
+
 init_graphics :: proc() {
-	window = sdl.CreateWindow("Hard Time", 800, 600, {.VULKAN}); assert(window != nil)
+	window = sdl.CreateWindow("Hard Time", SCREEN_WIDTH, SCREEN_HEIGHT, {.VULKAN}); assert(window != nil)
 	gpu_device = sdl.CreateGPUDevice({.SPIRV}, true, "vulkan")
 	ok := sdl.ClaimWindowForGPUDevice(gpu_device, window); assert(ok)
 	transfer_buffer = sdl.CreateGPUTransferBuffer(gpu_device, {
 		usage = .UPLOAD,
 		size = TRANSFER_BUFFER_SIZE,
+	})
+	canvas = sdl.CreateGPUTexture(gpu_device, {
+		format = .R8G8B8A8_UNORM,
+		usage = {.SAMPLER},
+		width = SCREEN_WIDTH,
+		height = SCREEN_HEIGHT,
+		layer_count_or_depth = 1,
+		num_levels = 1,
 	})
 }
 
@@ -77,6 +88,7 @@ DrawCall :: union {
 	RenderTileImage,
 	RenderDrawImage,
 	RenderGrabImage,
+	RenderLocate,
 }
 
 RenderCls :: struct {
@@ -105,6 +117,10 @@ RenderGrabImage :: struct {
 	x, y, frame: i32,
 }
 
+RenderLocate :: struct {
+	x, y: i32,
+}
+
 Cls :: proc() {
 	queue.enqueue(&draw_queue, RenderCls{drawing_color})
 }
@@ -128,3 +144,17 @@ Rect :: proc(x, y, width, height, color: i32) {
 GrabImage :: proc(image: ^Image, x, y: i32, frame: i32 = 0) {
 	queue.enqueue(&draw_queue, RenderGrabImage{image, x, y, frame})
 }
+
+Locate :: proc(x, y: i32) {
+	// When using Input(), the queue flusher should keep track of the last location set.
+	queue.enqueue(&draw_queue, RenderLocate{x, y})
+}
+
+Flip :: proc() {
+
+}
+
+
+
+
+

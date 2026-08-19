@@ -81,15 +81,14 @@ audio.odin
 
 
 Graphics:
-- Cls
+- Cls --- Function done, but not the rendering
 - Flip
-- Locate
-- SetFont
-- Text
-- Line
-- Rect
-- TileImage
-- DrawImage
+- Locate --- Function done, but not the rendering
+- RenderWorld
+- Line --- Function done, but not the rendering
+- Rect --- Function done, but not the rendering
+- TileImage --- Function done, but not the rendering
+- DrawImage --- Function done, but not the rendering
 
 Image:
 - GrabImage --- I have to render the game into a texture to grab a rect from it.
@@ -103,12 +102,15 @@ Audio:
 
 Sprite:
 - LoadSprite
+- CreateSprite
 - ScaleSprite
 - SpriteViewMode
 
 Text:
 - LoadFont
 - StringWidth
+- SetFont
+- Text
 
 Entity:
 - EntityType
@@ -139,7 +141,6 @@ Entity:
 - GetChild
 - FindChild
 - CountChildren
-- CreateSprite
 
 Camera:
 - CreateCamera
@@ -149,10 +150,6 @@ Camera:
 - CameraFogRange
 - CameraFogColor
 - CameraClsMode
-
-World:
-- UpdateWorld
-- RenderWorld
 
 Light:
 - AmbientLight
@@ -170,3 +167,6 @@ Animation:
 - LoadAnimMesh
 - LoadAnimSeq
 - ExtractAnimSeq
+
+World:
+- UpdateWorld
