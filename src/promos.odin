@@ -58,7 +58,7 @@ RiskPromo :: proc(cyc, v: i32) {
 			if promoUsed[6] == 0 do charPromo[pChar[cyc]][pChar[v]] = 6
 		}
 		// out of block during lock down
-		if LockDown() != 0 \
+		if cast(bool)LockDown() \
 		&& GetBlock(gamLocation[slot]) != charBlock[pChar[v]] \
 		&& cast(bool)InProximity(cyc, v, 50) {
 			if charBribeTim[pChar[cyc]] == 0 \
@@ -67,7 +67,7 @@ RiskPromo :: proc(cyc, v: i32) {
 			}
 		}
 		// out of cell during lock down
-		if LockDown() != 0 \
+		if cast(bool)LockDown() \
 		&& GetBlock(gamLocation[slot]) == charBlock[pChar[v]] \
 		&& InsideCell(pX[v], pY[v], pZ[v]) != charCell[pChar[v]] \
 		&& cast(bool)InProximity(cyc, v, 50) \
@@ -78,7 +78,7 @@ RiskPromo :: proc(cyc, v: i32) {
 			}
 		}
 		// told off for sleeping in
-		if LockDown() == 0 \
+		if !cast(bool)LockDown() \
 		&& pAnim[v] == 103 \
 		&& gamLocation[slot] != 6 \
 		&& cast(bool)InProximity(cyc, v, 100) \
@@ -156,7 +156,7 @@ RiskPromo :: proc(cyc, v: i32) {
 		&& charRelation[pChar[cyc]][pChar[v]] >= 0 \
 		&& charAngerTim[pChar[cyc]][pChar[v]] == 0 \
 		&& cast(bool)InProximity(cyc, v, 30) {
-			if InLine(cyc, p[v], talkRange) != 0 {
+			if cast(bool)InLine(cyc, p[v], talkRange) {
 				charPromo[pChar[cyc]][pChar[v]] = 244
 			}
 		}
