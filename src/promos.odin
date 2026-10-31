@@ -446,8 +446,8 @@ RiskPromo :: proc(cyc, v: i32) {
 		// alarmed by dangerous weapon
 		danger: i32 = 0
 		w := weapType[pWeapon[v]]
-		if w == 6 || w == 12 || (w >= 22 && w <= 23) { danger = 1 }
-		if w >= 7 && w <= 9 { danger = 3 }
+		if w == 6 || w == 12 || (w >= 22 && w <= 23) do danger = 1
+		if w >= 7 && w <= 9 do danger = 3
 		randy = InferiorDice(cyc, v)
 		if randy <= danger && danger > 0 && pWeapon[v] > 0 \
 		&& weapHabitat[weapType[pWeapon[v]]] != gamLocation[slot] \
@@ -486,7 +486,8 @@ RiskPromo :: proc(cyc, v: i32) {
 				if InferiorDice(cyc, v) == 0 && charCrime[pChar[v]] > charCrime[pChar[cyc]] + 2 {
 					charPromo[pChar[cyc]][pChar[v]] = 239 // superior crime
 				}
-				if GetBlock(gamLocation[slot]) > 0 && GetBlock(gamLocation[slot]) == charBlock[pChar[cyc]] && GetBlock(gamLocation[slot]) != charBlock[pChar[v]] {
+				if GetBlock(gamLocation[slot]) > 0 && GetBlock(gamLocation[slot]) == charBlock[pChar[cyc]] \
+				&& GetBlock(gamLocation[slot]) != charBlock[pChar[v]] {
 					if SuperiorDice(cyc, v) == 0 {
 						charPromo[pChar[cyc]][pChar[v]] = 242 // block rivalry
 					}
@@ -730,7 +731,8 @@ RiskPromo :: proc(cyc, v: i32) {
 				if its > 100 {
 					charPromoRef[pChar[cyc]] = 0
 				}
-				if charPromoRef[pChar[cyc]] > 0 && charRelation[pChar[v]][charPromoRef[pChar[cyc]]] >= 0 {
+				if charPromoRef[pChar[cyc]] == 0 || (charRelation[pChar[cyc]][charPromoRef[pChar[cyc]]] > 0 \
+				&& charRelation[pChar[v]][charPromoRef[pChar[cyc]]] > 0) {
 					break
 				}
 			}
@@ -750,7 +752,8 @@ RiskPromo :: proc(cyc, v: i32) {
 				if its > 100 {
 					charPromoRef[pChar[cyc]] = 0
 				}
-				if charPromoRef[pChar[cyc]] > 0 && charRelation[pChar[v]][charPromoRef[pChar[cyc]]] < 0 {
+				if charPromoRef[pChar[cyc]] == 0 || (charRelation[pChar[cyc]][charPromoRef[pChar[cyc]]] > 0 \
+				&& charRelation[pChar[v]][charPromoRef[pChar[cyc]]] < 0) {
 					break
 				}
 			}
@@ -770,7 +773,8 @@ RiskPromo :: proc(cyc, v: i32) {
 				if its > 100 {
 					charPromoRef[pChar[cyc]] = 0
 				}
-				if charPromoRef[pChar[cyc]] > 0 && charRelation[pChar[v]][charPromoRef[pChar[cyc]]] > 0 {
+				if charPromoRef[pChar[cyc]] == 0 || (charRelation[pChar[cyc]][charPromoRef[pChar[cyc]]] < 0 \
+				&& charRelation[pChar[v]][charPromoRef[pChar[cyc]]] > 0) {
 					break
 				}
 			}
@@ -961,7 +965,6 @@ RiskPromo :: proc(cyc, v: i32) {
 	}
 }
 
-
 //--------------------------------------------------------------------
 ///////////////////////////// PROMO TEXT /////////////////////////////
 //--------------------------------------------------------------------
@@ -989,9 +992,9 @@ DisplayPromo :: proc() {
 	if bb.GraphicsWidth() < 800 do bb.SetFont(font[3])
 	if bb.GraphicsWidth() > 800 do bb.SetFont(font[5])
 	if bb.GraphicsWidth() > 1024 do bb.SetFont(font[6])
+	// 1. GUARD CONFRONTS ABOUT ILLEGAL WEAPON
 	delete(optionA)
 	delete(optionB)
-	// 1. GUARD CONFRONTS ABOUT ILLEGAL WEAPON
 	if gamPromo == 1 {
 		// intro
 		optionA = strings.clone("Yes, drop weapon...")
@@ -1037,7 +1040,8 @@ DisplayPromo :: proc() {
 				pFollowFoc[cyc] = v
 				randy := bb.RndI(0, 5)
 				if randy == 0 && gamWarrant[slot] < 1 do gamWarrant[slot] = 1
-				if randy == 1 && gamWarrant[slot] < 4 && pWeapon[v] > 0 && gamMission[slot] != 11 && gamMission[slot] != 12 {
+				if randy == 1 && gamWarrant[slot] < 4 && pWeapon[v] > 0 \
+				&& gamMission[slot] != 11 && gamMission[slot] != 12 {
 					gamWarrant[slot] = 4
 					gamItem[slot] = pWeapon[v]
 				}
@@ -1046,7 +1050,7 @@ DisplayPromo :: proc() {
 			Outline("Well, you better know how to use it because", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
 			Outline("i'm gonna kick your ass until you give it up!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
-		if promoStage == 4 && promoTim > 325 && promoTim < 625 {
+		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
 			promoTim = 9975
 			promoUsed[gamPromo] = 1
 		}
@@ -1199,7 +1203,7 @@ DisplayPromo :: proc() {
 			if promoEffect == 0 {
 				charHappiness[pChar[v]] -= 5
 				charReputation[pChar[v]] -= 1
-				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				ChangeRelationship(pChar[cyc], pChar[v], 0)
 				promoEffect = 1
 			}
 			Outline("That's right - take your lazy ass somewhere else!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
@@ -1259,11 +1263,11 @@ DisplayPromo :: proc() {
 			if promoEffect == 0 {
 				charHappiness[pChar[v]] -= 5
 				charReputation[pChar[v]] -= 1
-				ChangeRelationship(pChar[cyc], pChar[v], -1)
+				ChangeRelationship(pChar[cyc], pChar[v], 0)
 				promoEffect = 1
 			}
 			Outline("That's right - take your lazy ass somewhere else!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			Outline("I need my sleep, and you're not getting it!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			Outline("And don't disturb me while i'm trying to sleep...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoStage == 3 && promoTim > 325 && promoTim < 625 {
 			Speak(cyc, 1)
@@ -1463,7 +1467,7 @@ DisplayPromo :: proc() {
 			promoUsed[gamPromo] = 1
 		}
 	}
-	// 15. COMPLAIN ABOUT BEING BUMPED
+	// 15. CONFRONT ABOUT ATTACKING FRIEND
 	if gamPromo == 15 {
 		if promoTim > 25 && promoTim < 325 {
 			Speak(cyc, 1)
@@ -1599,8 +1603,8 @@ DisplayPromo :: proc() {
 				}
 				promoEffect = 1
 			}
-			Outline("Well, that just makes me all the more suspicious!", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
-			Outline("Anything valuable to you is worth confiscating...", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
+			Outline("Well, it better be worth it because i'm", i32(rX(400)), i32(rY(520)), 30, 30, 30, 250, 250, 250)
+			Outline("gonna kick your ass until you give it up!", i32(rX(400)), i32(rY(560)), 30, 30, 30, 250, 250, 250)
 		}
 		if promoStage >= 2 && promoTim > 625 && promoTim < 9975 {
 			promoTim = 9975
@@ -1651,8 +1655,8 @@ DisplayPromo :: proc() {
 				charReputation[pChar[v]] += 1
 				if charAngerTim[pChar[cyc]][pChar[v]] < 100 do charAngerTim[pChar[cyc]][pChar[v]] = 100
 				ChangeRelationship(pChar[cyc],pChar[v],-1)
-				pAgenda[cyc] = 4
-				pWeapFoc[cyc] = pWeapon[v]
+				pAgenda[cyc] = 2
+				pFollowFoc[cyc] = v
 				randy := bb.RndI(0,5)
 				if randy == 0 && charRole[pChar[cyc]] < 1 do gamWarrant[slot] = 1
 				if randy == 1 && charRole[pChar[cyc]] < 4 && pWeapon[v] > 0 \
